@@ -5,15 +5,12 @@
  * Date: 2018-3-20
  * Time: 11:02
  */
+//计时
+$stime=microtime(true);
 require "./autoload.php";
 use stuApp\common\Safe;
 
 try{
-    //执行记录
-    unset($logs);
-    $logs = array();
-    $log = new \stuApp\model\execLog(__FILE__);
-    $logs[]=$log;
 
     $stuno = empty($_POST['stuno'])?null:$_POST['stuno'];
     $name = empty($_POST['name'])?null:$_POST['name'];
@@ -26,20 +23,21 @@ try{
     $info = compact('stuno','name','age','sex','score','grade');
     //参数检查
     $pmCheck = new \stuApp\common\paramsCheckPI($info);
-    //
+     //拆分数组
+    extract($info,EXTR_OVERWRITE);
 
+    //记录数据库执行
+    $db_starttime = microtime(true);
     //数据插入
     $stuInfo = new \stuApp\dao\StuInfo();
-    $stuInfo->insert($info['stuno'],$info['name'],$info['age'],$info['sex'],$info['score'],$info['grade']);
-
+    $stuInfo->insert($stuno,$name,$age,$sex,$score,$grade);
+    //数据库执行结束
+    $db_endtime = microtime(true);
+    $dbtime = $db_endtime-$db_starttime;
     //插入成功
-    $json =new \stuApp\model\Json(null,"数据插入成功");
+    $json =new \stuApp\model\Json($stime,$dbtime,null,"数据插入成功");
     print_r(json_encode($json));
-    //结束
-    $log = new \stuApp\model\execLog(__FILE__);
-    $logs[]=$log;
 
-    //var_dump($logs);
 
 }catch (Exception $e){
     httpStatus($e->getCode());

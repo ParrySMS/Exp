@@ -9,7 +9,8 @@
 namespace stuApp\model;
 class Info
 {
-    private $id;
+//    private $id;
+    public $id;
     public $stuno; //学号
     public $name;
     public $age;

@@ -31,6 +31,6 @@ class paramsCheckDI
     public function __construct($id)
     {
         $safe = new Safe();
-        $this->id = $safe->int_check(id);
+        $this->id = $safe->int_check($id);
     }
 }

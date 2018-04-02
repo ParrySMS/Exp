@@ -5,17 +5,13 @@
  * Date: 2018-3-29
  * Time: 17:51
  */
+//计时
+$stime=microtime(true);
 require "./autoload.php";
 
 use stuApp\common\Safe;
 
 try {
-    //执行记录
-    unset($logs);
-    $logs = array();
-    $log = new \stuApp\model\execLog(__FILE__);
-    $logs[] = $log;
-
 
     $field = empty($_GET['field']) ? null : $_GET['field'];
     //操作数可能为0
@@ -34,9 +30,11 @@ try {
     $sortWay = $pmCheck->getSortWay();
     $field = $pmCheck->getField();
 
-    //执行排序取出数据
+    //记录数据库执行
+    $db_starttime = microtime(true);
     //数据库执行
     $stuInfo = new \stuApp\dao\StuInfo();
+    //执行排序取出数据
     $datas = $stuInfo->sortInfo($field,$sortWay,$last_id,$offset);
 
     unset($infos);
@@ -46,16 +44,17 @@ try {
         $info = new \stuApp\model\Info($dataOptionArray);
         $infos[] = $info;
     }
+
+    //数据库执行结束
+    $db_endtime = microtime(true);
+    $dbtime = $db_endtime-$db_starttime;
+
     //抽成对象属性
     $retdata = (object)["infos"=>$infos];
     //输出
-    $json = new \stuApp\model\Json($retdata);
+    $json = new \stuApp\model\Json($stime,$dbtime,$retdata);
     print_r(json_encode($json));
 
-    //结束
-    $log = new \stuApp\model\execLog(__FILE__);
-    $logs[]=$log;
-//    var_dump($logs);
 
 } catch (Exception $e) {
     httpStatus($e->getCode());
