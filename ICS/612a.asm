@@ -1,0 +1,5 @@
+.ORIG x3000
+INP TRAP x23
+TRAP x21
+BRnzp INP
+.END
