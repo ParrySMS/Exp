@@ -153,7 +153,7 @@
 ---------------
 
 
-5.题目录入异常,题目切分错乱
+5.题目录入异常,题号字符引起,题目切分错乱
 
 ```angular2html
 
@@ -202,6 +202,34 @@
 </Hint>
 </Data>
 
+```
+
+```
+	<Data>
+		<Problem>
+			0,1,3,5,7,()
+		</Problem>
+		<Answer>
+			9
+		</Answer>
+		<Classification>
+			sequence
+		</Classification>
+		<Hint>
+			An=(n-1)2-(n-2)2
+			109.1,2,5,16,65,?
+			A,128；B,227；C,320；D,326
+		</Option>
+		<Answer>
+			326
+		</Answer>
+		<Classification>
+			sequence
+		</Classification>
+		<Hint>
+			An+1=An*n+1
+		</Hint>
+	</Data>
 ```
 
 ---------------
@@ -282,6 +310,41 @@
     8*12+8*25=296
 </Hint>
 </Data>
+```
+
+-------------
+
+11.选择题答案出现选项内容
+- 应该改成选项题号
+```
+<Option>
+			<A>201
+			<B>292
+			<C>303
+			<D>314
+		</Option>
+```
+
+---------------
+12.seq填空项表述不一
+- 不利于机器识别
+```xml
+<Problem>
+			1/4,1/4 ,1/4 ,3/16 ,1/8 ,()
+		</Problem>
+```
+
+```xml
+<Problem>
+			133/57 , 119/51 , 91/39 , 49/21 , ? , 7/3
+		</Problem>
+
+```
+
+```xml
+<Problem>
+			1/6 2/3 3/2 8/3 ?
+		</Problem>
 ```
 
 ------------
@@ -413,3 +476,11 @@ else --> 、
 - logic 里只找到一个，需要再看下其他文件下是否有这个问题。
 
 -------------
+11.答案为选项内容
+
+- 程序判断处理
+```
+if(in_array(answer,option)){
+    option = answer->key
+}
+```
