@@ -6,10 +6,10 @@
  * Time: 23:36
  */
 
-$filePath = './';
+$filePath = './xml';
 //$fileName = 'test.xml';
 //$fileName = 'seq.xml';
-$fileName = 'logic_C.xml';
+$fileName = 'logic-C.xml';
 //$fileName = 'logic-C.xml';
 //$fileName = 'logic-diagram.xml';
 //$fileName = 'logic-E.xml';
@@ -30,19 +30,20 @@ while (1) {
 //        var_dump($itemStr1);
 //        var_dump($itemStr2);
 
-        //处理Q标签
-        //半角
-        $q_index1= strpos($itemStr1, 'Q:');
-        if ($q_index1) {//有q标签 截取
-            $itemStr1 = substr($itemStr1,$q_index1+2);
-            $itemStr1 = '</Hint></row><row><Problem>'.$itemStr1;
-        }
-        //全角
-        $q_index2 = strpos($itemStr1, 'Q：');
-        if ($q_index2) {//有q标签 截取
-            $itemStr1 = substr($itemStr1,$q_index2+2);
-            $itemStr1 = '</Hint></row><row><Problem>'.$itemStr1;
-        }
+//        //处理Q标签
+//        //半角
+//        $q_index1= strpos($itemStr1, 'Q:');
+//        if ($q_index1) {//有q标签 截取
+//            $itemStr1 = substr($itemStr1,$q_index1+2);
+//            $itemStr1 = '</Hint></row><row><Problem>'.$itemStr1;
+//        }
+//        //全角
+//        $q_index2 = strpos($itemStr1, 'Q：');
+//        if ($q_index2) {//有q标签 截取
+//            $itemStr1 = substr($itemStr1,$q_index2+2);
+//            $itemStr1 = '</Hint></row><row><Problem>'.$itemStr1;
+//        }
+
         //补选项标签
         if (strstr($itemStr1, '<' . $char . '>')) {//有开始标签 再读一行
             if (strstr($itemStr1, '</' . $char . '>')
