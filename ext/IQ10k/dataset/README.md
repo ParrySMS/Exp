@@ -316,13 +316,29 @@
 
 11.选择题答案出现选项内容
 - 应该改成选项题号
-```
-<Option>
-			<A>201
-			<B>292
-			<C>303
-			<D>314
+```xml
+<Data>
+		<Problem>
+			What character mask did Michael Myers wear?
+		</Problem>
+		<Option>
+			<A>William Shatner
+			<B>Fred Flintstone
+			<C>Captain Kirk
+			<D>Fred Williamson
+			<E>Spock
+			<F>Ronald Regan
 		</Option>
+		<Answer>
+			Captain Kirk
+		</Answer>
+		<Classification>
+			logic-commonsense
+		</Classification>
+		<Hint>
+			
+		</Hint>
+	</Data>
 ```
 
 ---------------
@@ -348,6 +364,171 @@
 ```
 
 ------------
+
+13.部分字符显示异常
+```xml
+<Data>
+		<Problem>
+			? + ? =
+		</Problem>
+		<Option>
+			<A>1 ?
+			<B>1 ?
+			<C>1 ?
+			<D>?
+		</Option>
+		<Answer>
+			C
+		</Answer>
+		<Classification>
+			logic-math
+		</Classification>
+		<Hint>
+			
+		</Hint>
+	</Data>
+```
+
+----------------
+
+14.标签化遗漏选项
+```xml
+<Option>
+			<A>20
+			<B>24
+			<C>25
+			<D>26 F.28
+		</Option>
+```
+
+---------------
+15.带分数的显示有些奇怪
+```xml
+<Option>
+			<A>3
+			<B>4
+			<C>4 1/2
+			<D>5
+			<E>6
+		</Option>
+```
+
+-----------------
+16.一个题目有多个问 可能不合理
+```xml
+<Data>
+		<Problem>
+			Simplify
+			27 ???9  ???6
+			74 37 17
+			to the lowest fraction
+		</Problem>
+		<Answer>
+			9
+			17
+		</Answer>
+		<Classification>
+			logical
+		</Classification>
+		<Hint>
+			
+		</Hint>
+	</Data>
+```
+
+---------------
+17.字符识别异常 可能是选项 以及提示出现url可能不利于识别
+```xml
+<Data>
+		<Problem>
+			The Strategic Defense Initiative (SDI) was proposed by U.S. President Ronald Reagan and became popularly known as "Star Wars"
+			?    ??FACT  ??FICTION
+		</Problem>
+		<Answer>
+			?FACT  ??
+		</Answer>
+		<Classification>
+			logic-commonsense
+		</Classification>
+		<Hint>
+			The program's goals included research and development of a space-based system to defend the nation from attack by strategic ballistic missiles
+		</Hint>
+	</Data>
+```
+```xml
+<Data>
+		<Problem>
+			RMS Titanic was a British passenger liner that sank in the North Atlantic Ocean on 15 April 1912 after being struck by a torpedo from a German submarine
+			??TRUE   FALSE
+		</Problem>
+		<Answer>
+			?FALSE
+		</Answer>
+		<Classification>
+			logic-commonsense
+		</Classification>
+		<Hint>
+			It sank due to hitting an iceberg. Reference: http://en.wikipedia.org/wiki/Titanic
+		</Hint>
+	</Data>
+```
+
+```xml
+<Data>
+		<Problem>
+			Which of the following is not one of the Seven Dwarfs?
+			??Silly? ?Dopey? ?Sneezy? ?Doc
+		</Problem>
+		<Answer>
+			?Silly? ?
+		</Answer>
+		<Classification>
+			logic-commonsense
+		</Classification>
+		<Hint>
+			
+			546Question 2
+			In what year did Lincoln deliver the Gettysburg Address?
+			???1860?? 1861?? 1862 ??1863
+		</Option>
+		<Answer>
+			?1863
+		</Answer>
+		<Classification>
+			logic-commonsense
+		</Classification>
+		<Hint>
+			
+		</Hint>
+	</Data>
+```
+
+
+---------------
+18.选项前字符问题 数字出现`,`区分千位
+```xml
+       <Option>
+			<A>?840
+			<B>?960
+			<C>?1,230
+			<D>?1,360
+			<E>?1,540
+		</Option>
+		<Answer>
+        	?960
+       	</Answer>
+```
+
+-------------
+19.题目`<Problem>`或`<Hint>`里出现中文
+```xml
+
+<Hint>
+			365 每 73 = 292 days it will not rain, on 73 it will, therefore odds of 292:73 which simplifies to 4:1
+		</Hint>
+```
+
+
 ## 待修复
 
 
