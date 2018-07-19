@@ -19,8 +19,8 @@
 
 ## 问题
 
-#### 已查阅 logic-C
-#### 未处理 -> {logic-E，seq，verbal-C, verbal-CE, verbal-E}
+#### 已查阅 logic-C,logic-E，
+#### 未处理 -> {seq，verbal-C, verbal-CE, verbal-E}
 
 0.xml标签不对齐
 ```xml
@@ -55,7 +55,7 @@
 </Hint>
 ```
 
-```angular2html
+```xml
 <Data>
 <Problem>
     一个粮食加工厂要运45000千克高粱，已经运到640袋，每袋63千克，还有多少千克没运到?
@@ -69,7 +69,7 @@
 </Data>
 ```
 
-```angular2html
+```xml
 <Data>
 <Problem>
     小明今年5岁，姐姐今年8岁，过10年以后，他们两人相差几岁？
@@ -101,7 +101,7 @@
 		</Problem>
 ```
 
-```
+```xml
 <Data>
 		<Problem>
 			小红12天看了170页书，小明17天看了240页书，小强20天看了300页书，谁看得快？
@@ -128,7 +128,7 @@
 
 4.`</Classification> <Hint>` 丢失
 
-```
+```xml
 <Data>
    <Problem>
        某人步行每小时4Q:8小时千米,骑自行车每千米比步行少用8Q:5分,骑车的速度是步行速度的多少倍?
@@ -140,10 +140,9 @@
        logic
    </Hint>
    </Data>
-  ```
+```
   
-  ```
-   
+```xml
    <Classification>
        logic
    </Hint>
@@ -155,7 +154,7 @@
 
 5.题目录入异常,题号字符引起,题目切分错乱
 
-```angular2html
+```xml
 
 <Data>
 <Problem>
@@ -204,7 +203,7 @@
 
 ```
 
-```
+```xml
 	<Data>
 		<Problem>
 			0,1,3,5,7,()
@@ -236,7 +235,7 @@
 
 6.题目的特殊符号以及部分式子内容丢失
 
-```angular2html
+```xml
 <Hint>
     设她第一次在供销大厦买了x瓶酸奶，则  解，得x＝5
 </Hint>
@@ -249,16 +248,23 @@
 ```
 
 ---------------
-
+``
 7.题目选项丢失
 
-```angular2html
+```xml
 <Option>
     <A>
     <B>
     <C>
     <D>
 </Option>
+
+<Option>
+			<A>
+			<B>1
+			<C>-1
+			<D>-1
+		</Option>
 ```
 
 
@@ -267,12 +273,28 @@
 
 ---------------
 
-9.选项标签未转化，选项在题目里
+9.选项标签未转化，有些选项在题目里
+
 ```xml
 <Problem>
     南之于西北，正如西之于
     A西北?B东北?C西南?D东南
 </Problem>
+
+<Problem>
+	1,1,2,6,24,?
+	A,25；B,27；C,120；D,125
+</Problem>
+
+<Problem>
+	√2,3,√28,√65,?
+	A,2√14；B,√83；C,4√14；D,3√14
+</Problem>
+
+<Option>
+		<A>178.5
+		<B>179.5；C 180.5；D.181.5
+</Option>
 ```
 
 
@@ -292,7 +314,8 @@
 
 10.问题标签异常 `Q;`
 
-```
+```xml
+
   //上一题的</Hint></Data>极大概率丢失
 
     Q;《故事大王》每本12元，《十万个为什么》每本25元，买8本《故事大王》和8本《十万个为什么》一共需要多少钱？
@@ -398,7 +421,13 @@
 			<B>24
 			<C>25
 			<D>26 F.28
-		</Option>
+</Option>
+
+<Option>
+	<A>-16
+	<B>-25；C；-28；D、-36
+</Option>
+
 ```
 
 ---------------
@@ -432,6 +461,30 @@
 		</Classification>
 		<Hint>
 			
+		</Hint>
+	</Data>
+	
+	
+<Data>
+		<Problem>
+			下面这个方块中,最下面一行的数字应该是多少呢?
+			
+			7 4 9 2
+			11 16 9 13
+			22 20 24 25
+			
+		</Problem>
+		<Answer>
+			49 46 47 44
+		</Answer>
+		<Classification>
+			sequence
+		</Classification>
+		<Hint>
+			An=Cn-1+Dn-1
+			Bn=An-1+Cn-1
+			Cn=An-1+Dn-1
+			Dn=Cn-1+Dn-1
 		</Hint>
 	</Data>
 ```
@@ -523,10 +576,23 @@
 19.题目`<Problem>`或`<Hint>`里出现中文
 ```xml
 
-<Hint>
+        <Hint>
 			365 每 73 = 292 days it will not rain, on 73 it will, therefore odds of 292:73 which simplifies to 4:1
 		</Hint>
+		
+		<Hint>
+   			1每 (1/2)2 = 3/4
+        </Hint>
 ```
+
+--------------
+20. 标签不对齐
+```xml
+		<Answer>
+			217
+		</Classification>
+```
+
 
 
 ## 待修复
@@ -535,6 +601,7 @@
 0.xml标签不对齐 【半完成】 
 
 写多一个xml标签检查,补前补后都要做
+选项标签和其他标签都要对齐
 ```php
  //补选项标签
         if (strstr($itemStr1, '<' . $char . '>')) {//有开始标签 再读一行
