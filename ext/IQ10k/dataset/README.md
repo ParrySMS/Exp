@@ -152,55 +152,40 @@
 ---------------
 
 
-5.题目录入异常,题号字符引起,题目切分错乱
+5.`</Hint>`与`</Data>`丢失,	`<Problem>标签成对丢失`,部分`<Option>丢失`,题目切分错乱
 
 ```xml
 
-<Data>
-<Problem>
-    甲、乙两站相距480公里，一列慢车从甲站开出，每小时行90公里，一列快车从乙站开出，每小时行140公里。两车同时开出，相背而行多少小时后两车相距600公里？
-</Problem>
-<Answer>
-    12/23
-</Answer>
-<Classification>
-    logic
-</Classification>
+
 <Hint>
     (140+90)x+480=600解这个方程，230x=120 ∴ x=
     （3）两车同时开出，慢车在快车后面同向而行，多少小时后快车与慢车相距600公里？
 </Option>
-<Answer>
-    2.4
-</Answer>
-<Classification>
-    logic
-</Classification>
+
+
+
 <Hint>
     (140－90)x+480=600　　 50x=120　　∴ x=2.4
     （4）两车同时开出同向而行，快车在慢车的后面，多少小时后快车追上慢车？
 </Option>
-<Answer>
-    9.6
-</Answer>
-<Classification>
-    logic
-</Classification>
+
 <Hint>
     140x=90x+480 　解这个方程，50x=480 　∴ x=9.6
     　　（5）慢车开出1小时后两车同向而行，快车在慢车后面，快车开出后多少小时追上慢车？
 </Option>
-<Answer>
-    11.4min
-</Answer>
-<Classification>
-    logic
-</Classification>
-<Hint>
-    140x=90(x+1)+480　 50x=570　∴ x=11.4 　　
-</Hint>
-</Data>
 
+
+
+        <Hint>
+			An+1=2An+An-12
+			125.2,2,10,34,82,?
+			
+		<Option>
+			<A>96
+			<B>126
+			<C>138
+			<D>162
+		</Option>
 ```
 
 ```xml
@@ -295,6 +280,11 @@
 		<A>178.5
 		<B>179.5；C 180.5；D.181.5
 </Option>
+
+<Option>
+			<A>7
+			<B>9 C,11 D.13
+</Option>
 ```
 
 
@@ -384,6 +374,18 @@
 <Problem>
 			1/6 2/3 3/2 8/3 ?
 		</Problem>
+		
+<Problem>
+    	√5 ,√55 ,11√5 ,11√55 ,(?)
+</Problem>
+
+<Problem>
+		-3 ,-2 ,5 ,24 ,61 ,(  )
+</Problem>
+
+<Problem>
+			63,26,7,0,-2,-9 ?
+</Problem>
 ```
 
 ------------
@@ -462,7 +464,7 @@
 		<Hint>
 			
 		</Hint>
-	</Data>
+</Data>
 	
 	
 <Data>
@@ -486,7 +488,29 @@
 			Cn=An-1+Dn-1
 			Dn=Cn-1+Dn-1
 		</Hint>
-	</Data>
+</Data>
+
+<Data>
+		<Problem>
+			7,5,3,10,1,?,?
+		</Problem>
+		<Option>
+			<A>15、 -4
+			<B>20、 -2
+			<C>15、 -1
+			<D>20、 0
+		</Option>
+		<Answer>
+			20,0
+		</Answer>
+		<Classification>
+			sequence
+		</Classification>
+		<Hint>
+			A2n+1=A2n-1-23-n
+			A2n=A2n-2*2
+		</Hint>
+</Data>
 ```
 
 ---------------
@@ -593,8 +617,71 @@
 		</Classification>
 ```
 
+--------------
+21. 有些提示对于机器而言过于抽象
+```xml
+	<Data>
+		<Problem>
+			1.1 ,2.2 ,4.3 ,7.4 ,11.5 ,?
+		</Problem>
+		<Option>
+			<A>15.5
+			<B>15.6
+			<C>17.6
+			<D>16.6
+		</Option>
+		<Answer>
+			16.6
+		</Answer>
+		<Classification>
+			sequence
+		</Classification>
+		<Hint>
+			将小数与整数分开来看
+		</Hint>
+	</Data>
 
+	<Data>
+		<Problem>
+			34. 0.75 ,0.65 ,0.45 ,?
+		</Problem>
+		<Option>
+			<A>0.78
+			<B>0.88
+			<C>0.55
+			<D>0.96
+		</Option>
+		<Answer>
+			0.55
+		</Answer>
+		<Classification>
+			sequence
+		</Classification>
+		<Hint>
+			能被 0.05 除尽
+		</Hint>
+	</Data>
+```
 
+------------
+22. 选项后出现逗号
+```xml
+
+<Option>
+			<A>10,
+			<B>14,
+			<C>25,
+			<D>30
+		</Option>
+
+<Option>
+			<A>2,
+			<B>8/9,
+			<C>5/16,
+			<D>1/3
+</Option>
+
+```
 ## 待修复
 
 
@@ -623,17 +710,15 @@
 
 - 选项格式不统一，有半角全全角空格各类问题
 
-```
+```xml
 <Answer>
     1  B、2  C、3  D、4
     或者  3600  B:4800  C:6000  D:7200
     或者  28  B.252  C. 264  D.378
     或者  8  B;252  C; 264  D;378
 </Option>
-```
 
 
-```
 <Option>
     <A>10
     <B>11  C 、12  D、13
