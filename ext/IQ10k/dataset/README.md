@@ -23,7 +23,7 @@
 - 题目生成器
 
 
-## 工作、
+## 工作
 
 ### 分工时间表
 
@@ -52,7 +52,9 @@
 #### 五、跑通然后推上其他平台
 
 
-** 关键：数据集质量 **
+**关键：数据集质量**
+
+**参考：[SQuAD项目 https://rajpurkar.github.io/SQuAD-explorer/](https://rajpurkar.github.io/SQuAD-explorer/)**
 
 ---------------
 
@@ -89,12 +91,9 @@
 2.中途其他字符插入，以及标签识别异常
 
 ```xml
-<Classification>
-    logic
-</Hint>
-```
 
-```xml
+
+
 <Data>
 <Problem>
     一个粮食加工厂要运45000千克高粱，已经运到640袋，每袋63千克，还有多少千克没运到?
@@ -106,9 +105,7 @@
     H :已经运了640*63=40320，还剩45000-40320=4680
 </Hint>
 </Data>
-```
 
-```xml
 <Data>
 <Problem>
     小明今年5岁，姐姐今年8岁，过10年以后，他们两人相差几岁？
@@ -138,9 +135,9 @@
 	<Problem>
 			小红上学期期末考试，语文Q:数学Q:自然Q:社会Q:英语的成绩分别是88分Q:96分Q:94分Q:90分Q:82分。小红五科的平均成绩是多少？
 		</Problem>
-```
 
-```xml
+
+
 <Data>
 		<Problem>
 			小红12天看了170页书，小明17天看了240页书，小强20天看了300页书，谁看得快？
@@ -165,7 +162,7 @@
 
 ---------------
 
-4.`</Classification> <Hint>` 丢失
+4.`<Classification> <Hint>` 丢失
 
 ```xml
 <Data>
@@ -179,12 +176,21 @@
        logic
    </Hint>
    </Data>
-```
-  
-```xml
+
+
    <Classification>
        logic
    </Hint>
+   
+   
+   <Classification>
+       logic
+   </Hint>
+   
+   
+   <Answer>
+   			2255
+   		</Classification>
 ```
 
 
@@ -225,9 +231,7 @@
 			<C>138
 			<D>162
 		</Option>
-```
 
-```xml
 	<Data>
 		<Problem>
 			0,1,3,5,7,()
@@ -324,11 +328,9 @@
 			<A>7
 			<B>9 C,11 D.13
 </Option>
-```
 
 
-```xml
-<Problem>
+        <Problem>
 			甲安装队为A小区安装66台空调，
 			乙安装队为B小区安装60台空调，
 			两队同时开工且恰好同时完工，
@@ -337,6 +339,25 @@
 			根据题意，下面所列方程中正确的是（  ）
 			A.  B. C.   D
 		</Problem>
+		
+<Data>
+		<Problem>
+			2,9,45,? ,891
+			A,52 B,49 C,189 D,293
+		</Problem>
+		<Answer>
+			189
+		</Answer>
+		<Classification>
+			sequence
+		</Classification>
+		<Hint>
+			An=3n-1*Bn
+			Bn为质数列
+		</Hint>
+</Data>
+	
+		
 ```
 
 ---------------
@@ -400,16 +421,12 @@
 <Problem>
 			1/4,1/4 ,1/4 ,3/16 ,1/8 ,()
 		</Problem>
-```
 
-```xml
 <Problem>
 			133/57 , 119/51 , 91/39 , 49/21 , ? , 7/3
 		</Problem>
 
-```
 
-```xml
 <Problem>
 			1/6 2/3 3/2 8/3 ?
 		</Problem>
@@ -456,11 +473,36 @@
 			
 		</Hint>
 	</Data>
+	
+
+// seq里的内容
+<Data>
+		<Problem>
+			2,3,28,65,?
+		</Problem>
+		<Option>
+			<A>214
+			<B>83
+			<C>414
+			<D>314
+		</Option>
+		<Answer>
+			414
+		</Answer>
+		<Classification>
+			sequence
+		</Classification>
+		<Hint>
+			依次除以,2,3,4,5,6,都能整除
+		</Hint>
+	</Data>
+	
+	
 ```
 
 ----------------
 
-14.标签化遗漏选项
+14.部分选项的标签缺漏 因格式问题不能正确转化
 ```xml
 <Option>
 			<A>20
@@ -474,6 +516,16 @@
 	<B>-25；C；-28；D、-36
 </Option>
 
+<Option>
+			<A>658
+			<B>478 .C556 D.581
+</Option>
+
+<Option>
+			<A>1
+			<B>√2 C√3 D.4
+		</Option>	
+		
 ```
 
 ---------------
@@ -575,8 +627,7 @@
 			The program's goals included research and development of a space-based system to defend the nation from attack by strategic ballistic missiles
 		</Hint>
 	</Data>
-```
-```xml
+`
 <Data>
 		<Problem>
 			RMS Titanic was a British passenger liner that sank in the North Atlantic Ocean on 15 April 1912 after being struck by a torpedo from a German submarine
@@ -592,9 +643,7 @@
 			It sank due to hitting an iceberg. Reference: http://en.wikipedia.org/wiki/Titanic
 		</Hint>
 	</Data>
-```
 
-```xml
 <Data>
 		<Problem>
 			Which of the following is not one of the Seven Dwarfs?
@@ -726,6 +775,25 @@
 </Option>
 
 ```
+
+-------------
+23.部分提示有歧义
+```xml
+<Hint>
+			An+1=An+n+1
+		</Hint>
+		
+		
+		<!-- 
+		An+n+1 
+		可能是 An + n + 1 
+		可能是 A[n+n] + 1 
+	    ....	
+		-->
+		 
+```
+
+
 ## 待修复
 
 
