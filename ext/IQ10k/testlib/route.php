@@ -39,8 +39,7 @@ $app->group('/problem', function ($request, $response) {
         $hint = isset($request->getParsedBody()["hint"]) ? $request->getParsedBody()["hint"] : null;
         $problem_info = compact($problem, $option_num, $language, $classification, $proType, $proSource, $hint);
         //启用控制器
-        $cpp = new tlApp\controller\Problem();
-        $cpp->post($problem_info);
+        $cpp = new tlApp\controller\Problem($problem_info,'post');
 
         return $response->withStatus($cpp->getStatus());
     });
