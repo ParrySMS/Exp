@@ -125,6 +125,18 @@
 </Hint>
 </Data>
 
+
+
+<Classification>
+			sequence
+			H : An+1+An=Bn  ,Bn=2,6,18,54,162
+		</Hint>
+
+<Classification>
+			sequence
+			H :An+2=An+1+3^n
+		</Hint>
+
 ```
 
 ---------------
@@ -277,7 +289,7 @@
 
 ---------------
 ``
-7.题目选项丢失
+7.选项内容丢失
 
 ```xml
 <Option>
@@ -357,16 +369,36 @@
 		</Hint>
 </Data>
 	
+	
+	
+
+<Problem>
+			选项ABCD中,哪一个应该填在"XOOOOXXOOOXXX"后面?
+			A?XOO?B?OO?C?OOX?D?OXX?
+</Problem>
+
+
+
+<Problem>
+			16 (96) 12?10 ? 7.5
+</Problem>
+
+
+<Problem>
+			填上空缺的字母?CFI?DHL?EJ?
+</Problem>
+
+		
 		
 ```
 
 ---------------
 
-10.问题标签异常 `Q;`
+10.问题标签异常 `Q;` `Q`
 
 ```xml
 
-  //上一题的</Hint></Data>极大概率丢失
+ <!--上一题的</Hint></Data>极大概率丢失-->
 
     Q;《故事大王》每本12元，《十万个为什么》每本25元，买8本《故事大王》和8本《十万个为什么》一共需要多少钱？
 </Option>
@@ -383,6 +415,24 @@
     8*12+8*25=296
 </Hint>
 </Data>
+
+
+
+
+		<Classification>
+			sequence
+		</Classification>
+		<Hint>
+			An = n^Bn  ,Bn=4,3,2,1,0,-1
+			<!--上一题的内容突然丢失-->
+			Q68 (),36,19,10,5,2
+		<Option>
+			<A>77
+			<B>69
+			<C>54
+			<D>48
+		</Hint>
+	</Data>
 ```
 
 -------------
@@ -502,7 +552,7 @@
 
 ----------------
 
-14.部分选项的标签缺漏 因格式问题不能正确转化
+14.部分选项的标签缺漏 
 ```xml
 <Option>
 			<A>20
@@ -524,8 +574,16 @@
 <Option>
 			<A>1
 			<B>√2 C√3 D.4
-		</Option>	
-		
+</Option>	
+
+<Option>
+			<A>8
+			<B>13
+			<C>21
+			<D>26 F.31
+</Option>
+
+	
 ```
 
 ---------------
@@ -541,7 +599,7 @@
 ```
 
 -----------------
-16.一个题目有多个问 可能不合理
+16.一个题目有多个问 可能不合理 导致回答匹配情况不一
 ```xml
 <Data>
 		<Problem>
@@ -607,6 +665,24 @@
 			A2n=A2n-2*2
 		</Hint>
 </Data>
+
+
+<Data>
+		<Problem>
+			根据下面各组数字的规律,问号应该代表什么数字?
+			2  6  30  ?
+			3  5  11  ?
+		</Problem>
+		<Answer>
+			330与41
+		</Answer>
+		<Classification>
+			sequence
+		</Classification>
+		<Hint>
+			An,n*An+1,n=An,n+1  An,n+An+1,n=An+1,n+1
+		</Hint>
+	</Data>
 ```
 
 ---------------
@@ -671,6 +747,17 @@
 			
 		</Hint>
 	</Data>
+	
+	
+	
+	
+	<Problem>
+    			1?3?2?4?6?5?7?()
+    </Problem>
+    
+    <Problem>
+    			961?(25)?432?932???731
+    </Problem>
 ```
 
 
@@ -793,6 +880,33 @@
 		 
 ```
 
+-------------
+24. 答案`<Answer>`标签为空
+```xml
+
+   	<Data>
+   		<Problem>
+   			Choosing the word which is the exact opposite of GULLIBLE
+   		</Problem>
+   		<Option>
+   			<A>Incredulous
+   			<B>Fickle
+   			<C>Easy
+   			<D>Stylish
+   		</Option>
+   		<Answer>
+   			
+   		</Answer>
+   		<Classification>
+   			verbal-antonym
+   		</Classification>
+   		<Hint>
+   			
+   		</Hint>
+   	</Data>
+```
+
+-------------
 
 ## 待修复
 
