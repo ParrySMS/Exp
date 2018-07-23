@@ -28,5 +28,55 @@ class Json
         $this->retcode = $retcode;
     }
 
+    /**
+     * @return null
+     */
+    public function getRetmsg()
+    {
+        return $this->retmsg;
+    }
+
+    /**
+     * @param null $retmsg
+     */
+    public function setRetmsg($retmsg)
+    {
+        $this->retmsg = $retmsg;
+    }
+
+    /**
+     * @return null
+     */
+    public function getRetdata()
+    {
+        return $this->retdata;
+    }
+
+    /**
+     * @param null $retdata
+     */
+    public function setRetdata($retdata)
+    {
+        $this->retdata = $retdata;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRetcode()
+    {
+        return $this->retcode;
+    }
+
+    /**
+     * @param int $retcode
+     */
+    public function setRetcode($retcode)
+    {
+        $this->retcode = $retcode;
+    }
+
+
+
 
 }

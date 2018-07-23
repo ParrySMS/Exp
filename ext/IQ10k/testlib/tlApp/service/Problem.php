@@ -20,14 +20,20 @@ class Problem extends BaseService
 
     }
 
+    /** 插入题目数据 然后返回json
+     * @param array $problem_info
+     * @return Json
+     * @throws \Exception
+     */
     public function post(Array $problem_info){
         //problem_info = compact($problem, $option_num, $language, $classification, $proType, $proSource, $hint);
 
-
-
-
         $dao = new \tlApp\dao\Problem();
+        $pid = $dao->insert($problem_info,true);
 
+        $retdata = (object)['pid'=>$pid];
+        $this->json->setRetdata($retdata);
 
+        return $this->json;
     }
 }
