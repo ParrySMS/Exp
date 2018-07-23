@@ -39,9 +39,10 @@ $app->group('/problem', function ($request, $response) {
         $hint = isset($request->getParsedBody()["hint"]) ? $request->getParsedBody()["hint"] : null;
         $problem_info = compact($problem, $option_num, $language, $classification, $proType, $proSource, $hint);
         //启用控制器
-        $cpp = new tlApp\controller\Problem($problem_info,'post');
+        //todo: 内部服务 dao数据库
+        $c_pp = new tlApp\controller\PostProblem($problem_info);
 
-        return $response->withStatus($cpp->getStatus());
+        return $response->withStatus($c_pp->getStatus());
     });
 
 });

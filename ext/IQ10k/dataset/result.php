@@ -58,7 +58,7 @@ function EchoTr($size)
     echo '<tr>';
     echo '<th>来源表</th>';
     echo '<th>id</th>';
-    echo '<th>Problem</th>';
+    echo '<th>PostProblem</th>';
     echo '<th>Classification</th>';
     echo '<th>A</th>';
     echo '<th>B</th>';
@@ -105,7 +105,7 @@ function EchoTd($table, $datas, $size)
         echo '<tr>';
         echo "<td>$table</td>";
         echo '<td>' . $data['id'] . '</td>';
-        echo '<td>' . $data['Problem'] . '</td>';
+        echo '<td>' . $data['PostProblem'] . '</td>';
         echo '<td>' . $data['Classification'] . '</td>';
         echo '<td>' . $data['A'] . '</td>';
         echo '<td>' . $data['B'] . '</td>';
@@ -168,7 +168,7 @@ function EchoTd($table, $datas, $size)
     <!--    <tr>-->
     <!--        <th>来源表</th>-->
     <!--        <th>id</th>-->
-    <!--        <th>Problem</th>-->
+    <!--        <th>PostProblem</th>-->
     <!--        <th>Classification</th>-->
     <!--        <th>A</th>-->
     <!--        <th>B</th>-->
@@ -182,7 +182,7 @@ function EchoTd($table, $datas, $size)
     <!--    <tr>-->
     <!--        <td>--><?php //echo $table ?><!--</td>-->
     <!--        <td>--><?php //echo $data['id'] ?><!--</td>-->
-    <!--        <td>--><?php //echo $data['Problem'] ?><!--</td>-->
+    <!--        <td>--><?php //echo $data['PostProblem'] ?><!--</td>-->
     <!--        <td>--><?php //echo $data['Classification'] ?><!--</td>-->
     <!--        <td>--><?php //echo $data['A'] ?><!--</td>-->
     <!--        <td>--><?php //echo $data['B'] ?><!--</td>-->

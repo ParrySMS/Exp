@@ -22,7 +22,7 @@ try {
     $next = null;
     $here = null;
     $data['id'] = null;
-    $data['Problem'] = null;
+    $data['PostProblem'] = null;
     $data['Classification'] = null;
     $data['A'] = null;
     $data['B'] = null;
@@ -83,7 +83,7 @@ function getData($id, $database, $table)
 
     $data = $database->select($table, [
         'id',
-        'Problem',
+        'PostProblem',
         'Answer',
         'Classification',
         'Hint',
@@ -156,7 +156,7 @@ function changeStatus($id, $database, $table)
     </tr>
     <tr>
         <td><?php echo $data['id'] ?></td>
-        <td><?php echo $data['Problem'] ?></td>
+        <td><?php echo $data['PostProblem'] ?></td>
         <td><?php echo $data['Classification'] ?></td>
         <td><?php echo $data['A'] ?></td>
         <td><?php echo $data['B'] ?></td>

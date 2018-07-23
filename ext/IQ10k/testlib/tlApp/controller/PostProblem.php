@@ -9,20 +9,20 @@
 namespace tlApp\controller;
 use \Exception;
 use tlApp\model\Json;
+use tlApp\service\Problem;
 
-class Problem extends BaseController
+class PostProblem extends BaseController
 {
 
-    public function __construct( Array $problem_info,$action)
+    public function __construct( Array $problem_info)
     {
         try{
-			switch ($action){
-				case 'post':  //todo: 实现信息插入
+		 //todo: 实现信息插入
+
 				$this->postProblem($problem_info);
-				break;
-			
-			}
-          
+
+
+
             $json = null;
 
             if (!is_null($json)) {
@@ -44,4 +44,11 @@ class Problem extends BaseController
         }
     }
 
+    public function postProblem(Array $problem_info)
+    {
+        $pro = new Problem();
+        $pro->post(Array $problem_info);
+
+
+    }
 }

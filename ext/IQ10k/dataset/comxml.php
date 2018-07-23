@@ -35,13 +35,13 @@ while (1) {
 //        $q_index1= strpos($itemStr1, 'Q:');
 //        if ($q_index1) {//有q标签 截取
 //            $itemStr1 = substr($itemStr1,$q_index1+2);
-//            $itemStr1 = '</Hint></row><row><Problem>'.$itemStr1;
+//            $itemStr1 = '</Hint></row><row><PostProblem>'.$itemStr1;
 //        }
 //        //全角
 //        $q_index2 = strpos($itemStr1, 'Q：');
 //        if ($q_index2) {//有q标签 截取
 //            $itemStr1 = substr($itemStr1,$q_index2+2);
-//            $itemStr1 = '</Hint></row><row><Problem>'.$itemStr1;
+//            $itemStr1 = '</Hint></row><row><PostProblem>'.$itemStr1;
 //        }
 
         //补选项标签
