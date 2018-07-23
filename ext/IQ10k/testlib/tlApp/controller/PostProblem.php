@@ -17,10 +17,23 @@ class PostProblem extends BaseController
     public function __construct( Array $problem_info)
     {
         try{
-		 //todo: 实现信息插入
+
+            //参数逻辑检查
+            $region_lang = json_decode(PM_REGION_LANG_JSON);
+            if(!in_array($problem_info['language'], $region_lang)){
+                throw new \Exception('language: '.$problem_info['language'].' not in region',400);
+            }
+
+            $region_type = json_decode(PM_REGION_PROTYPE_JSON);
+            if(!in_array($problem_info['pro_type'], $region_type)){
+                throw new \Exception('proType: '.$problem_info['language'].' not in region',400);
+            }
+
+
+
+            //todo: 实现信息插入
 
 				$this->postProblem($problem_info);
-
 
 
             $json = null;
@@ -46,6 +59,8 @@ class PostProblem extends BaseController
 
     public function postProblem(Array $problem_info)
     {
+
+
         $pro = new Problem();
         $pro->post(Array $problem_info);
 

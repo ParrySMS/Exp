@@ -21,6 +21,13 @@ class Problem extends BaseService
     }
 
     public function post(Array $problem_info){
-        $dao = new
+        //problem_info = compact($problem, $option_num, $language, $classification, $proType, $proSource, $hint);
+
+
+
+
+        $dao = new \tlApp\dao\Problem();
+
+
     }
 }

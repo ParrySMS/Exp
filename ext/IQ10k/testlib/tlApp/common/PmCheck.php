@@ -17,9 +17,14 @@ class PmCheck
 
     public function __construct()
     {
-        // 判断magic_quotes_gpc状态
-            $_GET = $this->array_check($_GET);
-            $_POST = $this->array_check($_POST);
+        //默认检查
+        $_GET = $this->arrayCheck($_GET);
+        $_POST = $this->arrayCheck($_POST);
+        //部分前端加密数据
+        $get_body = $this->pmDecode($_GET);
+        $post_body = $this->pmDecode($_POST);
+        $_GET = $this->arrayCheck($get_body);
+        $_POST = $this->arrayCheck($post_body);
 //            $_COOKIE = $this->array_check($_COOKIE);
 //            $_FILES = $this->array_check($_FILES);
     }
@@ -31,7 +36,7 @@ class PmCheck
      * @param $str
      * @return mixed|string
      */
-    private function str_check($str)
+    private function strCheck($str)
     {
         $str = trim($str);
         $str = strip_tags($str);
@@ -55,7 +60,7 @@ class PmCheck
      * @param bool $intval 是否转为int
      * @return int|null
      */
-    private function num_check($num, $intval = false)
+    private function numCheck($num, $intval = false)
     {
         if (!is_numeric($num)) {
             return null;
@@ -68,15 +73,15 @@ class PmCheck
     }
 
 // 数组遍历过滤函数
-    private function array_check(&$array)
+    private function arrayCheck(&$array)
     {
         //如果是数组，遍历数组，递归调用
         if (is_array($array)) {
             foreach ($array as $k => $v) {
-                $array [$k] = $this->array_check($v);
+                $array [$k] = $this->arrayCheck($v);
             }
         } else if (is_string($array)) {
-            $array = $this->str_check($array);
+            $array = $this->strCheck($array);
         } else if (is_numeric($array)) {
             //不适用强制转换
 //            $array = intval($array);
@@ -99,7 +104,7 @@ class PmCheck
      * @param $array
      * @return array|string
      */
-   private function stripslashes_array(&$array)
+   private function stripslashesArray(&$array)
     {
         if (is_array($array)) {
             foreach ($array as $k => $v) {
@@ -110,6 +115,22 @@ class PmCheck
         }
         return $array;
     }
+
+    /** 前端传输的弱解密
+     * @param $params
+     * @return array|bool|string
+     */
+    public function pmDecode($params){
+        if(is_array($params)){
+            foreach ($params as $key => $p){
+                $params[$key] = base64_decode(base64_decode($p));
+            }
+        }else{
+            $params = base64_decode(base64_decode($params));
+        }
+        return $params;
+    }
+
 
 
 }

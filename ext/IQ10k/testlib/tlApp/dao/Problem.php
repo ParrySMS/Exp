@@ -15,11 +15,13 @@ class Problem extends BaseDao
     protected $table = DB_PREFIX . "_problem";
 
 
-//$problem_info = compact($problem, $option_num, $language, $classification, $proType, $proSource, $hint);
 
 
     public function insert(Array $problem_info, $ret_id = false)
     {
+
+        //problem_info = compact($problem, $option_num, $language, $classification, $proType, $proSource, $hint);
+
         $pdo = $this->database->insert($this->table, [
                 'problem' => $problem_info['problem'],
                 'option_num' => $problem_info['option_num'],
