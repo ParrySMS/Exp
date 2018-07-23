@@ -24,13 +24,14 @@ class Problem extends BaseDao
     public function insert(Array $problem_info, $ret_id = false)
     {
 
-        //problem_info = compact($problem, $option_num, $language, $classification, $proType, $proSource, $hint);
+//        problem_info = compact($problem, $option_num, $options,$answers,$language, $classification, $pro_type, $proSource, $hint);
 
         //插入 问题主体
         $pdo = $this->database->insert($this->table, [
             'problem' => $problem_info['problem'],
             'option_num' => $problem_info['option_num'],
             'options' => $problem_info['options'],
+            'answers' => $problem_info['answers'],
             'language' => $problem_info['language'],
             'classification' => $problem_info['classification'],
             'pro_type' => $problem_info['pro_type'],
@@ -48,7 +49,8 @@ class Problem extends BaseDao
         }
 
         //插入 问题提示
-        $pdo = $this->database->insert($this->table, [
+        $table_hint = DB_PREFIX.'_hint';
+        $pdo = $this->database->insert($table_hint, [
             'pid'=>$pid,
             'hint'=>$problem_info['hint'],
             'visible' => 1

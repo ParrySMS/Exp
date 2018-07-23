@@ -7,8 +7,7 @@
  */
 
 namespace tlApp\common;
-
-use Exception;
+use \Exception;
 
 
 class PmCheck

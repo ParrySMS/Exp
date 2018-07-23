@@ -24,7 +24,7 @@ class PostProblem extends BaseController
             $pm = new LogicPmCheck();
             $pm->ProInfoRegionCheck($problem_info);
 
-            //todo: 实现信息插入
+            // 实现信息插入
             $json =$this->postProblem($problem_info);
 
             if (!is_null($json)) {
@@ -46,11 +46,16 @@ class PostProblem extends BaseController
         }
     }
 
+    /** 实现信息插入
+     * @param array $problem_info
+     * @return Json
+     * @throws Exception
+     */
     public function postProblem(Array $problem_info)
     {
+
         $pro = new Problem();
         return  $pro->post($problem_info);
-
 
     }
 }

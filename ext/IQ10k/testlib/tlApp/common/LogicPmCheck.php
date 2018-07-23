@@ -14,6 +14,9 @@ class LogicPmCheck extends PmCheck
 
     public function ProInfoRegionCheck(Array $problem_info)
     {
+        //todo: 部分参数的空检查
+        //
+
         //参数逻辑检查
         $region_lang = json_decode(PM_REGION_LANG_JSON);
         if(!in_array($problem_info['language'], $region_lang)){
