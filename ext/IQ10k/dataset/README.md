@@ -60,8 +60,8 @@
 
 ## 问题
 
-#### 已查阅 logic-C,logic-E，
-#### 未处理 -> {seq，verbal-C, verbal-CE, verbal-E}
+#### 已查阅 logic-C,logic-E，verbal-C,verbal-E, verbal-CE
+#### 未处理 -> {seq后半部分}
 
 0.xml标签不对齐
 ```xml
@@ -269,7 +269,46 @@
 			An+1=An*n+1
 		</Hint>
 	</Data>
+	
+	
+	
+	<Data>
+    		<Problem>
+    			喜乐  之于  （  ）  相当于  （  ）  之于  美德
+    		</Problem>
+    		<Option>
+    			<A>快乐 伦理
+    			<B>情绪 诚信
+    			<C>后悔 丑恶
+    			<D>健康 心理
+    		</Option>
+    		<Answer>
+    			情绪 诚信
+    		</Answer>
+    		<Classification>
+    			verbal
+    		</Classification>
+    		<Hint>
+    			function Belong
+    			43. Q@ $ @ && @ $
+    		<Option>
+    			<A>$ @ $ && $ @
+    			<B>& $ & @ @ & @
+    			<C>@ && $ $ @ @
+    			<D>@ $ @ @ && $
+    		</Option>
+    		<Answer>
+    			$ @ $ && $ @
+    		</Answer>
+    		<Classification>
+    			verbal
+    		</Classification>
+    		<Hint>
+    			第一、三、六位置上是相同符号，二、七位置上符号相同，四、五位置上符号相同
+    		</Hint>
+    	</Data>
 ```
+
 
 ---------------
 
@@ -289,7 +328,7 @@
 
 ---------------
 ``
-7.选项内容丢失
+7.题目、选项标签、题号标签以及内容、答案 部分丢失
 
 ```xml
 <Option>
@@ -299,12 +338,62 @@
     <D>
 </Option>
 
-<Option>
+        <Option>
 			<A>
 			<B>1
 			<C>-1
 			<D>-1
 		</Option>
+		
+		
+		 <Data>
+        		<Problem>
+        			科学:技术（　　）
+        		</Problem>
+        		<Answer>
+        			<!--丢失-->
+        		</Answer>
+        		<Classification>
+        			verbal
+        		</Classification>
+        		<Hint>
+        			Function()
+        		</Hint>
+        </Data>
+        
+        
+        
+         <Data>
+        		<Problem>
+        			<!--丢失-->
+        		</Problem>
+        			<!--选项丢失-->
+
+        		<Answer>
+        			<!--丢失-->
+        		</Answer>
+        		<Classification>
+        			verbal
+        		</Classification>
+        		<Hint>
+        			function
+        		</Hint>
+        	</Data>
+```
+
+```xml
+	<Problem>
+			沙粒之于真猪，相当于（）之于（）
+		</Problem>
+		<Option>
+			<A>松脂:琥珀　　
+			<B>恐龙:化石　　
+			<C>珊瑚:珊瑚礁　　
+			<D>玻璃:水晶
+		</Option>
+		<Answer>
+			
+		</Answer>
 ```
 
 
@@ -548,6 +637,13 @@
 	</Data>
 	
 	
+	
+        <Option>
+			<A>凡?高——呐喊　　　
+			<B>尼采——子夜　　
+			<C>拉斐尔——茶馆　　　　
+			<D>但丁——祝福
+		</Option>	
 ```
 
 ----------------
@@ -907,6 +1003,133 @@
 ```
 
 -------------
+25. 数学公式表达有歧义
+
+```xml
+        <Problem>
+			日环食之于日全食，相当于2πR之于（）
+		</Problem>
+		<Answer>
+			PIR2
+	        <!--平方的表达不好-->
+		</Answer>
+```
+
+--------------
+26.题目部分缺失 导致逻辑不明
+
+```xml
+		<Problem>
+			30之于月，相当于之于（）
+		</Problem>
+		<Answer>
+			星期
+		</Answer>
+		
+		
+		
+		<Problem>
+			，之于。，相当于45之于（）
+		</Problem>
+		<Answer>
+			90
+		</Answer>		
+		
+
+```
+
+---------------
+
+27.`<Hint>`中出现多余内容`
+```xml
+        <Hint>
+			function cause(phenomenon)
+			Classification
+		</Hint> 
+```
+
+---------------
+28. `<Classification>`中出现其他标签导致错乱
+
+```xml
+        <Classification>
+			verbal
+		</Answer>
+		<Classification>
+			verbal
+		</Classification>
+
+```
+
+---------------
+29. `<Problem>`标签里的问号`?` 位置错误
+```xml
+		<Problem>
+			根据下面这些数字的规律，问号代表什么数字呢？
+			4 7 3 8 9 2
+			9 0 2 5 1
+			5 1 6 3 5 9
+		</Problem>
+
+```
+
+---------------
+
+30. `<Hint>`标签出现多余数字
+
+```xml
+ <Data>
+		<Problem>
+			醋:酸
+		</Problem>
+		<Option>
+			<A>叶:绿
+			<B>花:红
+			<C>雪:白
+			<D>雨:涝
+		</Option>
+		<Answer>
+			C
+		</Answer>
+		<Classification>
+			verbal
+		</Classification>
+		<Hint>
+			C。根据题干，醋是酸的，雪是白的。而叶不一定是绿的，花也不一定都是红的，雨也不一定都会造成水涝灾害。故选C。
+			1
+		</Hint>
+	</Data>
+
+```
+
+--------------
+31. 缺失若干标签 只有一个hint
+```xml
+<Data>
+		<Problem>
+			因此没有所谓的强弱之分。故不选。
+			1
+		</Hint>
+</Data>
+```
+
+
+-----------------------
+32. 选项中有多余的空格
+
+```xml
+    <Option>
+			<A>食 物
+			<B>储 藏 罐
+			<C>绘画风格
+			<D>木 材
+			<E>纺 织 品
+		</Option>
+```
+
+
+
+
 
 ## 待修复
 
