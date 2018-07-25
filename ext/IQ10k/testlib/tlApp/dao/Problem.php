@@ -25,13 +25,13 @@ class Problem extends BaseDao
     {
 
 //        problem_info = compact($problem, $option_num, $options,$answers,$language, $classification, $pro_type, $proSource, $hint);
-
+//        problem_info 加多了两个 $problem_info['options_json'], $problem_info['answers_json'],
         //插入 问题主体
         $pdo = $this->database->insert($this->table, [
             'problem' => $problem_info['problem'],
             'option_num' => $problem_info['option_num'],
-            'options' => $problem_info['options'],
-            'answers' => $problem_info['answers'],
+            'options' => $problem_info['options_json'],
+            'answers' => $problem_info['answers_json'],
             'language' => $problem_info['language'],
             'classification' => $problem_info['classification'],
             'pro_type' => $problem_info['pro_type'],

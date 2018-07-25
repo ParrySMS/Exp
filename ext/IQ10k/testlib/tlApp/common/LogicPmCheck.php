@@ -11,7 +11,7 @@ namespace tlApp\common;
 
 class LogicPmCheck extends PmCheck
 {
-    private $allow_null_array = true;
+    private $allow_null_array = false;
     private $allow_null_params = false;
 
     public function ProInfoRegionCheck(Array $problem_info)

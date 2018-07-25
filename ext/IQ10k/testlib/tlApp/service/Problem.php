@@ -26,7 +26,12 @@ class Problem extends BaseService
      * @throws \Exception
      */
     public function post(Array $problem_info){
-        //problem_info = compact($problem, $option_num, $language, $classification, $proType, $proSource, $hint);
+//
+//      problem_info = compact($problem, $option_num, $options, $answers, $language, $classification, $pro_type, $proSource, $hint);
+
+        //把数组json化
+        $problem_info['options_json'] = json_encode($problem_info['options']);
+        $problem_info['answers_json'] = json_encode($problem_info['answers']);
 
         $dao = new \tlApp\dao\Problem();
         $pid = $dao->insert($problem_info,true);
