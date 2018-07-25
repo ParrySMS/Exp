@@ -24,7 +24,7 @@ class Problem extends BaseDao
     public function insert(Array $problem_info, $ret_id = false)
     {
 
-//        problem_info = compact($problem, $option_num, $options,$answers,$language, $classification, $pro_type, $proSource, $hint);
+//        problem_info = compact($problem, $option_num, $options,$answers,$language, $classification, $pro_type, $pro_source, $hint);
 //        problem_info 加多了两个 $problem_info['options_json'], $problem_info['answers_json'],
         //插入 问题主体
         $pdo = $this->database->insert($this->table, [
@@ -49,17 +49,20 @@ class Problem extends BaseDao
         }
 
         //插入 问题提示
-        $table_hint = DB_PREFIX.'_hint';
-        $pdo = $this->database->insert($table_hint, [
-            'pid'=>$pid,
-            'hint'=>$problem_info['hint'],
-            'visible' => 1
+        if(!empty($problem_info['hint'])) {
 
-        ]);
+            $table_hint = DB_PREFIX . '_hint';
+            $pdo = $this->database->insert($table_hint, [
+                'pid' => $pid,
+                'hint' => $problem_info['hint'],
+                'visible' => 1
 
-        $hid = $this->database->id();
-        if (!is_numeric($hid) || $hid < 1) {
-            throw new Exception(__FUNCTION__ . ' hid error', 500);
+            ]);
+
+            $hid = $this->database->id();
+            if (!is_numeric($hid) || $hid < 1) {
+                throw new Exception(__FUNCTION__ . ' hid error', 500);
+            }
         }
 
         return $ret_id === false ? null : $pid;

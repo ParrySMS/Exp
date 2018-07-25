@@ -19,10 +19,9 @@ class PostProblem extends BaseController
     public function __construct(Array $problem_info)
     {
         try {
-
             //参数逻辑检查
             $pm = new LogicPmCheck();
-            //todo 图片处理部分 临时开启 允许选项和回答的空数组
+            //todo 图片处理部分 临时开启选项和回答的空数组
             $pm->setAllowNullArray(true);
             $pm->ProInfoRegionCheck($problem_info);
 

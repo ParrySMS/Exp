@@ -14,16 +14,19 @@ class PmCheck
 {
 
 
-    public function __construct()
+    public function __construct($is_encode = false)
     {
-        //默认检查
-        $_GET = $this->arrayCheck($_GET);
-        $_POST = $this->arrayCheck($_POST);
-        //部分前端加密数据
-        $get_body = $this->pmDecode($_GET);
-        $post_body = $this->pmDecode($_POST);
-        $_GET = $this->arrayCheck($get_body);
-        $_POST = $this->arrayCheck($post_body);
+        if($is_encode == false) {
+            //默认检查
+            $_GET = $this->arrayCheck($_GET);
+            $_POST = $this->arrayCheck($_POST);
+        }else {
+            //部分前端加密数据
+            $get_body = $this->pmDecode($_GET);
+            $post_body = $this->pmDecode($_POST);
+            $_GET = $this->arrayCheck($get_body);
+            $_POST = $this->arrayCheck($post_body);
+        }
 //            $_COOKIE = $this->array_check($_COOKIE);
 //            $_FILES = $this->array_check($_FILES);
     }
@@ -35,7 +38,7 @@ class PmCheck
      * @param $str
      * @return mixed|string
      */
-    private function strCheck($str)
+    protected function strCheck($str)
     {
         $str = trim($str);
         $str = strip_tags($str);
@@ -59,7 +62,7 @@ class PmCheck
      * @param bool $intval 是否转为int
      * @return int|null
      */
-    private function numCheck($num, $intval = false)
+    protected function numCheck($num, $intval = false)
     {
         if (!is_numeric($num)) {
             return null;
@@ -72,7 +75,7 @@ class PmCheck
     }
 
 // 数组遍历过滤函数
-    private function arrayCheck(&$array)
+    protected function arrayCheck(&$array)
     {
         //如果是数组，遍历数组，递归调用
         if (is_array($array)) {
@@ -93,7 +96,7 @@ class PmCheck
      * @param $sql_str
      * @return bool
      */
-   private function hasInject($sql_str)
+   protected function hasInject($sql_str)
     {
         $num = preg_match('/select|insert|update|delete|\'|\/\*|\*|\.\.\/|\.\/|UNION|into|load_file|outfile/', $sql_str);
         return ($num == 0) ? false : true;
@@ -103,7 +106,7 @@ class PmCheck
      * @param $array
      * @return array|string
      */
-   private function stripslashesArray(&$array)
+   protected function stripslashesArray(&$array)
     {
         if (is_array($array)) {
             foreach ($array as $k => $v) {
