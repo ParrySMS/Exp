@@ -7,6 +7,7 @@
  */
 
 namespace tlApp\common;
+
 use \Exception;
 
 class LogicPmCheck extends PmCheck
@@ -17,7 +18,7 @@ class LogicPmCheck extends PmCheck
     public function ProInfoRegionCheck(Array $problem_info)
     {
 //        problem_info = compact($problem, $option_num, $options, $answers, $language, $classification, $pro_type, $pro_source, $hint);
-        if (sizeof($problem_info) == 0 ) {
+        if (sizeof($problem_info) == 0) {
             throw new \Exception("problem_info array null", 400);
         }
 
@@ -39,23 +40,32 @@ class LogicPmCheck extends PmCheck
                     }
                     break;
 
+                //非空参数
                 case 'option_num':
+                    //检查空 排除掉0的特殊情况
+                    if ($value != 0 && empty($value) && !$this->isAllowNullParams()) {
+                        throw new Exception("$key null", 400);
+                    }
+                    break;
+
                 case 'problem':
                 case 'language':
                 case 'classification':
                 case 'pro_type':
                 case 'pro_source':
-                //索引不存在
+                    //检查空
                     if (empty($value) && !$this->isAllowNullParams()) {
                         throw new Exception("$key null", 400);
                     }
                     break;
-                //允许空
+
+                //允许空的参数
                 case 'hint':
                     break;
-                default:
-                        throw new Exception("$key invaild", 400);
-                        break;
+
+                default://索引不存在
+                    throw new Exception("$key invaild", 400);
+                    break;
             }
         }
 

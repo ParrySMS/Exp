@@ -21,7 +21,7 @@ class Json
      * @param $retmsg
      * @param int $retcode
      */
-    public function __construct( $retmsg = null, $retdata = null,$retcode = 200200)
+    public function __construct( $retmsg = MSG_ACTION_SUCCESS, $retdata = null , $retcode = 200200)
     {
         $this->retmsg = $retmsg;
         $this->retdata = $retdata;
