@@ -38,7 +38,7 @@ class Problem extends BaseDao
             'pro_source' => $problem_info['pro_source'],
             'time' => date('Y-m-d H:i:s'),
             'lastest' => date('Y-m-d H:i:s'),
-            'total' => 0,
+            'total_edit' => 0,
             'visible' => 1
         ]);
 

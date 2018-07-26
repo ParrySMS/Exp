@@ -31,7 +31,7 @@ class LogicPmCheck extends PmCheck
                 case 'options':
                 case 'answers':
                     //类型检查
-                    if (!is_array($value)) {
+                    if (!is_array($value) && !$this->isAllowNullArray()) {
                         throw new \Exception("$key is not array", 400);
                     }
                     //空数组
