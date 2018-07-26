@@ -45,7 +45,7 @@ try {
     }
      */
     //解析结果
-    $res_obj = json_decode($res,true);
+    $res_obj = json_decode($res);
     if($res_obj->retcode != 200200){
         throw new Exception($res_obj->retmsg,$res_obj->retcode);
     }
@@ -74,11 +74,11 @@ try {
 <h2><? echo isset($msg)?$msg:'error' ?></h2>
 <h1>新添加的题目id为： <strong style="color: #9b0000"> <?php echo isset($pid)?$pid:'error'; ?> </strong> </h1>
 <br/>
-<h3>题目中的题图，命名格式为 id-t，例如 <?php echo isset($pid)?$pid:'error'; ?>-A</h3>
+<h3>题目中的题图，根据上面网页给的id，命名格式为 id-t，例如 <?php echo isset($pid)?$pid:'error'; ?>-t</h3>
 <h3>如果题目有多张图，在保证清晰的情况下，将多张图片上下连接变成一张图片</h3>
     <br/>
-<h3>切分出每个选项的图，命名格式为 id-小写选项，例如 <?php echo isset($pid)?$pid:'error'; ?>-a</h3>
-<h3> 如果有一个包含四选项的大图，命名格式为 id-0，例如 <?php echo isset($pid)?$pid:'error'; ?>-0</h3>
+<h3>切分出每个选项的图，根据上面网页给的id，命名格式为 id-小写选项，例如 <?php echo isset($pid)?$pid:'error'; ?>-a</h3>
+<h3> 如果有一个包含四选项的大图，根据上面网页给的id，命名格式为 id-0，例如 <?php echo isset($pid)?$pid:'error'; ?>-0</h3>
 
 
 
