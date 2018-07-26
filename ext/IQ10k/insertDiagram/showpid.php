@@ -74,7 +74,7 @@ try {
 <h2><? echo isset($msg)?$msg:'error' ?></h2>
 <h1>新添加的题目id为： <strong style="color: #9b0000"> <?php echo isset($pid)?$pid:'error'; ?> </strong> </h1>
 <br/>
-<h3>题目中的题图，命名格式为 id-t，例如 <?php echo isset($pid)?$pid:'error'; ?> -A</h3>
+<h3>题目中的题图，命名格式为 id-t，例如 <?php echo isset($pid)?$pid:'error'; ?>-A</h3>
 <h3>如果题目有多张图，在保证清晰的情况下，将多张图片上下连接变成一张图片</h3>
     <br/>
 <h3>切分出每个选项的图，命名格式为 id-小写选项，例如 <?php echo isset($pid)?$pid:'error'; ?>-a</h3>
