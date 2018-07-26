@@ -37,15 +37,20 @@ class Problem extends BaseDao
             'pro_type' => $problem_info['pro_type'],
             'pro_source' => $problem_info['pro_source'],
             'time' => date('Y-m-d H:i:s'),
-            'lastest' => date('Y-m-d H:i:s'),
+            'latest' => date('Y-m-d H:i:s'),
             'total_edit' => 0,
             'visible' => 1
+
         ]);
 
 
         $pid = $this->database->id();
         if (!is_numeric($pid) || $pid < 1) {
+//            var_dump($problem_info);
+//            var_dump($pid);
+//            var_dump( $this->database->error() );
             throw new Exception(__FUNCTION__ . ' pid error', 500);
+
         }
 
         //插入 问题提示

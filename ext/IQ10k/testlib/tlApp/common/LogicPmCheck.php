@@ -15,6 +15,8 @@ class LogicPmCheck extends PmCheck
     private $allow_null_array = false;
     private $allow_null_params = false;
 
+    private $problem_info;
+
     public function ProInfoRegionCheck(Array $problem_info)
     {
 //        problem_info = compact($problem, $option_num, $options, $answers, $language, $classification, $pro_type, $pro_source, $hint);
@@ -72,21 +74,32 @@ class LogicPmCheck extends PmCheck
         //参数逻辑检查
 
         //整数检查
-//        if($this->numCheck($problem_info['option_num'])===null){
-//            throw new Exception('option_num: ' . $problem_info['option_num'] . ' type error', 400);
-//        }
-//
-//        $region_lang = json_decode(PM_REGION_LANG_JSON);
-//        if (!in_array($problem_info['language'], $region_lang)) {
-//            throw new Exception('language: ' . $problem_info['language'] . ' not in region', 400);
-//        }
-//
-//        $region_type = json_decode(PM_REGION_PROTYPE_JSON);
-//        if (!in_array($problem_info['pro_type'], $region_type)) {
-//            throw new Exception('proType: ' . $problem_info['language'] . ' not in region', 400);
-//        }
+        if($this->numCheck($problem_info['option_num'])===null){
+            throw new Exception('option_num: ' . $problem_info['option_num'] . ' type error', 400);
+        }
+
+        $region_lang = json_decode(PM_REGION_LANG_JSON);
+        if (!in_array($problem_info['language'], $region_lang)) {
+            throw new Exception('language: ' . $problem_info['language'] . ' not in region', 400);
+        }
+
+        $region_type = json_decode(PM_REGION_PROTYPE_JSON);
+        if (!in_array($problem_info['pro_type'], $region_type)) {
+            throw new Exception('proType: ' . $problem_info['language'] . ' not in region', 400);
+        }
+
+        $this->problem_info = $problem_info;
 
     }
+
+    /**
+     * @return mixed
+     */
+    public function getProblemInfo()
+    {
+        return $this->problem_info;
+    }
+
 
     /**
      * @return bool
