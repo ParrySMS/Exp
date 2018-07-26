@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"/>
+    <meta name="keywords" content="diagram 题目录入"/>
+    <meta name="description" content="题目录入的页面"/>
+    <meta name="author" content="blackturtle"/>
+    <title>diagram 题目录入</title>
+    <style type="text/css">
+
+        body {
+            margin: 0;
+        }
+
+        a {
+            display: block;
+            text-decoration: none;
+            color: rgba(22, 155, 213, 0.55);
+        }
+
+        .upfilebox input {
+            top: 5px;
+            left: 2%;
+            float: left;
+            line-height: 0px;
+            width: 90%;
+            position: absolute;
+            z-index: 9;
+            opacity: 0.6;
+        }
+
+        button {
+            border-style: none;
+        }
+
+        textarea {
+            padding: 0;
+        }
+
+        textarea:focus {
+            outline-style: none;
+            box-shadow: 1px 2px 5px #888888;
+        }
+
+        .header {
+            height: 3rem;
+            margin: 0;
+        }
+
+        .back2index {
+            float: left;
+            margin-top: 0.8rem;
+            margin-left: 1.2rem;
+            font-size: 20px;
+        }
+
+        .my_publish {
+            float: right;
+            margin-top: 0.8rem;
+            margin-right: 1.2rem;
+            font-size: 20px;
+        }
+
+        .middle {
+            margin-top: 1.6rem;
+            margin-left: 0.6rem;
+            margin-right: 0.6rem;
+        }
+
+        .nameOf {
+            height: 4.1rem;
+        }
+
+        .middle_left {
+            height: 4.0rem;
+            width: 30%;
+            float: left;
+            color: #9b0000;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+
+        .middle_left span {
+            display: block;
+            font-size: 1rem;
+        }
+
+        .middle_right {
+            width: 70%;
+            float: left;
+        }
+
+        .name textarea {
+            width: 100%;
+            height: 1.4rem;
+            font-size: 1.2rem;
+        }
+
+        .name button {
+            width: 100%;
+            height: 1.8rem;
+            font-size: 1rem;
+            margin-top: 0.5rem;
+            background-color: #169BD5;
+            color: white;
+            border-radius: 6px;
+        }
+
+        .basic_description {
+            margin-top: 0.7rem;
+            height: 4.1rem;
+        }
+
+        .description {
+            height: 3.6rem;
+        }
+
+        .description textarea {
+            width: 100%;
+            height: 100%;
+            font-size: 1.2rem;
+        }
+
+        .other {
+            height: 5rem;
+            margin-top: 0.7rem;
+        }
+
+        .other_description {
+            height: 5.1rem;
+        }
+
+        .other_description textarea {
+            height: 100%;
+            width: 100%;
+            font-size: 1.2rem;
+        }
+
+        .contact {
+            margin-top: 1.5rem;
+            margin-bottom: 5.5rem;
+            text-align: center;
+        }
+
+        .contact > label {
+            color: #999999;
+        }
+
+        .phone_contact {
+            margin-top: 0.8rem;
+            height: 1.8rem;
+        }
+
+        .contact_left {
+            width: 30%;
+            float: left;
+            font-size: 1.2rem;
+            color: #169BD5;
+        }
+
+        .contact_right {
+            width: 65%;
+            float: left;
+            font-size: 1.2rem;
+            height: 1.4rem;
+        }
+
+        .weichat_contact {
+            margin-top: 0.7rem;
+            height: 1.8rem;
+        }
+
+        .bottom_button {
+            margin-top: 2rem;
+            width: 16rem;
+            height: 1.8rem;
+            font-size: 1rem;
+            background-color: #8d0000;
+            color: white;
+            border-radius: 6px;
+        }
+
+        .bottom_explanation {
+            display: block;
+            color: #999999;
+        }
+    </style>
+
+    <script type="text/javascript">
+    </script>
+</head>
+<body>
+<!--头部-->
+<!--<nav class="header">-->
+<!--<p class="back2index" >默认英文题目</p>-->
+<!--<a href="./form_zh.html" class="back2index">切换至中文</a>-->
+<!--&lt;!&ndash;<a href="" class="my_publish">我的发布</a>&ndash;&gt;-->
+<!--</nav>-->
+
+
+<!--中间内容-->
+<form class="middle" action="./showpid.php" method="post">
+
+    <h2>diagram 题目录入</h2>
+
+
+    <!--分割线-->
+    <hr color=#c0000 size=1
+                style="clear: both; margin: 0rem 1rem 0rem 1rem"/>
+    <br/>
+
+    <!--语言种类-->
+    <div class="nameOf">
+        <label class="middle_left">语言种类<span>( 中文zh 英文en <br/> 混杂multi 纯数字all )</span>
+        </label>
+        <div class="middle_right name">
+            <!--类型选项-->
+            <label for="e1"><input type="radio" id="e1" name="language" checked="checked"
+                                   value="zh"/>中文</label>&nbsp;
+
+            <label for="e2"><input type="radio" id="e2" name="language"
+                                   value="en"/>英文</label>&nbsp;
+
+            <label for="e3"><input type="radio" id="e3" name="language"
+                                   value="multi"/>中英混杂</label>&nbsp;
+
+            <label for="e4"><input type="radio" id="e4" name="language"
+                                   value="all"/>纯数字无语言</label>&nbsp;
+        </div>
+    </div>
+    <br/>
+
+
+    <!--分割线-->
+    <hr color=#c0000 size=1
+        style="clear: both; margin: 0rem 1rem 0rem 1rem"/>
+    <br/>
+
+    <!--题目-->
+    <div class="nameOf">
+        <label class="middle_left">题目<span></span>
+        </label>
+        <div class="middle_right description">
+            <textarea name="problem" placeholder=" (复制题目文字 注意要去除掉不正常的换行和空格)"></textarea>
+        </div>
+    </div>
+    <br/>
+
+    <!--分割线-->
+    <hr color=#c0000 size=1
+        style="clear: both; margin: 0rem 1rem 0rem 1rem"/>
+    <br/>
+
+
+    <!--选项数量-->
+    <div class="nameOf">
+        <label class="middle_left">选项数量<span> （无选项则改成 0 <br/> 选项数不为4则自行修改）</span>
+        </label>
+        <div class="middle_right name">
+            <textarea name="option_num" placeholder="">4</textarea>
+        </div>
+    </div>
+    <br/>
+
+    <!--分割线-->
+    <hr color=#c0000 size=1
+        style="clear: both; margin: 0rem 1rem 0rem 1rem"/>
+    <br/>
+
+
+    <!--答案-->
+    <div class="nameOf">
+        <label class="middle_left">答案<span>（填ABCD）</span>
+        </label>
+        <div class="middle_right name">
+            <textarea name="answers" placeholder=" 如果是多个答案 单独另外存起来 先不录入"></textarea>
+        </div>
+    </div>
+
+    <!--分割线+换行-->
+    <hr color=#c0000 size=1
+        style="clear: both; margin: 0rem 1rem 0rem 1rem"/>
+    <br/>
+
+
+    <!--问题提示-->
+    <div class="basic_description">
+        <label class="middle_left">问题提示<span></span></label>
+        <div class="middle_right description">
+            <textarea name="hint" placeholder=" (复制提示文字 注意要去除掉不正常的换行和空格)"></textarea>
+        </div>
+    </div>
+    <br/>
+
+    <!--分割线+换行-->
+    <hr color=#c0000 size=1
+        style="clear: both; margin: 0rem 1rem 0rem 1rem"/>
+    <br/>
+
+
+    <!--Classification类目-->
+    <div class="nameOf">
+        <label class="middle_left">Classification类目<span></span>
+        </label>
+        <div class="middle_right name">
+            <textarea name="classification" placeholder="">diagram</textarea>
+        </div>
+    </div>
+
+    <!--分割线+换行-->
+    <hr color=#c0000 size=1
+        style="clear: both; margin: 0rem 1rem 0rem 1rem"/>
+    <br/>
+
+    <!--题目类型-->
+    <div class="nameOf">
+        <label class="middle_left">题目类型<span>默认单选</span>
+        </label>
+        <!--选项-->
+        <div class="middle_right name">
+            <!--类型选项-->
+            <label for="t1"><input type="radio" id="t1" name="pro_type" checked="checked"
+                                   value="exclusive choice"/> 单选题 </label>&nbsp;
+
+            <label for="t2"><input type="radio" id="t2" name="pro_type"
+                                   value="multiple choice"/> 多选题 </label>&nbsp;
+
+            <label for="t3"><input type="radio" id="t3" name="pro_type"
+                                   value="exclusive fill"/> 单项填空 </label>&nbsp;
+
+            <label for="t4"><input type="radio" id="t4" name="pro_type"
+                                   value="multiple fill"/> 多项填空 </label>&nbsp;
+
+            <label for="t5"><input type="radio" id="t5" name="pro_type"
+                                   value="short answer"/> 简答题 </label>&nbsp;
+        </div>
+    </div>
+
+
+    <!--分割线+换行-->
+    <hr color=#c0000 size=1
+        style="clear: both; margin: 0rem 1rem 0rem 1rem"/>
+    <br/>
+
+    <!--来源文件-->
+    <div class="nameOf">
+        <label class="middle_left">来源文件<span></span>
+        </label>
+        <div class="middle_right name">
+            <textarea name="pro_source" placeholder="">diagram</textarea>
+        </div>
+    </div>
+    <br/>
+
+    <!--分割线+换行-->
+    <hr color=#c0000 size=1
+        style="clear: both; margin: 0rem 1rem 0rem 1rem"/>
+
+    <!--联系方式-->
+    <div class="contact">
+        <button name="" class="bottom_button" type="submit">上传提交题目</button>
+
+    </div>
+
+</form>
+</body>
+</html>
