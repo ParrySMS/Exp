@@ -78,7 +78,8 @@ try {
 <h3>如果题目有多张图，在保证清晰的情况下，将多张图片上下连接变成一张图片</h3>
     <br/>
 <h3>切分出每个选项的图，根据上面网页给的id，命名格式为 id-小写选项，例如 <?php echo isset($pid)?$pid:'error'; ?>-a</h3>
-<h3> 如果有一个包含四选项的大图，根据上面网页给的id，命名格式为 id-0，例如 <?php echo isset($pid)?$pid:'error'; ?>-0</h3>
+<h3> 如果有一个包含全部选项的大图，根据上面网页给的id，命名格式为 id-0，例如 <?php echo isset($pid)?$pid:'error'; ?>-0</h3>
+<h3> 如果有一个包含题目+全部选项的大图，根据上面网页给的id，命名格式为 id-1，例如 <?php echo isset($pid)?$pid:'error'; ?>-1</h3>
 
 
 

@@ -212,9 +212,41 @@
     <br/>
 
 
+
+    <!--题目类型-->
+    <div class="nameOf">
+        <label class="middle_left">题目类型<span>默认单选</span>
+        </label>
+        <!--选项-->
+        <div class="middle_right name">
+            <!--类型选项-->
+            <label for="t1"><input type="radio" id="t1" name="pro_type" checked="checked"
+                                   value="exclusive choice"/> 单选题 </label>&nbsp;
+
+            <!--<label for="t2"><input type="radio" id="t2" name="pro_type"-->
+            <!--value="multiple choice"/> 多选题 </label>&nbsp;-->
+
+            <label for="t3"><input type="radio" id="t3" name="pro_type"
+                                   value="exclusive fill"/> 单项填空 </label>&nbsp;
+
+            <!--<label for="t4"><input type="radio" id="t4" name="pro_type"-->
+            <!--value="multiple fill"/> 多项填空 </label>&nbsp;-->
+
+            <!--<label for="t5"><input type="radio" id="t5" name="pro_type"-->
+            <!--value="short answer"/> 简答题 </label>&nbsp;-->
+        </div>
+    </div>
+
+
+    <!--分割线+换行-->
+    <hr color=#c0000 size=1
+        style="clear: both; margin: 0rem 1rem 0rem 1rem"/>
+    <br/>
+
+
     <!--题目-->
     <div class="nameOf">
-        <label class="middle_left">题目<span></span>
+        <label class="middle_left">题目<span>必填</span>
         </label>
         <div class="middle_right description">
             <textarea name="problem" placeholder=" (复制题目文字 不要题号 注意要去除掉不正常的换行和空格)"></textarea>
@@ -230,7 +262,7 @@
 
     <!--选项数量-->
     <div class="nameOf">
-        <label class="middle_left">选项数量<span> （无选项则改成 0 <br/> 选项数不为4则自行修改）</span>
+        <label class="middle_left">选项数量(默认是4)<span> （无选项则改成 0 <br/> 选项数不为4则自行修改）</span>
         </label>
         <div class="middle_right name">
             <textarea name="option_num" placeholder="">4</textarea>
@@ -246,12 +278,13 @@
 
     <!--答案-->
     <div class="nameOf">
-        <label class="middle_left">答案<span>（填小写abcd）</span>
+        <label class="middle_left">答案<span>（填小写abcd<br/>或单项填空的答案）</span>
         </label>
         <div class="middle_right name">
-            <textarea name="answers" placeholder=" 如果是多个答案 单独另外存起来 先不录入"></textarea>
+            <textarea name="answers" placeholder=" 只录入选项为图片的单项题，和题目有文字+图片的单项填空题，其他类型的题目 单独用word另外存起来 先不录入"></textarea>
         </div>
     </div>
+    <br/>
 
     <!--分割线+换行-->
     <hr color=#c0000 size=1
@@ -303,13 +336,12 @@
     <br/>
 
 
-
     <!--Classification类目-->
     <div class="nameOf">
         <label class="middle_left">Classification类目<span></span>
         </label>
         <div class="middle_right name">
-            <textarea name="classification" placeholder="">diagram</textarea>
+            <textarea name="classification" placeholder=""></textarea>
         </div>
     </div>
 
@@ -318,35 +350,7 @@
         style="clear: both; margin: 0rem 1rem 0rem 1rem"/>
     <br/>
 
-    <!--题目类型-->
-    <div class="nameOf">
-        <label class="middle_left">题目类型<span>默认单选</span>
-        </label>
-        <!--选项-->
-        <div class="middle_right name">
-            <!--类型选项-->
-            <label for="t1"><input type="radio" id="t1" name="pro_type" checked="checked"
-                                   value="exclusive choice"/> 单选题 </label>&nbsp;
 
-            <label for="t2"><input type="radio" id="t2" name="pro_type"
-                                   value="multiple choice"/> 多选题 </label>&nbsp;
-
-            <label for="t3"><input type="radio" id="t3" name="pro_type"
-                                   value="exclusive fill"/> 单项填空 </label>&nbsp;
-
-            <label for="t4"><input type="radio" id="t4" name="pro_type"
-                                   value="multiple fill"/> 多项填空 </label>&nbsp;
-
-            <label for="t5"><input type="radio" id="t5" name="pro_type"
-                                   value="short answer"/> 简答题 </label>&nbsp;
-        </div>
-    </div>
-
-
-    <!--分割线+换行-->
-    <hr color=#c0000 size=1
-        style="clear: both; margin: 0rem 1rem 0rem 1rem"/>
-    <br/>
 
     <!--来源文件-->
     <div class="nameOf">
