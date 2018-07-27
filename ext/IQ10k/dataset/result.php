@@ -159,7 +159,7 @@ function EchoTd($table, $datas, $size)
 
         $data = getTr($database, $table);
         echo '<table border="1">';
-        EchoTr(sizeof($field_list));
+        echoTr(sizeof($field_list));
         EchoTd($table, $data,sizeof($field_list));
         echo '</table>';
     }
