@@ -46,6 +46,11 @@ try {
      */
     //解析结果
     $res_obj = json_decode($res);
+
+    if(!is_object($res_obj)){
+        throw new Exception('http响应异常',500);
+    }
+	
     if($res_obj->retcode != 200200){
         throw new Exception($res_obj->retmsg,$res_obj->retcode);
     }
