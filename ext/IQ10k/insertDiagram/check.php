@@ -63,10 +63,12 @@ try {
     if (isset($data['visible'])) {
         $status = $data['visible'] == 1 ? '合理' : '存疑';
     }
+    //TODO 先机器筛选 --> 去除Q标签 检查误填入classification的提示
 
     //todo 展示题目图片 展示选项图片
     //todo 添加不合理原因
     //todo  (可以筛选完之后再弄)编辑框
+    //todo 机器处理 转成英文
 
 
 } catch (Exception $e) {
