@@ -63,7 +63,6 @@ try {
     if (isset($data['visible'])) {
         $status = $data['visible'] == 1 ? '合理' : '存疑';
     }
-    //TODO 先机器筛选 --> 去除Q标签 检查误填入classification的提示
 
     //todo 展示题目图片 展示选项图片
     //todo 添加不合理原因
@@ -125,26 +124,26 @@ function getData($id, DB $db)
 <table border="1">
     <tr>
         <th>id</th>
+        <th>题型</th>
         <th>题目</th>
-        <th>选项数量</th>
-        <th>提示</th>
         <th>答案</th>
+        <th>提示</th>
+        <th>选项数量</th>
         <th>Classification</th>
         <th>语言</th>
-        <th>题型</th>
 
 
 
     </tr>
     <tr>
         <td><?php echo isset($data['id'])?$data['id']:'error'?></td>
+        <td><?php echo isset($data['pro_type'])?$data['pro_type']:'error' ?></td>
         <td><?php echo isset($data['problem'])?$data['problem']:'error' ?></td>
-        <td><?php echo isset($data['option_num'])?$data['option_num']:'error' ?></td>
-        <td><?php echo isset($data['hint'])?$data['hint']:'' ?></td>
         <td><?php echo isset($answer)?$answer:'error' ?></td>
+        <td><?php echo isset($data['hint'])?$data['hint']:'' ?></td>
+        <td><?php echo isset($data['option_num'])?$data['option_num']:'error' ?></td>
         <td><?php echo isset($data['classification'])?$data['classification']:'error' ?></td>
         <td><?php echo isset($data['language'])?$data['language']:'error' ?></td>
-        <td><?php echo isset($data['pro_type'])?$data['pro_type']:'error' ?></td>
     </tr>
 </table>
 
