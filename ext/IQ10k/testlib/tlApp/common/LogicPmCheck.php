@@ -10,6 +10,9 @@ namespace tlApp\common;
 
 use \Exception;
 
+
+
+
 class LogicPmCheck extends PmCheck
 {
     private $allow_null_array = false;
@@ -19,6 +22,7 @@ class LogicPmCheck extends PmCheck
 
     public function ProInfoRegionCheck(Array $problem_info)
     {
+        //todo 针对不同题型 还有对应的check
 //        problem_info = compact($problem, $option_num, $options, $answers, $language, $classification, $pro_type, $pro_source, $hint);
         if (sizeof($problem_info) == 0) {
             throw new \Exception("problem_info array null", 400);

@@ -20,9 +20,15 @@ class Problem extends BaseService
 
     }
 
+    public function __destruct() {
+        if (!is_null($this->json)) {
+            print_r(json_encode($this->json));
+        }
+    }
+
+
     /** 插入题目数据 然后返回json
      * @param array $problem_info
-     * @return Json
      * @throws \Exception
      */
     public function post(Array $problem_info){
@@ -39,6 +45,6 @@ class Problem extends BaseService
         $retdata = (object)['pid'=>$pid];
         $this->json->setRetdata($retdata);
 
-        return $this->json;
+//        return $this->json;
     }
 }

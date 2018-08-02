@@ -25,40 +25,25 @@ class PostProblem extends BaseController
             //todo 图片处理部分 临时开启选项和回答的空数组
             $pm->setAllowNullArray(true);
             $pm->ProInfoRegionCheck($problem_info);
-            $problem_info = $pm->getProblemInfo();
+
+            $info = $pm->getProblemInfo();
 
             // 实现信息插入
-            $json =$this->postProblem($problem_info);
-
-            if (!is_null($json)) {
-                print_r(json_encode($json));
-            }
+            $this->postProblem($info);
 
         } catch (Exception $e) {
-            if ($e->getCode() <= 505) {//非200 直接输出
-                $this->setStatus($e->getCode());
-                echo MSG_ERROR_INFO . $e->getMessage();
-
-            } else { //200下状态码 报错用json处理
-                $this->setStatus(200);
-                $json = new Json($e->getMessage(), null, $e->getCode());
-                if (!is_null($json)) {
-                    print_r(json_encode($json));
-                }
-            }
+            //多次复用 把报错放进父类
+           $this->error($e);
         }
     }
 
     /** 实现信息插入
      * @param array $problem_info
-     * @return Json
      * @throws Exception
      */
     public function postProblem(Array $problem_info)
     {
-
         $pro = new Problem();
-        return  $pro->post($problem_info);
-
+        $pro->post($problem_info);
     }
 }

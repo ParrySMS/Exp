@@ -10,9 +10,9 @@ namespace tlApp\common;
 use \Exception;
 
 
+
 class PmCheck
 {
-
 
     public function __construct($is_encode = false)
     {
