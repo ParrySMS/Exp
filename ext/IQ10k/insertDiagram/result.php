@@ -50,7 +50,8 @@ function getTr($database, $table)
         'pro_type'
 //        'pro_source'
     ], [
-        'visible' => 1
+//        'visible' => 1,
+        "ORDER" => ["id" => "DESC"]
     ]);
     //var_dump($data);
     return $data;
@@ -105,7 +106,7 @@ function echoTd($datas)
 <body>
 
 <h2>当前题库题目</h2>
-<h2>已隐藏题目提示</h2>
+<h2>已隐藏题目提示 序号排列为倒序</h2>
 
 <?php
 
