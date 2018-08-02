@@ -32,8 +32,6 @@ class PmCheck
     }
 
 
-
-
     /** 字符串过滤函数
      * @param $str
      * @return mixed|string

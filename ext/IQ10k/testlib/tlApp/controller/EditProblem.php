@@ -7,18 +7,41 @@
  */
 
 namespace tlApp\controller;
+
 use \Exception;
+use tlApp\common\LogicPmCheck;
+use tlApp\service\Problem;
+
 
 class EditProblem extends BaseController
 {
     public function __construct(Array $problem_info)
     {
-        try{
-            echo '1';
+        try {
+            //参数逻辑检查
+            $pm = new LogicPmCheck();
+            //todo 图片处理部分 临时开启选项和回答的空数组
+            $pm->setAllowNullArray(true);
+            $pm->ProInfoCheck($problem_info);
 
-        }catch (Exception $e){
+            $info = $pm->getProblemInfo();
 
+            // 实现信息更新
+            $this->editProblem($info);
+
+        } catch (Exception $e) {
+            $this->error($e);
         }
+    }
+
+    /** 实现题目信息编辑
+     * @param $problem_info
+     */
+    public function editProblem($problem_info)
+    {
+
+        $pro = new Problem();
+        $pro->edit($problem_info);
     }
 
 }

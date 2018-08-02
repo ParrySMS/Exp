@@ -54,7 +54,7 @@ class Problem extends BaseDao
         }
 
         //插入 问题提示
-        if(!empty($problem_info['hint'])) {
+        if (!empty($problem_info['hint'])) {
 
             $table_hint = DB_PREFIX . '_hint';
             $pdo = $this->database->insert($table_hint, [
@@ -71,6 +71,37 @@ class Problem extends BaseDao
         }
 
         return $ret_id === false ? null : $pid;
+    }
+
+
+    /** 更新题目主体信息 （需要先更新提示）
+     * @param array $problem_info
+     * @throws Exception
+     */
+    public function update(Array $problem_info)
+    {
+        $pdo = $this->database->update($this->table, [
+            'problem' => $problem_info['problem'],
+            'option_num' => $problem_info['option_num'],
+            'options' => $problem_info['options_json'],
+            'answers' => $problem_info['answers_json'],
+            'language' => $problem_info['language'],
+            'classification' => $problem_info['classification'],
+            'pro_type' => $problem_info['pro_type'],
+            'pro_source' => $problem_info['pro_source'],
+            'latest' => date('Y-m-d H:i:s'),
+            'total_edit[+]' => 1
+        ], [
+            'AND' => [
+                'pid' => $problem_info['pid'],
+                'visible[!]'=>0
+            ]
+        ]);
+
+        $affected = $this->database->rowCount();
+        if (!is_numeric($affected) || $affected != 1) {
+            throw new Exception(__FUNCTION__ . ' error', 500);
+        }
     }
 
 }

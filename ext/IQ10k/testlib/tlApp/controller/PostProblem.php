@@ -10,7 +10,6 @@ namespace tlApp\controller;
 
 use \Exception;
 use tlApp\common\LogicPmCheck;
-use tlApp\model\Json;
 use tlApp\service\Problem;
 
 class PostProblem extends BaseController
@@ -24,7 +23,7 @@ class PostProblem extends BaseController
             $pm = new LogicPmCheck();
             //todo 图片处理部分 临时开启选项和回答的空数组
             $pm->setAllowNullArray(true);
-            $pm->ProInfoRegionCheck($problem_info);
+            $pm->ProInfoCheck($problem_info);
 
             $info = $pm->getProblemInfo();
 

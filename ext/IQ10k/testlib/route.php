@@ -30,6 +30,18 @@ $pm = new \tlApp\common\PmCheck();
 
 //题目路由组
 $app->group('/problem', function () {
+
+
+    //todo 获取某条题目的信息
+    $this->get('/{pid}',function($request, $response, array $args){
+
+    });
+
+    //todo 获取某页的题目信息（流式分页）
+    $this->post('', function ($request, $response) {
+
+    });
+
     //插入一条题目
     $this->post('', function ($request, $response) {
         //接收数据
@@ -45,6 +57,7 @@ $app->group('/problem', function () {
         $pro_source = 'diagram';
         $hint = isset($request->getParsedBody()['hint']) ? $request->getParsedBody()['hint'] : null;
 
+        //合并
         $problem_info = compact('problem', 'option_num', 'options', 'answers', 'language', 'classification', 'pro_type', 'pro_source', 'hint');
         //启用控制器
         $c_pp = new tlApp\controller\PostProblem($problem_info);
@@ -63,10 +76,13 @@ $app->group('/problem', function () {
         $pro_source = isset($request->getParsedBody()['pro_source']) ? $request->getParsedBody()['pro_source'] : null;
         $hint = isset($request->getParsedBody()['hint']) ? $request->getParsedBody()['hint'] : null;
 
+        //这个info 多了一个pid参数
         $problem_info = compact('pid','problem',  'options', 'answers', 'language', 'classification', 'pro_type', 'pro_source', 'hint');
         $c_ep = new tlApp\controller\EditProblem($problem_info);
-
+        return $response->withStatus($c_ep->getStatus());
     });
+
+
 
 });
 

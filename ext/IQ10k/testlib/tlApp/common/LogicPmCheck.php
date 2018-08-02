@@ -11,8 +11,6 @@ namespace tlApp\common;
 use \Exception;
 
 
-
-
 class LogicPmCheck extends PmCheck
 {
     private $allow_null_array = false;
@@ -20,10 +18,99 @@ class LogicPmCheck extends PmCheck
 
     private $problem_info;
 
-    public function ProInfoRegionCheck(Array $problem_info)
+    public function ProInfoCheck(Array $problem_info)
     {
-        //todo 针对不同题型 还有对应的check
 //        problem_info = compact($problem, $option_num, $options, $answers, $language, $classification, $pro_type, $pro_source, $hint);
+
+        //空检查
+        $this->nullCheck($problem_info);
+
+        //参数范围定义检查
+        $this->regionCheck($problem_info);
+
+        //题型限制逻辑检查
+        $this->proTypeCheck($problem_info);
+
+        $this->problem_info = $problem_info;
+
+    }
+
+
+    protected function proTypeCheck(Array $problem_info)
+    {
+        $pro_type = $problem_info['pro_type'];
+
+
+        switch ($pro_type) {
+            case 'exclusive choice'://单选题
+                //选项数量检查 不得为0
+                if (sizeof($problem_info['options'] == 0)) {
+                    throw new Exception('option array should not be 0 length', 400);
+                }
+
+                //单选检查 长度必为1
+                if (sizeof($problem_info['answers'] != 1)) {
+                    throw new Exception('answer array should be 1 length', 400);
+                }
+                break;
+
+            case 'multiple choice'://多选题
+                //选项数量检查  不得为0
+                if (sizeof($problem_info['options'] == 0)) {
+                    throw new Exception('option array should not be 0 length', 400);
+                }
+                //多选检查 长度小于等于1报错
+                if (sizeof($problem_info['answers'] <= 1)) {
+                    throw new Exception('answer array should be over 1 length', 400);
+                }
+                break;
+
+            case 'short answer'://简答题
+            case 'exclusive fill'://单项填空
+                //选项数量检查  必为0
+                if (sizeof($problem_info['options'] != 0)) {
+                    throw new Exception('option array should not be 0 length', 400);
+                }
+
+                //单选检查 长度必为1
+                if (sizeof($problem_info['answers'] != 1)) {
+                    throw new Exception('answer array should be 1 length', 400);
+                }
+                break;
+
+            case 'multiple fill'://多项填空
+                //选项数量检查  必为0
+                if (sizeof($problem_info['options'] != 0)) {
+                    throw new Exception('option array should not be 0 length', 400);
+                }
+                //多选检查 长度小于等于1报错
+                if (sizeof($problem_info['answers'] <= 1)) {
+                    throw new Exception('answer array should be over 1 length', 400);
+                }
+                break;
+
+
+
+            default:
+                throw new Exception("pro_type $pro_type invaild", 400);
+                break;
+        }
+    }
+
+
+    //todo 语言类型检查
+    protected function langCheck()
+    {
+
+
+    }
+
+    /** 参数空检查
+     * @param array $problem_info
+     * @throws Exception
+     */
+    protected function nullCheck(Array $problem_info)
+    {
         if (sizeof($problem_info) == 0) {
             throw new \Exception("problem_info array null", 400);
         }
@@ -36,6 +123,7 @@ class LogicPmCheck extends PmCheck
             switch ($key) {
                 case 'options':
                 case 'answers':
+
                     //类型检查
                     if (!is_array($value) && !$this->isAllowNullArray()) {
                         throw new \Exception("$key is not array", 400);
@@ -46,11 +134,17 @@ class LogicPmCheck extends PmCheck
                     }
                     break;
 
-                //非空参数
+                //非空参数 todo 这个option_num后面要去掉
                 case 'option_num':
+                case 'pid':
+
                     //检查空 排除掉0的特殊情况
                     if ($value != 0 && empty($value) && !$this->isAllowNullParams()) {
                         throw new Exception("$key null", 400);
+                    }
+                    //类型检查 整数检查
+                    if ($this->numCheck($value) === null) {
+                        throw new Exception('option_num: ' . $problem_info['option_num'] . ' type error', 400);
                     }
                     break;
 
@@ -74,14 +168,16 @@ class LogicPmCheck extends PmCheck
                     break;
             }
         }
+    }
 
-        //参数逻辑检查
 
-        //整数检查
-        if($this->numCheck($problem_info['option_num'])===null){
-            throw new Exception('option_num: ' . $problem_info['option_num'] . ' type error', 400);
-        }
-
+    /** 参数逻辑范围检查
+     * @param array $problem_info
+     * @throws Exception
+     */
+    protected function regionCheck(Array $problem_info)
+    {
+        //范围检查
         $region_lang = json_decode(PM_REGION_LANG_JSON);
         if (!in_array($problem_info['language'], $region_lang)) {
             throw new Exception('language: ' . $problem_info['language'] . ' not in region', 400);
@@ -91,9 +187,6 @@ class LogicPmCheck extends PmCheck
         if (!in_array($problem_info['pro_type'], $region_type)) {
             throw new Exception('proType: ' . $problem_info['language'] . ' not in region', 400);
         }
-
-        $this->problem_info = $problem_info;
-
     }
 
     /**
