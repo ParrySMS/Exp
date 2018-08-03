@@ -18,9 +18,12 @@ class LogicPmCheck extends PmCheck
 
     private $problem_info;
 
-    public function ProInfoCheck(Array $problem_info)
+    public function ProInfoCheck(Array $body)
     {
 //        problem_info = compact($problem, $option_num, $options, $answers, $language, $classification, $pro_type, $pro_source, $hint);
+
+        //补齐body体的参数
+        $problem_info = $this->keyComplete($body);
 
         //空检查
         $this->nullCheck($problem_info);
@@ -35,6 +38,30 @@ class LogicPmCheck extends PmCheck
 
     }
 
+
+    /** 补齐body体的key 用于后面的检查
+     * @param array $body
+     * @return array
+     */
+    protected function keyComplete(Array $body)
+    {
+        $problem_base = [
+            'pid' => null,
+            'problem' => null,
+            //todo option_num之后要去掉
+            'option_num' => null,
+            'options' => null,
+            'answers' => null,
+            'language' => null,
+            'classification' => null,
+            'pro_type' => null,
+            'pro_source' => null,
+            'hint' => null,
+        ];
+
+        return array_merge($problem_base,$body);
+
+    }
 
     protected function proTypeCheck(Array $problem_info)
     {
@@ -88,7 +115,6 @@ class LogicPmCheck extends PmCheck
                     throw new Exception('answer array should be over 1 length', 400);
                 }
                 break;
-
 
 
             default:

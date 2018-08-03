@@ -36,6 +36,7 @@ class EditProblem extends BaseController
 
     /** 实现题目信息编辑
      * @param $problem_info
+     * @throws Exception
      */
     public function editProblem($problem_info)
     {
