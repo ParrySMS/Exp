@@ -7,8 +7,8 @@
  */
 
 namespace tlApp\common;
-use \Exception;
 
+use \Exception;
 
 
 class PmCheck
@@ -16,11 +16,11 @@ class PmCheck
 
     public function __construct($is_encode = false)
     {
-        if($is_encode == false) {
+        if ($is_encode == false) {
             //默认检查
             $_GET = $this->arrayCheck($_GET);
             $_POST = $this->arrayCheck($_POST);
-        }else {
+        } else {
             //部分前端加密数据
             $get_body = $this->pmDecode($_GET);
             $post_body = $this->pmDecode($_POST);
@@ -55,22 +55,24 @@ class PmCheck
     }
 
 
-    /** 数字检查函数
-     * @param $num
-     * @param bool $intval 是否转为int
-     * @return int|null
+    /** 把字符串转化为对应的数字值
+     * @param $val
+     * @param bool $intval
+     * @return int|null|string
      */
-    protected function numCheck($num, $intval = false)
+    protected function getNumeric($val, $intval = false)
     {
-        if (!is_numeric($num)) {
+        if (!is_numeric($val)) {
             return null;
         }
 
         if ($intval == true) {
-            $num = intval($num);
+            $val = intval($val);
         }
-        return $num;
+
+        return $val + 0;
     }
+
 
 // 数组遍历过滤函数
     protected function arrayCheck(&$array)
@@ -94,7 +96,7 @@ class PmCheck
      * @param $sql_str
      * @return bool
      */
-   protected function hasInject($sql_str)
+    protected function hasInject($sql_str)
     {
         $num = preg_match('/select|insert|update|delete|\'|\/\*|\*|\.\.\/|\.\/|UNION|into|load_file|outfile/', $sql_str);
         return ($num == 0) ? false : true;
@@ -104,7 +106,7 @@ class PmCheck
      * @param $array
      * @return array|string
      */
-   protected function stripslashesArray(&$array)
+    protected function stripslashesArray(&$array)
     {
         if (is_array($array)) {
             foreach ($array as $k => $v) {
@@ -120,17 +122,17 @@ class PmCheck
      * @param $params
      * @return array|bool|string
      */
-    public function pmDecode($params){
-        if(is_array($params)){
-            foreach ($params as $key => $p){
+    public function pmDecode($params)
+    {
+        if (is_array($params)) {
+            foreach ($params as $key => $p) {
                 $params[$key] = base64_decode(base64_decode($p));
             }
-        }else{
+        } else {
             $params = base64_decode(base64_decode($params));
         }
         return $params;
     }
-
 
 
 }

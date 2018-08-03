@@ -17,7 +17,14 @@ class LogicPmCheck extends PmCheck
     private $allow_null_params = false;
 
     private $problem_info;
+    private $pid;
 
+
+    /** 检查题目信息 可选是否有pid
+     * @param array $body
+     * @param bool $has_pid
+     * @throws Exception
+     */
     public function ProInfoCheck(Array $body, $has_pid = false)
     {
 //        problem_info = compact($problem, $option_num, $options, $answers, $language, $classification, $pro_type, $pro_source, $hint);
@@ -36,6 +43,26 @@ class LogicPmCheck extends PmCheck
 
         $this->problem_info = $problem_info;
 
+    }
+
+    /** 检查题目id
+     * @param $pid
+     * @param bool $return
+     * @return int|null|string
+     * @throws Exception
+     */
+    public function PidCheck($pid,$return = false)
+    {
+        $pid = $this->getNumeric($pid);
+        if ($pid === null) {
+            throw new Exception('pid type error', 400);
+        }
+
+        $this->pid = $pid;
+
+        if ($return == true) {
+            return $pid;
+        }
     }
 
 
@@ -67,6 +94,10 @@ class LogicPmCheck extends PmCheck
 
     }
 
+    /** 根据题型进行的逻辑检查 查选项与答案
+     * @param array $problem_info
+     * @throws Exception
+     */
     protected function proTypeCheck(Array $problem_info)
     {
         $pro_type = $problem_info['pro_type'];
@@ -173,7 +204,7 @@ class LogicPmCheck extends PmCheck
                         throw new Exception("$key null", 400);
                     }
                     //类型检查 整数检查
-                    if ($this->numCheck($value,true) === null) {
+                    if ($this->getNumeric($value,true) === null) {
                         throw new Exception( "$key : $value type error", 400);
                     }
                     break;
@@ -201,7 +232,7 @@ class LogicPmCheck extends PmCheck
     }
 
 
-    /** 参数逻辑范围检查
+    /** 参数限制范围检查
      * @param array $problem_info
      * @throws Exception
      */
@@ -225,6 +256,14 @@ class LogicPmCheck extends PmCheck
     public function getProblemInfo()
     {
         return $this->problem_info;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPid()
+    {
+        return $this->pid;
     }
 
 
@@ -259,6 +298,7 @@ class LogicPmCheck extends PmCheck
     {
         $this->allow_null_params = $allow_null_params;
     }
+
 
 
 }

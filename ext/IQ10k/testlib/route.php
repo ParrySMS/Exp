@@ -34,6 +34,11 @@ $app->group('/problem', function () {
 
     //todo 获取某条题目的信息
     $this->get('/{pid}',function($request, $response, array $args){
+        $pid = isset($args['pid'])?$args['pid']:null;
+        $c_gp = new tlApp\controller\GetProblem();
+        $c_gp->withPid($pid);
+        return $response->withStatus($c_gp->getStatus());
+
 
     });
 
