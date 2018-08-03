@@ -173,7 +173,7 @@ class LogicPmCheck extends PmCheck
                         throw new Exception("$key null", 400);
                     }
                     //类型检查 整数检查
-                    if ($this->numCheck($value,true) == null) {
+                    if ($this->numCheck($value,true) === null) {
                         throw new Exception( "$key : $value type error", 400);
                     }
                     break;
