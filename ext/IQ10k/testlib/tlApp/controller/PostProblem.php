@@ -43,6 +43,6 @@ class PostProblem extends BaseController
     public function postProblem(Array $problem_info)
     {
         $pro = new Problem();
-        $pro->post($problem_info);
+        $this->echoJson($pro->post($problem_info));
     }
 }

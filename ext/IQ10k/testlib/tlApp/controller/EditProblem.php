@@ -15,14 +15,14 @@ use tlApp\service\Problem;
 
 class EditProblem extends BaseController
 {
-    public function __construct(Array $problem_info)
+    public function __construct(Array $body)
     {
         try {
             //参数逻辑检查
             $pm = new LogicPmCheck();
             //todo 图片处理部分 临时开启选项和回答的空数组
             $pm->setAllowNullArray(true);
-            $pm->ProInfoCheck($problem_info);
+            $pm->ProInfoCheck($body,true);
 
             $info = $pm->getProblemInfo();
 
@@ -42,7 +42,7 @@ class EditProblem extends BaseController
     {
 
         $pro = new Problem();
-        $pro->edit($problem_info);
+        $this->echoJson($pro->edit($problem_info));
     }
 
 }

@@ -18,12 +18,12 @@ class LogicPmCheck extends PmCheck
 
     private $problem_info;
 
-    public function ProInfoCheck(Array $body)
+    public function ProInfoCheck(Array $body, $has_pid = false)
     {
 //        problem_info = compact($problem, $option_num, $options, $answers, $language, $classification, $pro_type, $pro_source, $hint);
 
         //补齐body体的参数
-        $problem_info = $this->keyComplete($body);
+        $problem_info = $this->keyComplete($body,$has_pid);
 
         //空检查
         $this->nullCheck($problem_info);
@@ -31,8 +31,8 @@ class LogicPmCheck extends PmCheck
         //参数范围定义检查
         $this->regionCheck($problem_info);
 
-        //题型限制逻辑检查
-        $this->proTypeCheck($problem_info);
+        //todo 临时关闭 题型限制逻辑检查
+//        $this->proTypeCheck($problem_info);
 
         $this->problem_info = $problem_info;
 
@@ -41,12 +41,12 @@ class LogicPmCheck extends PmCheck
 
     /** 补齐body体的key 用于后面的检查
      * @param array $body
+     * @param bool $has_pid 是否需要pid检查
      * @return array
      */
-    protected function keyComplete(Array $body)
+    protected function keyComplete(Array $body, $has_pid = false)
     {
         $problem_base = [
-            'pid' => null,
             'problem' => null,
             //todo option_num之后要去掉
             'option_num' => null,
@@ -58,6 +58,10 @@ class LogicPmCheck extends PmCheck
             'pro_source' => null,
             'hint' => null,
         ];
+
+        if($has_pid == true){
+            $problem_base['pid'] = null;
+        }
 
         return array_merge($problem_base,$body);
 
@@ -169,8 +173,8 @@ class LogicPmCheck extends PmCheck
                         throw new Exception("$key null", 400);
                     }
                     //类型检查 整数检查
-                    if ($this->numCheck($value) === null) {
-                        throw new Exception('option_num: ' . $problem_info['option_num'] . ' type error', 400);
+                    if ($this->numCheck($value,true) == null) {
+                        throw new Exception( "$key : $value type error", 400);
                     }
                     break;
 

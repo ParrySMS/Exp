@@ -6,6 +6,7 @@
  * Time: 1:02
  */
 namespace tlApp\controller;
+use tlApp\model\Json;
 use \Exception;
 class BaseController
 {
@@ -38,9 +39,14 @@ class BaseController
         } else { //200下状态码 报错用json处理
             $this->setStatus(200);
             $json = new Json($e->getMessage(), null, $e->getCode());
-            if (!is_null($json)) {
-                print_r(json_encode($json));
-            }
+            $this->echoJson($json);
+        }
+    }
+
+    public function echoJson(Json $json)
+    {
+        if (!is_null($json)) {
+            print_r(json_encode($json));
         }
     }
 }

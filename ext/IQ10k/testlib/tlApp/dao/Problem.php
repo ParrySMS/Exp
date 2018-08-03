@@ -93,14 +93,14 @@ class Problem extends BaseDao
             'total_edit[+]' => 1
         ], [
             'AND' => [
-                'pid' => $problem_info['pid'],
+                'id' => $problem_info['pid'],
                 'visible[!]'=>0
             ]
         ]);
 
-        $affected = $this->database->rowCount();
+        $affected = $pdo->rowCount();
         if (!is_numeric($affected) || $affected != 1) {
-            throw new Exception(__FUNCTION__ . ' error', 500);
+            throw new Exception(__CLASS__.__FUNCTION__ . ' error', 500);
         }
     }
 
