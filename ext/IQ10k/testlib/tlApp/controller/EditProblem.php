@@ -22,7 +22,7 @@ class EditProblem extends BaseController
             $pm = new LogicPmCheck();
             //todo 图片处理部分 临时开启选项和回答的空数组
             $pm->setAllowNullArray(true);
-            $pm->ProInfoCheck($body,true);
+            $pm->proInfoCheck($body,true);
 
             $info = $pm->getProblemInfo();
 
@@ -38,7 +38,7 @@ class EditProblem extends BaseController
      * @param $problem_info
      * @throws Exception
      */
-    public function editProblem($problem_info)
+    private function editProblem($problem_info)
     {
 
         $pro = new Problem();

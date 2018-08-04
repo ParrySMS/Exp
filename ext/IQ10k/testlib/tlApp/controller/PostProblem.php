@@ -23,7 +23,7 @@ class PostProblem extends BaseController
             $pm = new LogicPmCheck();
             //todo 图片处理部分 临时开启选项和回答的空数组
             $pm->setAllowNullArray(true);
-            $pm->ProInfoCheck($body);
+            $pm->proInfoCheck($body);
 
             $info = $pm->getProblemInfo();
 
@@ -40,7 +40,7 @@ class PostProblem extends BaseController
      * @param array $problem_info
      * @throws Exception
      */
-    public function postProblem(Array $problem_info)
+    private function postProblem(Array $problem_info)
     {
         $pro = new Problem();
         $this->echoJson($pro->post($problem_info));

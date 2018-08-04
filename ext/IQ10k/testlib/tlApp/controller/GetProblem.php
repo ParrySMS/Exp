@@ -7,9 +7,9 @@
  */
 
 namespace tlApp\controller;
-
-
+use \Exception;
 use tlApp\common\LogicPmCheck;
+use tlApp\service\Problem;
 
 class GetProblem extends BaseController
 {
@@ -19,19 +19,20 @@ class GetProblem extends BaseController
         try {
             //参数逻辑检查
             $pm = new LogicPmCheck();
-            //todo 图片处理部分 临时开启选项和回答的空数组
-            $pm->setAllowNullArray(true);
-            $pm->ProInfoCheck($body);
+            $pid = $pm->pidCheck($pid,true);
 
-            $info = $pm->getProblemInfo();
-
-            // 实现信息插入
-            $this->postProblem($info);
+            $this->getProblemById($pid);
 
         } catch (Exception $e) {
-            //多次复用 把报错放进父类
             $this->error($e);
         }
+    }
+
+    private function getProblemById($pid)
+    {
+        $pro = new Problem();
+        $this->echoJson($pro->getOne($pid));
+
     }
 
 }

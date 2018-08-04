@@ -25,7 +25,7 @@ class LogicPmCheck extends PmCheck
      * @param bool $has_pid
      * @throws Exception
      */
-    public function ProInfoCheck(Array $body, $has_pid = false)
+    public function proInfoCheck(Array $body, $has_pid = false)
     {
 //        problem_info = compact($problem, $option_num, $options, $answers, $language, $classification, $pro_type, $pro_source, $hint);
 
@@ -51,7 +51,7 @@ class LogicPmCheck extends PmCheck
      * @return int|null|string
      * @throws Exception
      */
-    public function PidCheck($pid,$return = false)
+    public function pidCheck($pid, $return = false)
     {
         $pid = $this->getNumeric($pid);
         if ($pid === null) {

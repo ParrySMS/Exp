@@ -11,12 +11,14 @@ use tlApp\model\Json;
 
 class Problem extends BaseService
 {
+    private $pro;
 
     /**创建json对象
      * Problem constructor.
      */
     public function __construct()
     {
+        $this->pro = new \tlApp\dao\Problem();
         $this->json = new Json();
 
     }
@@ -44,8 +46,7 @@ class Problem extends BaseService
         $problem_info['answers_json'] = json_encode($problem_info['answers']);
 
         //dao
-        $pro = new \tlApp\dao\Problem();
-        $pid = $pro->insert($problem_info,true);
+        $pid = $this->pro->insert($problem_info,true);
 
         $retdata = (object)['pid'=>$pid];
         $this->json->setRetdata($retdata);
@@ -76,8 +77,15 @@ class Problem extends BaseService
             $hint->update($problem_info['pid'],$problem_info['hint']);
         }
         //再插入题目主体
-        $pro = new \tlApp\dao\Problem();
-        $pro->update($problem_info);
+        $this->pro->update($problem_info);
         return $this->json;
+    }
+
+    public function getOne($pid)
+    {
+        $data = $this->pro->selectOne($pid);
+//  todo 明确题目里每个属性的类型 有图有文字  属性是item对象  string，pic数组
+// todo 根据题目属性 去改数据库
+//        $pro_mod =
     }
 }

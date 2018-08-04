@@ -49,7 +49,7 @@ class Problem extends BaseDao
 //            var_dump($problem_info);
 //            var_dump($pid);
 //            var_dump( $this->database->error() );
-            throw new Exception(__FUNCTION__ . ' pid error', 500);
+            throw new Exception(__CLASS__.__FUNCTION__ . ' pid error', 500);
 
         }
 
@@ -104,4 +104,41 @@ class Problem extends BaseDao
         }
     }
 
+
+    /** 根据pid 返回一个题目信息
+     * @param $pid
+     * @return array|bool
+     * @throws Exception
+     */
+    public function selectOne($pid)
+    {
+        $table_h = DB_PREFIX . "_hint";
+
+        $data = $this->database->select($this->table.'(p)',[
+            "[>]$table_h(h)"=>['id'=>'pid']
+        ],[
+            'p.id',
+            'p.problem',
+            //todo 之后去掉option_num
+            'p.option_num',
+            'p.options',
+            'p.answers',
+            'p.language',
+            'p.classification',
+            'p.pro_type',
+            'p.pro_source',
+            'h.hint'
+        ],[
+            'AND' => [
+                'p.id' => $pid,
+                'p.visible[!]'=>0
+            ]
+        ]);
+
+        if(!is_array($data)||sizeof($data)==0){
+            throw new Exception(__CLASS__.__FUNCTION__ . ' error', 500);
+        }
+
+        return $data;
+    }
 }
