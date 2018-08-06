@@ -7,7 +7,7 @@
  */
 
 namespace tlApp\dao;
-
+use \Exception;
 
 class Hint extends BaseDao
 {
@@ -25,7 +25,7 @@ class Hint extends BaseDao
             ]
         ]);
 
-        $affected = $this->database->rowCount();
+        $affected = $pdo->rowCount();
         if (!is_numeric($affected) || $affected != 1) {
             throw new Exception(__FUNCTION__ . ' error', 500);
         }
