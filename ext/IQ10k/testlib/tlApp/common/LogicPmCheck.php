@@ -225,7 +225,7 @@ class LogicPmCheck extends PmCheck
                     break;
 
                 default://索引不存在
-                    throw new Exception("$key invaild", 400);
+                    throw new Exception("key: $key invaild", 400);
                     break;
             }
         }
