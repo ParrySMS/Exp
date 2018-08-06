@@ -106,6 +106,7 @@ class Problem extends BaseDao
 
 
     /** 根据pid 返回一个题目信息
+     * todo 拆分proble表字段之后要重写 还有要写一个 get title_type 的函数
      * @param $pid
      * @return array|bool
      * @throws Exception
@@ -115,7 +116,8 @@ class Problem extends BaseDao
         $table_h = DB_PREFIX . "_hint";
 
         $data = $this->database->select($this->table.'(p)',[
-            "[>]$table_h(h)"=>['id'=>'pid']
+            "[>]$table_h(h)"=>['id'=>'pid'],
+            "[>]$table_h"
         ],[
             'p.id',
             'p.problem',

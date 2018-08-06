@@ -7,7 +7,12 @@
  */
 namespace tlApp\service;
 use tlApp\dao\Hint;
+use tlApp\dao\Pic;
+use tlApp\dao\Text;
+use tlApp\model\Option;
 use tlApp\model\Json;
+use \Exception;
+use tlApp\model\Title;
 
 class Problem extends BaseService
 {
@@ -83,9 +88,65 @@ class Problem extends BaseService
 
     public function getOne($pid)
     {
-        $data = $this->pro->selectOne($pid);
+        //todo 当前临时方法 先获取在主体题目信息
+        $pro_data = $this->pro->selectOne($pid);
+
+        $title = getTitle($pid);
+
+
+
+
+
 //  todo 明确题目里每个属性的类型 有图有文字  属性是item对象  string，pic数组
 // todo 根据题目属性 去改数据库
 //        $pro_mod =
+    }
+
+    /** todo 先睡觉 明天继续写这里
+     * @param $pid
+     * @return Title
+     * @throws Exception
+     */
+    protected function getTitle($pid){
+        //todo 确认类型 这个函数还没写
+        $title_type = $this->pro->getTitleType();
+        $suffix = 'title';
+        switch ($title_type){
+
+            case TITLE_TYPE_PIC: //todo 配合getTitleType 把常量定义好
+                //查找图片 先查题图
+                $pic = new Pic($suffix);
+                $data = $pic->selectOne($pid);
+
+                unset($title_pics);
+                $title_pics = [];
+
+                if (sizeof($data) == 1) {
+                    $title_pic = $data[0]['url'];
+                    $title_pics =[$title_pic];
+                }else{
+                    foreach ($data as $d){
+                        $title_pics[] = $d['url'];
+                    }
+                }
+
+            //然后继续查文本
+            case TITLE_TYPE_TEXT:
+
+                $text = new Text($suffix);
+                $title_text_data = $text->selectOne($pid);
+                $title_text = $title_text_data[0]['text'];
+
+                $title_pics = isset($title_pics)?$title_pics:[];
+
+                $title = new Title($title_text,$title_pics);
+                return $title;
+
+
+            default:
+                throw new \Exception("title type invaild: $title_type",500);
+                break;
+        }
+
     }
 }
