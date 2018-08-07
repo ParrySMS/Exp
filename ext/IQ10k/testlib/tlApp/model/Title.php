@@ -19,7 +19,7 @@ class Title
      * @param $text
      * @param array $pic
      */
-    public function __construct($text, array $pic)
+    public function __construct($text, array $pic = [])
     {
         $this->text = $text;
         $this->pic = $pic;

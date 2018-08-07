@@ -137,10 +137,37 @@ class Problem extends BaseDao
             ]
         ]);
 
+        //一条或多条
         if(!is_array($data)||sizeof($data)==0){
             throw new Exception(__CLASS__.__FUNCTION__ . ' error', 500);
         }
 
         return $data;
+    }
+
+
+    /** 获取题目标题类型 todo 拆分proble表字段之后才能用
+     * @param $pid
+     * @throws Exception
+     */
+    public function getTitleType($pid)
+    {
+//        'TITLE_TYPE_PIC',1
+//        'TITLE_TYPE_TEXT',2
+        $data = $this->database->select($this->table,[
+            'title_type'
+        ],[
+            'AND' => [
+                'p.id' => $pid,
+                'p.visible[!]'=>0
+            ]
+        ]);
+
+        if(!is_array($data)||sizeof($data)!=1){
+            throw new Exception(__CLASS__.__FUNCTION__ . ' error', 500);
+        }
+
+
+
     }
 }

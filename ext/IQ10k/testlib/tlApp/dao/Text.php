@@ -45,14 +45,11 @@ class Text extends BaseDao
                 ]
             ]);
 
-        if(!is_array($data)||sizeof($data)==0){
+        if(!is_array($data)||sizeof($data)!=1){
             throw new Exception(__CLASS__.__FUNCTION__ . ' error', 500);
         }
 
-
-
         return $data;
-
     }
 
 }
