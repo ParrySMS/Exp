@@ -95,11 +95,13 @@ class Problem extends BaseService
 //      $title = getTitle($pid);
         $title = new Title($pro_data[0]['problem']);
 
-        $options =
+//        $options = getOptions($pid);
         $options = json_decode($pro_data[0]['options']);
 
 
-//  todo 明确题目里每个属性的类型 有图有文字  属性是item对象  string，pic数组
+//  todo 要不要建立一个type表？？？ 放 title_type option answer 休息一下 先写另一个api
+
+// todo 明确题目里每个属性的类型 有图有文字  属性是item对象  string，pic数组
 // todo 根据题目属性 去改数据库
 //        $pro_mod =
     }
@@ -110,7 +112,7 @@ class Problem extends BaseService
      * @throws Exception
      */
     protected function getTitle($pid){
-        //todo 确认类型 这个函数还没写
+        //确认类型
         $title_type = $this->pro->getTitleType($pid);
         switch ($title_type){
 
@@ -170,6 +172,11 @@ class Problem extends BaseService
         $text = $data[0]['text'];
         return $text;
 
+
+    }
+
+    protected function getOptions($pid)
+    {
 
     }
 }
