@@ -9,12 +9,9 @@
 namespace tlApp\service;
 
 use tlApp\dao\Hint;
-use tlApp\dao\Pic;
-use tlApp\dao\Text;
-use tlApp\model\Option;
 use tlApp\model\Json;
 use \Exception;
-use tlApp\model\Title;
+
 
 class Problem extends BaseService
 {
@@ -97,19 +94,35 @@ class Problem extends BaseService
 
         //todo 改数据表 把problem变成 title_text 和 title_pic 单独抽出option做表
 //        $pro_main = $this->pro->selectOne($pid);
-//        $options = $this->getOptions($pid)
+//          $pro_main['answers'] = json_decode($pro_main['answers']);
+//        $options = $this->getOptions($pid);
+//        $pro_main['options'] = $options;
+
+
 
 
 // todo 明确题目里每个属性的类型 有图有文字  属性是item对象  string，pic数组
 // todo 根据题目属性 去改数据库
-//        $pro_mod =
     }
 
+    /** 获取选项的关联数组 name取小写
+     * @param $pid
+     * @return array
+     * @throws Exception
+     */
     protected function getOptions($pid)
     {
         $op = new \tlApp\dao\Option();
         $data = $op->selectGroup($pid);
-        var_dump($data);
+
+        unset($options);
+        $options = [];
+
+        foreach ($data as $d ){
+            $options[$d['name']]= new \tlApp\model\Option($d['has_pic'],$d['content']);
+        }
+
+        return $options;
 
     }
 

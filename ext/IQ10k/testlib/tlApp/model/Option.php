@@ -12,7 +12,7 @@ namespace tlApp\model;
 class Option
 {
 
-    public $type;
+    public $type; //0无图文字 1有图url
     public $value;
 
     /**

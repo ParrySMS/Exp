@@ -9,10 +9,37 @@
 namespace tlApp\dao;
 
 use \Exception;
+//use Medoo\Medoo;
+//
+//require '../../config/database_info.php';
+//require '../../Medoo/Medoo.php';
+//$p = new Problem();
+//$d = $p->selectOne(17);
+//var_dump($d);
 
 class Problem extends BaseDao
 {
-    protected $table = DB_PREFIX . "_problem";
+//    protected $database;
+//
+//    /**
+//     * BaseDao constructor.
+//     */
+//    public function __construct()
+//    {
+//        $this->database = new Medoo([
+//            'database_type' => DATABASE_TYPE,
+//            'database_name' => DATABASE_NAME,
+//            'server' => SERVER,
+//            'username' => USERNAME,
+//            'password' => PASSWORD,
+//            'charset' => CHARSET,
+//            'port' => PORT,
+//            'check_interval' => CHECK_INTERVAL
+//        ]);
+//    }
+
+
+    protected $table = DB_PREFIX . "_problem_test";
 
 
     /**
@@ -49,7 +76,7 @@ class Problem extends BaseDao
 //            var_dump($problem_info);
 //            var_dump($pid);
 //            var_dump( $this->database->error() );
-            throw new Exception(__CLASS__.__FUNCTION__ . ' pid error', 500);
+            throw new Exception(__CLASS__ . __FUNCTION__ . ' pid error', 500);
 
         }
 
@@ -94,13 +121,13 @@ class Problem extends BaseDao
         ], [
             'AND' => [
                 'id' => $problem_info['pid'],
-                'visible[!]'=>0
+                'visible[!]' => 0
             ]
         ]);
 
         $affected = $pdo->rowCount();
         if (!is_numeric($affected) || $affected != 1) {
-            throw new Exception(__CLASS__.__FUNCTION__ . ' error', 500);
+            throw new Exception(__CLASS__ . __FUNCTION__ . ' error', 500);
         }
     }
 
@@ -115,9 +142,9 @@ class Problem extends BaseDao
     {
         $table_h = DB_PREFIX . "_hint";
 
-        $data = $this->database->select($this->table.'(p)',[
-            "[>]$table_h(h)"=>['id'=>'pid'],
-        ],[
+        $data = $this->database->select($this->table . '(p)', [
+            "[>]" . "$table_h" . "(h)" => ['id' => 'pid'],
+        ], [
             'p.id',
             'p.problem',
             //todo 之后去掉option_num
@@ -129,19 +156,19 @@ class Problem extends BaseDao
             'p.pro_type',
             'p.pro_source',
             'h.hint'
-        ],[
+        ], [
             'AND' => [
                 'p.id' => $pid,
-                'p.visible[!]'=>0
+                'p.visible[!]' => 0
             ]
         ]);
 
         //一条或多条
-        if(!is_array($data)||sizeof($data)!=1){
-            throw new Exception(__CLASS__.__FUNCTION__ . ' error', 500);
+        if (!is_array($data) || sizeof($data) != 1) {
+            throw new Exception(__CLASS__ . __FUNCTION__ . ' error', 500);
         }
 
-        return $data;
+        return $data[0];
     }
 
 
@@ -154,31 +181,37 @@ class Problem extends BaseDao
     {
         $table_h = DB_PREFIX . "_hint";
 
-        $data = $this->database->select($this->table.'(p)',[
-            "[>]$table_h(h)"=>['id'=>'pid'],
-        ],[
-            'p.id',
-            'p.title_text',
-            'p.title_pic',
-            'p.answers',
-            'p.language',
-            'p.classification',
-            'p.pro_type',
-            'p.pro_source',
-            'h.hint'
-        ],[
-            'AND' => [
-                'p.id' => $pid,
-                'p.visible[!]'=>0
-            ]
-        ]);
+        $data = $this->database->select($this->table.'(p)',
+            [
+                "[>]$table_h(h)" => [
+                    "p.id" => "pid"
+                ]
+            ],
+            [
+                'p.id',
+                'p.title_text',
+                'p.title_pic',
+                'p.answers',
+                'p.language',
+                'p.classification',
+                'p.pro_type',
+                'p.pro_source',
+                'h.hint'
+
+            ], [
+                'AND' => [
+                    'p.id' => $pid,
+                    'p.visible[!]' => 0
+                ]
+            ]);
 
         //一条或多条
-        if(!is_array($data)||sizeof($data)!=1){
-            throw new Exception(__CLASS__.__FUNCTION__ . ' error', 500);
+        if (!is_array($data) || sizeof($data) != 1) {
+//            var_dump($this->database->error());
+            throw new Exception(__CLASS__ . __FUNCTION__ . ' error', 500);
         }
 
-        return $data;
+        return $data[0];
     }
 
 
@@ -190,19 +223,18 @@ class Problem extends BaseDao
     {
 //        'TITLE_TYPE_PIC',1
 //        'TITLE_TYPE_TEXT',2
-        $data = $this->database->select($this->table,[
+        $data = $this->database->select($this->table, [
             'title_type'
-        ],[
+        ], [
             'AND' => [
                 'p.id' => $pid,
-                'p.visible[!]'=>0
+                'p.visible[!]' => 0
             ]
         ]);
 
-        if(!is_array($data)||sizeof($data)!=1){
-            throw new Exception(__CLASS__.__FUNCTION__ . ' error', 500);
+        if (!is_array($data) || sizeof($data) != 1) {
+            throw new Exception(__CLASS__ . __FUNCTION__ . ' error', 500);
         }
-
 
 
     }

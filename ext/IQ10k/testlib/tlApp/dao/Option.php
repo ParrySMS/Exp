@@ -11,7 +11,7 @@ use \Exception;
 
 class Option extends BaseDao
 {
-    protected $table = DB_PREFIX . "_option";
+    protected $table = DB_PREFIX . "_option_test";
 
     /** 返回一组选项
      * @param $pid
@@ -21,21 +21,20 @@ class Option extends BaseDao
     public function selectGroup($pid)
     {
         $data = $this->database->select($this->table, [
-            'name'=>[
-                'content'
-            ],
+            'name',
+            'content',
             'has_pic',
 
         ], [
-            'AND'=>[
-                'pid'=>$pid,
-                'visible[!]'=>0
+            'AND' => [
+                'pid' => $pid,
+                'visible[!]' => 0
             ]
         ]);
 
         //多条
-        if(!is_array($data)||sizeof($data)==0){
-            throw new Exception(__CLASS__.__FUNCTION__ . ' error', 500);
+        if (!is_array($data) || sizeof($data) == 0) {
+            throw new Exception(__CLASS__ . __FUNCTION__ . ' error', 500);
         }
 
         return $data;
