@@ -105,19 +105,18 @@ class Problem extends BaseDao
     }
 
 
-    /** 根据pid 返回一个题目信息
-     * todo 拆分proble表字段之后要重写 还有要写一个 get title_type 的函数
+    /** 临时方法 根据pid 返回一个题目信息
+     * todo 拆分proble表字段之后要弃用
      * @param $pid
      * @return array|bool
      * @throws Exception
      */
-    public function selectOne($pid)
+    public function selectOne_tmp($pid)
     {
         $table_h = DB_PREFIX . "_hint";
 
         $data = $this->database->select($this->table.'(p)',[
             "[>]$table_h(h)"=>['id'=>'pid'],
-            "[>]$table_h"
         ],[
             'p.id',
             'p.problem',
@@ -138,7 +137,44 @@ class Problem extends BaseDao
         ]);
 
         //一条或多条
-        if(!is_array($data)||sizeof($data)==0){
+        if(!is_array($data)||sizeof($data)!=1){
+            throw new Exception(__CLASS__.__FUNCTION__ . ' error', 500);
+        }
+
+        return $data;
+    }
+
+
+    /** 获取题目主要信息（除option外）todo 需要修改problem表后使用
+     * @param $pid
+     * @return array|bool
+     * @throws Exception
+     */
+    public function selectOne($pid)
+    {
+        $table_h = DB_PREFIX . "_hint";
+
+        $data = $this->database->select($this->table.'(p)',[
+            "[>]$table_h(h)"=>['id'=>'pid'],
+        ],[
+            'p.id',
+            'p.title_text',
+            'p.title_pic',
+            'p.answers',
+            'p.language',
+            'p.classification',
+            'p.pro_type',
+            'p.pro_source',
+            'h.hint'
+        ],[
+            'AND' => [
+                'p.id' => $pid,
+                'p.visible[!]'=>0
+            ]
+        ]);
+
+        //一条或多条
+        if(!is_array($data)||sizeof($data)!=1){
             throw new Exception(__CLASS__.__FUNCTION__ . ' error', 500);
         }
 

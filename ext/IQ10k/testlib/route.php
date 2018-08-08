@@ -38,8 +38,6 @@ $app->group('/problem', function () {
         $c_gp = new tlApp\controller\GetProblem();
         $c_gp->withPid($pid);
         return $response->withStatus($c_gp->getStatus());
-
-
     });
 
     //todo 获取某页的题目信息（流式分页）
