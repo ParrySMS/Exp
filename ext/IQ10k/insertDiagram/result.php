@@ -51,7 +51,10 @@ function getTr($database, $table)
 //        'pro_source'
     ], [
 //        'visible' => 1,
-        "ORDER" => ["id" => "DESC"]
+		'AND'=>[
+			'visible[!]'=>0
+		],
+		"ORDER" => ["id" => "DESC"]
     ]);
     //var_dump($data);
     return $data;
