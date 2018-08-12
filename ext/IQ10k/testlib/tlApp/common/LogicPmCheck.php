@@ -73,6 +73,12 @@ class LogicPmCheck extends PmCheck
      */
     protected function keyComplete(Array $body, $has_pid = false)
     {
+        //解决前端options关键字的问题
+        if(isset($body['optionAr'])){
+            $body['options']=$body['optionAr'];
+            unset($body['optionAr']);
+        }
+
         $problem_base = [
             'problem' => null,
             //todo option_num之后要去掉
