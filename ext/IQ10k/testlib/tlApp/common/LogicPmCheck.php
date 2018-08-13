@@ -53,7 +53,7 @@ class LogicPmCheck extends PmCheck
      */
     public function pidCheck($pid, $return = false)
     {
-        $pid = $this->getNumeric($pid);
+        $pid = parent::getNumeric($pid);
         if ($pid === null) {
             throw new Exception('pid type error', 400);
         }
@@ -210,7 +210,7 @@ class LogicPmCheck extends PmCheck
                         throw new Exception("$key null", 400);
                     }
                     //类型检查 整数检查
-                    if ($this->getNumeric($value,true) === null) {
+                    if (parent::getNumeric($value,true) === null) {
                         throw new Exception( "$key : $value type error", 400);
                     }
                     break;
