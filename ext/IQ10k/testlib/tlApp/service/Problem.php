@@ -98,9 +98,6 @@ class Problem extends BaseService
 //        $options = $this->getOptions($pid);
 //        $pro_main['options'] = $options;
 
-
-
-
 // todo 明确题目里每个属性的类型 有图有文字  属性是item对象  string，pic数组
 // todo 根据题目属性 去改数据库
     }

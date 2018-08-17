@@ -27,7 +27,6 @@ class LogicPmCheck extends PmCheck
      */
     public function proInfoCheck(Array $body, $has_pid = false)
     {
-//        problem_info = compact($problem, $option_num, $options, $answers, $language, $classification, $pro_type, $pro_source, $hint);
 
         //补齐body体的参数
         $problem_info = $this->keyComplete($body,$has_pid);
@@ -79,18 +78,19 @@ class LogicPmCheck extends PmCheck
             unset($body['optionAr']);
         }
 
-        $problem_base = [
-            'problem' => null,
-            //todo option_num之后要去掉
-            'option_num' => null,
-            'options' => null,
-            'answers' => null,
-            'language' => null,
-            'classification' => null,
-            'pro_type' => null,
-            'pro_source' => null,
-            'hint' => null,
-        ];
+        $problem_base = PROBLEM_BASE_ARRAY;
+//        [
+//            'problem' => null,
+//            //todo option_num之后要去掉
+//            'option_num' => null,
+//            'options' => null,
+//            'answers' => null,
+//            'language' => null,
+//            'classification' => null,
+//            'pro_type' => null,
+//            'pro_source' => null,
+//            'hint' => null,
+//        ];
 
         if($has_pid == true){
             $problem_base['pid'] = null;

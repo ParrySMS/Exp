@@ -45,9 +45,8 @@ $app->group('/problem', function () {
 
     });
 
-    //插入一条题目
+    //todo 插入一条题目 新数据库结构
     $this->post('', function ($request, $response) {
-//        //todo 临时处理图片才加入的option_num 后面要去掉
         $c_pp = new tlApp\controller\PostProblem($request->getParsedBody());
         return $response->withStatus($c_pp->getStatus());
     });

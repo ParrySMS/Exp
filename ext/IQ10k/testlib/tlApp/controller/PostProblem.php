@@ -22,7 +22,7 @@ class PostProblem extends BaseController
             //参数逻辑检查
             $pm = new LogicPmCheck();
             //todo 图片处理部分 临时开启选项和回答的空数组
-            $pm->setAllowNullArray(true);
+//            $pm->setAllowNullArray(true);
             $pm->proInfoCheck($body);
 
             $info = $pm->getProblemInfo();
