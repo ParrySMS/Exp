@@ -45,13 +45,13 @@ $app->group('/problem', function () {
 
     });
 
-    //todo 插入一条题目 新数据库结构
+    // 插入一条题目  先暂时不管图片处理
     $this->post('', function ($request, $response) {
         $c_pp = new tlApp\controller\PostProblem($request->getParsedBody());
         return $response->withStatus($c_pp->getStatus());
     });
 
-    //编辑某题目
+    //todo 编辑某题目
     $this->post('/{pid}',function($request, $response, array $args){
         $body = array_merge($request->getParsedBody(),$args);
         $c_ep = new tlApp\controller\EditProblem($body);

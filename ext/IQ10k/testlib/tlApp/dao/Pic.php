@@ -51,7 +51,7 @@ class Pic extends BaseDao
             ]);
 
         if (!is_array($data) || sizeof($data) == 0) {
-            throw new Exception(__CLASS__ . __FUNCTION__ . ' error', 500);
+            throw new Exception(__CLASS__ . __FUNCTION__ . '(): error', 500);
         }
 
          return $data;

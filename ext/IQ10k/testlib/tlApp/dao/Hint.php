@@ -27,7 +27,7 @@ class Hint extends BaseDao
 
         $affected = $pdo->rowCount();
         if (!is_numeric($affected) || $affected != 1) {
-            throw new Exception(__CLASS__._FUNCTION__ . ' error', 500);
+            throw new Exception(__CLASS__ . __FUNCTION__ . '(): error', 500);
         }
     }
 

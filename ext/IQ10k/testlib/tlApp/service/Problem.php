@@ -9,6 +9,7 @@
 namespace tlApp\service;
 
 use tlApp\dao\Hint;
+use tlApp\dao\Option;
 use tlApp\model\Json;
 use \Exception;
 
@@ -37,21 +38,34 @@ class Problem extends BaseService
 //    }
 
 
-    /** 插入题目数据
+    /** 插入题目+提示 插入选项 插入选项ids
      * @param array $problem_info
      * @return Json
+     * @throws Exception
      */
     public function post(Array $problem_info)
     {
 //
-//      problem_info = {$problem, $option_num, $options, $answers, $language, $classification, $pro_type, $proSource, $hint};
+//      problem_info = {$title, $options, $answers, $language, $classification, $pro_type, $proSource, $hint};
 
         //把数组json化
-        $problem_info['options_json'] = json_encode($problem_info['options']);
         $problem_info['answers_json'] = json_encode($problem_info['answers']);
 
-        //dao
-        $pid = $this->pro->insert($problem_info, true);
+        //dao 先插入题目主干
+        $pid = $this->pro->insert($problem_info);
+
+        //再插入题目选项内容
+        $options = $problem_info['options'];
+        $op = new Option();
+        unset($oid);
+        $oids =[];
+        foreach ($options as $key => $value) {
+            $oids[] = $op->insert($pid,$key,$value);
+        }
+
+        //然后更新选项id
+        $option_ids = json_encode($oids);
+        $this->pro->setOids($pid,$option_ids);
 
         $retdata = (object)['pid' => $pid];
         $this->json->setRetdata($retdata);
@@ -115,8 +129,8 @@ class Problem extends BaseService
         unset($options);
         $options = [];
 
-        foreach ($data as $d ){
-            $options[$d['name']]= new \tlApp\model\Option($d['has_pic'],$d['content']);
+        foreach ($data as $d) {
+            $options[$d['name']] = new \tlApp\model\Option($d['has_pic'], $d['content']);
         }
 
         return $options;

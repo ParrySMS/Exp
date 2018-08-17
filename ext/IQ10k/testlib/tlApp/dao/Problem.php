@@ -41,42 +41,35 @@ class Problem extends BaseDao
 
     protected $table = DB_PREFIX . "_problem_test";
 
-
-    /**
+    /** 插入除选项往的题目信息主体 不含图片
      * @param array $problem_info
      * @param bool $ret_id
-     * @return int|null|string
+     * @return int
      * @throws Exception
      */
-    public function insert(Array $problem_info, $ret_id = false)
+    public function insert(Array $problem_info)
     {
 
-//        problem_info = compact($problem, $option_num, $options,$answers,$language, $classification, $pro_type, $pro_source, $hint);
-//        problem_info 加多了两个 $problem_info['options_json'], $problem_info['answers_json'],
+//        problem_info = compact($title, $options(这个单独插),$answers,$language, $classification, $pro_type, $pro_source, $hint);
+//        problem_info 加多了  $problem_info['answers_json'],
         //插入 问题主体
         $pdo = $this->database->insert($this->table, [
-            'problem' => $problem_info['problem'],
-            'option_num' => $problem_info['option_num'],
-            'options' => $problem_info['options_json'],
+            'title' => $problem_info['title'],
             'answers' => $problem_info['answers_json'],
             'language' => $problem_info['language'],
             'classification' => $problem_info['classification'],
             'pro_type' => $problem_info['pro_type'],
             'pro_source' => $problem_info['pro_source'],
-            'time' => date('Y-m-d H:i:s'),
-            'latest' => date('Y-m-d H:i:s'),
+            'time' => date(DB_TIME_FORMAT),
+            'latest' => date(DB_TIME_FORMAT),
             'total_edit' => 0,
-            'visible' => 1
+            'visible' => VISIBLE_NORMAL
 
         ]);
 
-
         $pid = $this->database->id();
         if (!is_numeric($pid) || $pid < 1) {
-//            var_dump($problem_info);
-//            var_dump($pid);
-//            var_dump( $this->database->error() );
-            throw new Exception(__CLASS__ . __FUNCTION__ . ' pid error', 500);
+            throw new Exception(__CLASS__ . __FUNCTION__ . '():  pid error', 500);
 
         }
 
@@ -87,7 +80,7 @@ class Problem extends BaseDao
             $pdo = $this->database->insert($table_hint, [
                 'pid' => $pid,
                 'hint' => $problem_info['hint'],
-                'visible' => 1
+                'visible' => VISIBLE_NORMAL
 
             ]);
 
@@ -96,8 +89,9 @@ class Problem extends BaseDao
                 throw new Exception(__FUNCTION__ . ' hid error', 500);
             }
         }
+        //问题选项放到选项表里单独插
 
-        return $ret_id === false ? null : $pid;
+        return  $pid;
     }
 
 
@@ -121,13 +115,13 @@ class Problem extends BaseDao
         ], [
             'AND' => [
                 'id' => $problem_info['pid'],
-                'visible[!]' => 0
+                'visible[!]' => VISIBLE_DELETE
             ]
         ]);
 
         $affected = $pdo->rowCount();
         if (!is_numeric($affected) || $affected != 1) {
-            throw new Exception(__CLASS__ . __FUNCTION__ . ' error', 500);
+            throw new Exception(__CLASS__ . __FUNCTION__ . '():  error', 500);
         }
     }
 
@@ -159,13 +153,13 @@ class Problem extends BaseDao
         ], [
             'AND' => [
                 'p.id' => $pid,
-                'p.visible[!]' => 0
+                'p.visible[!]' => VISIBLE_DELETE
             ]
         ]);
 
         //一条或多条
         if (!is_array($data) || sizeof($data) != 1) {
-            throw new Exception(__CLASS__ . __FUNCTION__ . ' error', 500);
+            throw new Exception(__CLASS__ . __FUNCTION__ . '():  error', 500);
         }
 
         return $data[0];
@@ -201,14 +195,14 @@ class Problem extends BaseDao
             ], [
                 'AND' => [
                     'p.id' => $pid,
-                    'p.visible[!]' => 0
+                    'p.visible[!]' => VISIBLE_DELETE
                 ]
             ]);
 
         //一条或多条
         if (!is_array($data) || sizeof($data) != 1) {
 //            var_dump($this->database->error());
-            throw new Exception(__CLASS__ . __FUNCTION__ . ' error', 500);
+            throw new Exception(__CLASS__ . __FUNCTION__ . '():  error', 500);
         }
 
         return $data[0];
@@ -221,20 +215,44 @@ class Problem extends BaseDao
      */
     public function getTitleType($pid)
     {
-//        'TITLE_TYPE_PIC',1
-//        'TITLE_TYPE_TEXT',2
         $data = $this->database->select($this->table, [
             'title_type'
         ], [
             'AND' => [
-                'p.id' => $pid,
-                'p.visible[!]' => 0
+                'id' => $pid,
+                'visible[!]' => VISIBLE_DELETE
             ]
         ]);
 
         if (!is_array($data) || sizeof($data) != 1) {
-            throw new Exception(__CLASS__ . __FUNCTION__ . ' error', 500);
+            throw new Exception(__CLASS__ . __FUNCTION__ . '():  error', 500);
         }
+
+
+    }
+
+
+    /** 插入题目的选项id数组json
+     * @param $pid
+     * @param $option_ids_json
+     * @throws Exception
+     */
+    public function setOids($pid, $option_ids_json)
+    {
+        $pdo = $this->database->update($this->table, [
+            'option_ids'=>$option_ids_json
+        ],[
+            'AND'=>[
+                'id' => $pid,
+                'visible[!]' => VISIBLE_DELETE
+            ]
+        ]);
+
+        $affected = $pdo->rowCount();
+        if (!is_numeric($affected) || $affected != 1) {
+            throw new Exception(__CLASS__ . '->' . __FUNCTION__ . '(): error', 500);
+        }
+
 
 
     }

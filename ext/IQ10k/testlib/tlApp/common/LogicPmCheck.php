@@ -78,19 +78,8 @@ class LogicPmCheck extends PmCheck
             unset($body['optionAr']);
         }
 
-        $problem_base = PROBLEM_BASE_ARRAY;
-//        [
-//            'problem' => null,
-//            //todo option_num之后要去掉
-//            'option_num' => null,
-//            'options' => null,
-//            'answers' => null,
-//            'language' => null,
-//            'classification' => null,
-//            'pro_type' => null,
-//            'pro_source' => null,
-//            'hint' => null,
-//        ];
+        //补齐字段
+        $problem_base = json_decode(PROBLEM_BASE_INFO_JSON);
 
         if($has_pid == true){
             $problem_base['pid'] = null;
@@ -201,8 +190,8 @@ class LogicPmCheck extends PmCheck
                     }
                     break;
 
-                //非空参数 todo 这个option_num后面要去掉
-                case 'option_num':
+                //非空参数
+//                case 'option_num':
                 case 'pid':
 
                     //检查空 排除掉0的特殊情况
