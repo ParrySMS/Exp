@@ -74,29 +74,48 @@ class Problem extends BaseService
     }
 
 
-    /** 编辑题目信息 hint和problem分别update
-     * @param array $problem_info
-     * @return Json
-     * @throws \Exception
-     */
+
     public function edit(Array $problem_info)
     {
+//        先不考虑图片
+
 //   这个有pid
 //   problem_info = {'pid','problem',  'options', 'answers', 'language', 'classification', 'pro_type', 'pro_source', 'hint'};
 
+        $pid = $problem_info['pid'];
         //把数组json化
-        $problem_info['options_json'] = json_encode($problem_info['options']);
         $problem_info['answers_json'] = json_encode($problem_info['answers']);
-
-        //处理option_num
-        $problem_info['option_num'] = sizeof($problem_info['options']);
 
         //先插入提示
         if (!empty($problem_info['hint'])) {
             $hint = new Hint();
-            $hint->update($problem_info['pid'], $problem_info['hint']);
+            $hint->update($pid, $problem_info['hint']);
         }
-        //再插入题目主体
+
+        //更新选项 先拿到已有选项的集合
+        $op = new Option();
+        $option_ids = $this->pro->getOids($pid);
+        $db_options_data = $op->selectGroup($pid,$option_ids);
+
+
+
+//        然后对比修改
+        $options = $problem_info['options'];
+        foreach ($options as $key => $value) {
+
+            foreach ($db_options_data as $d) {
+                if ($key == $d['key'] && $value != $d['content']) { //数据库原有的选项 并且值不同 那么就更新
+                    $op->update($d['id'], $pid, $key, $value);
+                    break;
+                }
+            }
+            //todo 要判断 已经更新 不需要再插入 不在key里需要插入  七夕先休息一下
+
+
+
+        }
+
+        //最后再插入题目主体 因为要记录时间
         $this->pro->update($problem_info);
         return $this->json;
     }

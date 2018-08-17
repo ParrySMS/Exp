@@ -157,7 +157,7 @@ class Problem extends BaseDao
             ]
         ]);
 
-        //一条或多条
+        //一条
         if (!is_array($data) || sizeof($data) != 1) {
             throw new Exception(__CLASS__ . __FUNCTION__ . '():  error', 500);
         }
@@ -199,7 +199,7 @@ class Problem extends BaseDao
                 ]
             ]);
 
-        //一条或多条
+        //一条
         if (!is_array($data) || sizeof($data) != 1) {
 //            var_dump($this->database->error());
             throw new Exception(__CLASS__ . __FUNCTION__ . '():  error', 500);
@@ -224,6 +224,7 @@ class Problem extends BaseDao
             ]
         ]);
 
+        //一条
         if (!is_array($data) || sizeof($data) != 1) {
             throw new Exception(__CLASS__ . __FUNCTION__ . '():  error', 500);
         }
@@ -248,12 +249,40 @@ class Problem extends BaseDao
             ]
         ]);
 
+
+
         $affected = $pdo->rowCount();
         if (!is_numeric($affected) || $affected != 1) {
             throw new Exception(__CLASS__ . '->' . __FUNCTION__ . '(): error', 500);
         }
 
+    }
 
+    /** 得到选项编号数组
+     *  注意：非选择题不应该调用这个函数
+     * @param $pid
+     * @return mixed
+     * @throws Exception
+     */
+    public function getOids($pid)
+    {
+        $pro_type = json_decode(PM_REGION_PROTYPE_JSON);
+        //前两项 选择题
+        $choice = [$pro_type[0],$pro_type[1]];
+
+        $json = $this->database->get($this->table,
+            'option_ids'
+        ,[
+            'AND'=>[
+                'id' => $pid,
+                'pro_type'=>$choice,
+                'visible[!]' => VISIBLE_DELETE
+            ]
+        ]);
+
+        return json_decode($json);
 
     }
+
+
 }

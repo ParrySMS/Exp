@@ -7,6 +7,7 @@
  */
 
 namespace tlApp\dao;
+
 use \Exception;
 
 class Option extends BaseDao
@@ -14,7 +15,7 @@ class Option extends BaseDao
     protected $table = DB_PREFIX . '_option_test';
 
 
-    /** 默认无图
+    /** 默认无图 逐条插入选项
      * @param $pid
      * @param $key
      * @param $content
@@ -24,12 +25,13 @@ class Option extends BaseDao
     public function insert($pid, $key, $content, $is_pic = 0)
     {
         $pdo = $this->database->insert($this->table, [
-            'pid'=>$pid,
-            'key'=>$key,
-            'content'=>$content,
-            'is_pic'=>$is_pic,
-            'visible'=>VISIBLE_NORMAL
-        ];
+            'pid' => $pid,
+            'key' => $key,
+            'content' => $content,
+            'is_pic' => $is_pic,
+            'visible' => VISIBLE_NORMAL
+        ]);
+
         $id = $this->database->id();
         if (!is_numeric($id) || $id < 1) {
             throw new Exception(__CLASS__ . __FUNCTION__ . '():  pid error', 500);
@@ -38,22 +40,54 @@ class Option extends BaseDao
         return $id;
 
     }
+
+
+    /** 更新选项内容
+     * @param $pid
+     * @param $key
+     * @param $content
+     * @param int $is_pic
+     * @throws Exception
+     */
+    public function update($oid,$pid, $key, $content, $is_pic = 0)
+    {
+        $pdo = $this->database->update($this->table, [
+            'key' => $key,
+            'content' => $content,
+            'is_pic' => $is_pic,
+        ], [
+            'AND' => [
+                'id'=>$oid,
+                'pid' => $pid,
+                'visible[!]' => VISIBLE_DELETE
+            ]
+        ]);
+
+
+        $affected = $pdo->rowCount();
+        if (!is_numeric($affected) || $affected != 1) {
+            throw new Exception(__CLASS__ . '->' . __FUNCTION__ . '(): error', 500);
+        }
+
+    }
+
     /** 返回一组选项
      * @param $pid
      * @return array|bool
      * @throws Exception
      */
-    public function selectGroup($pid)
+    public function selectGroup($pid, array $option_ids)
     {
         $data = $this->database->select($this->table, [
+            'id',
             'key',
             'content',
             'is_pic',
-
         ], [
             'AND' => [
+                'id' => $option_ids,
                 'pid' => $pid,
-                'visible[!]' => 0
+                'visible[!]' => VISIBLE_DELETE
             ]
         ]);
 
