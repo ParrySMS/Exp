@@ -101,8 +101,9 @@ class Problem extends BaseService
 
 //        然后对比修改
         $options = $problem_info['options'];
-        foreach ($options as $key => $value) {
 
+        foreach ($options as $key => $value) {
+            //todo 换个思路 oid的问题
             foreach ($db_options_data as $d) {
                 if ($key == $d['key'] && $value != $d['content']) { //数据库原有的选项 并且值不同 那么就更新
                     $op->update($d['id'], $pid, $key, $value);
