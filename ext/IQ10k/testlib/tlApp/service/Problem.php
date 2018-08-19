@@ -87,6 +87,8 @@ class Problem extends BaseService
 //   这个有pid
 //   problem_info = {'pid','problem',  'options', 'answers', 'language', 'classification', 'pro_type', 'pro_source', 'hint'};
 
+        //todo 如果是选项减少 要删除原选项
+
         $pid = $problem_info['pid'];
         //把数组json化
         $problem_info['answers_json'] = json_encode($problem_info['answers']);
@@ -97,35 +99,47 @@ class Problem extends BaseService
             $hint->update($pid, $problem_info['hint']);
         }
 
-        //更新选项 先拿到已有选项的集合
-        $op = new Option();
-        $option_ids = $this->pro->getOids($pid);
-        //获取原有选项数据
-        $db_options_data = $op->selectGroup($pid,$option_ids);
-
         //方便最后更新题目主体索引
         unset($new_oids);
         $new_oids = [];
-
-//        然后对比修改
+        //选项参数
         $options = $problem_info['options'];
+        if(sizeof($options)!=0) {//如果有参数
+            //更新选项 先拿到已有选项的集合
+            $op = new Option();
+            $option_ids = $this->pro->getOids($pid);
+            //获取原有选项数据
+            $db_options_data = $op->selectGroup($pid,$option_ids);
 
-        foreach ($options as $key => $value) {
-            foreach ($db_options_data as $d) {
-                if ($key == $d['key'] && $value != $d['content']) { // 每个新数据去遍历匹配 旧数据库原有的选项 匹配到并且值不同 那么就更新
-                    $op->update($d['id'], $pid, $key, $value);
-                    $new_oids[] = $d['id'];
-                    break;//检验到 之后就可以跳出 进行下一个新数据了
+            //删除非添加的数据 引用传递
+            foreach ($db_options_data as &$d) {
+                if (array_key_exists($d['key'], $options)) {
+                    $op->delete($d['id']);
+                    unset($d);
                 }
             }
-            //如果这个选项没有匹配到已有数据 把它看做新数据
-            $new_oids[] = $op->insert($pid,$key,$value);
+
+            //每个新数据去遍历匹配 旧数据库原有的选项
+            foreach ($options as $key => $value) {
+                foreach ($db_options_data as $d) {
+                    if ($key == $d['key'] && $value != $d['content']) { //  匹配到并且值不同 那么就更新
+                        $op->update($d['id'], $pid, $key, $value);
+                        $new_oids[] = $d['id'];
+                        break;//检验到 之后就可以跳出 进行下一个新数据了
+                    }
+                }
+                //如果这个选项没有匹配到已有数据 把它看做新数据
+                $new_oids[] = $op->insert($pid, $key, $value);
+            }
         }
 
         $problem_info['options_json'] = json_encode($new_oids);
 
         //最后再插入题目主体 因为要记录时间
         $this->pro->update($problem_info);
+
+        $retdata = (object)['pid' => $pid];
+        $this->json->setRetdata($retdata);
         return $this->json;
     }
 

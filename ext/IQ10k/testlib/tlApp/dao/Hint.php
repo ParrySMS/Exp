@@ -12,8 +12,13 @@ use \Exception;
 class Hint extends BaseDao
 {
 
-    protected $table = DB_PREFIX . "_hint";
+    protected $table = DB_PREFIX . "_hint_test";
 
+    /** 更新一条提示
+     * @param $pid
+     * @param $hint
+     * @throws Exception
+     */
     public function update($pid, $hint)
     {
         $pdo = $this->database->update($this->table, [
@@ -21,13 +26,16 @@ class Hint extends BaseDao
         ],[
             'AND'=>[
                 'pid'=>$pid,
-                'visible[!]'=>0
+                'visible[!]'=>VISIBLE_DELETE
             ]
         ]);
 
         $affected = $pdo->rowCount();
+
         if (!is_numeric($affected) || $affected != 1) {
-            throw new Exception(__CLASS__ . __FUNCTION__ . '(): error', 500);
+//            var_dump($affected);
+//            $this->database->error();
+            throw new Exception(__CLASS__ .'->'. __FUNCTION__ . '(): error', 500);
         }
     }
 

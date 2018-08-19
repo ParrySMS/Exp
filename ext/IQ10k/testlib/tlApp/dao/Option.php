@@ -102,4 +102,30 @@ class Option extends BaseDao
         return $data;
 
     }
+
+
+    /** 软删除
+     * @param $oid
+     * @throws Exception
+     */
+    public function delete($oid)
+    {
+        $pdo = $this->database->update($this->table, [
+            'visible' => VISIBLE_DELETE,
+            'edit_time'=>date(DB_TIME_FORMAT),
+
+        ], [
+            'AND' => [
+                'id'=>$oid,
+                'visible[!]' => VISIBLE_DELETE
+            ]
+        ]);
+
+
+        $affected = $pdo->rowCount();
+        if (!is_numeric($affected) || $affected != 1) {
+            throw new Exception(__CLASS__ . '->' . __FUNCTION__ . '(): error', 500);
+        }
+
+    }
 }

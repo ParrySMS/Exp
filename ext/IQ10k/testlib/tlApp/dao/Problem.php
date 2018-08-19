@@ -69,7 +69,7 @@ class Problem extends BaseDao
 
         $pid = $this->database->id();
         if (!is_numeric($pid) || $pid < 1) {
-            throw new Exception(__CLASS__ . __FUNCTION__ . '():  pid error', 500);
+            throw new Exception(__CLASS__ .'->'.__FUNCTION__ . '():  pid error', 500);
 
         }
 
@@ -86,7 +86,7 @@ class Problem extends BaseDao
 
             $hid = $this->database->id();
             if (!is_numeric($hid) || $hid < 1) {
-                throw new Exception(__CLASS__ . __FUNCTION__ . '():  hid error', 500);
+                throw new Exception(__CLASS__ .'->'.__FUNCTION__ . '():  hid error', 500);
             }
         }
         //问题选项放到选项表里单独插
@@ -103,8 +103,7 @@ class Problem extends BaseDao
     {
         $pdo = $this->database->update($this->table, [
             'title' => $problem_info['title'],
-            'option_num' => $problem_info['option_num'],
-            'options' => $problem_info['options_json'],
+            'option_ids' => $problem_info['options_json'],
             'answers' => $problem_info['answers_json'],
             'language' => $problem_info['language'],
             'classification' => $problem_info['classification'],
@@ -121,7 +120,7 @@ class Problem extends BaseDao
 
         $affected = $pdo->rowCount();
         if (!is_numeric($affected) || $affected != 1) {
-            throw new Exception(__CLASS__ . __FUNCTION__ . '():  error', 500);
+            throw new Exception(__CLASS__ .'->'.__FUNCTION__ . '():  error', 500);
         }
     }
 
@@ -159,7 +158,7 @@ class Problem extends BaseDao
 
         //一条
         if (!is_array($data) || sizeof($data) != 1) {
-            throw new Exception(__CLASS__ . __FUNCTION__ . '():  error', 500);
+            throw new Exception(__CLASS__ .'->'.__FUNCTION__ . '():  error', 500);
         }
 
         return $data[0];
@@ -202,7 +201,7 @@ class Problem extends BaseDao
         //一条
         if (!is_array($data) || sizeof($data) != 1) {
 //            var_dump($this->database->error());
-            throw new Exception(__CLASS__ . __FUNCTION__ . '():  error', 500);
+            throw new Exception(__CLASS__ .'->'.__FUNCTION__ . '():  error', 500);
         }
 
         return $data[0];
@@ -226,7 +225,7 @@ class Problem extends BaseDao
 
         //一条
         if (!is_array($data) || sizeof($data) != 1) {
-            throw new Exception(__CLASS__ . __FUNCTION__ . '():  error', 500);
+            throw new Exception(__CLASS__ .'->'.__FUNCTION__ . '():  error', 500);
         }
 
 
@@ -250,10 +249,9 @@ class Problem extends BaseDao
         ]);
 
 
-
         $affected = $pdo->rowCount();
         if (!is_numeric($affected) || $affected != 1) {
-            throw new Exception(__CLASS__ . '->' . __FUNCTION__ . '(): error', 500);
+            throw new Exception(__CLASS__ . '->'.__FUNCTION__ . '(): error', 500);
         }
 
     }
