@@ -56,16 +56,21 @@ class Problem extends BaseService
 
         //插入题目选项内容
         $options = $problem_info['options'];
-        $op = new Option();
-        unset($oid);
-        $oids =[];
-        foreach ($options as $key => $value) {
-            $oids[] = $op->insert($pid,$key,$value);
+        if(is_array($options)) {//如果有选项
+            $op = new Option();
+
+            unset($oid);
+            $oids = [];
+
+            foreach ($options as $key => $value) {
+                $oids[] = $op->insert($pid, $key, $value);
+            }
+
+            //然后更新选项id
+            $option_ids = json_encode($oids);
+            $this->pro->setOids($pid, $option_ids);
         }
 
-        //然后更新选项id
-        $option_ids = json_encode($oids);
-        $this->pro->setOids($pid,$option_ids);
 
         $retdata = (object)['pid' => $pid];
         $this->json->setRetdata($retdata);

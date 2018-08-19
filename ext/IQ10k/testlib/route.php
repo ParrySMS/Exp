@@ -51,7 +51,7 @@ $app->group('/problem', function () {
         return $response->withStatus($c_pp->getStatus());
     });
 
-    //todo 编辑某题目
+    // 编辑某题目
     $this->post('/{pid}',function($request, $response, array $args){
         $body = array_merge($request->getParsedBody(),$args);
         $c_ep = new tlApp\controller\EditProblem($body);

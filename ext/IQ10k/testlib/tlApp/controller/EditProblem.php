@@ -20,6 +20,7 @@ class EditProblem extends BaseController
         try {
             //参数逻辑检查
             $pm = new LogicPmCheck();
+            $pm->setAllowNullArray(true);
 
             $pm->proInfoCheck($body,true);
 

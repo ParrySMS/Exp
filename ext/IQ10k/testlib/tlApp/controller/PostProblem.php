@@ -21,6 +21,8 @@ class PostProblem extends BaseController
         try {
             //参数逻辑检查
             $pm = new LogicPmCheck();
+            //todo 临时开启
+            $pm->setAllowNullArray(true);
 
             $pm->proInfoCheck($body);
 

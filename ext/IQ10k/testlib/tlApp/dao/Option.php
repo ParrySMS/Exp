@@ -29,6 +29,7 @@ class Option extends BaseDao
             'key' => $key,
             'content' => $content,
             'is_pic' => $is_pic,
+            'time'=>date(DB_TIME_FORMAT),
             'visible' => VISIBLE_NORMAL
         ]);
 
@@ -55,6 +56,8 @@ class Option extends BaseDao
             'key' => $key,
             'content' => $content,
             'is_pic' => $is_pic,
+            'edit_time'=>date(DB_TIME_FORMAT),
+
         ], [
             'AND' => [
                 'id'=>$oid,

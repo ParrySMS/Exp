@@ -61,7 +61,7 @@ class Problem extends BaseDao
             'pro_type' => $problem_info['pro_type'],
             'pro_source' => $problem_info['pro_source'],
             'time' => date(DB_TIME_FORMAT),
-            'latest' => date(DB_TIME_FORMAT),
+            'edit_time' => date(DB_TIME_FORMAT),
             'total_edit' => 0,
             'visible' => VISIBLE_NORMAL
 
@@ -86,7 +86,7 @@ class Problem extends BaseDao
 
             $hid = $this->database->id();
             if (!is_numeric($hid) || $hid < 1) {
-                throw new Exception(__FUNCTION__ . ' hid error', 500);
+                throw new Exception(__CLASS__ . __FUNCTION__ . '():  hid error', 500);
             }
         }
         //问题选项放到选项表里单独插
@@ -102,7 +102,7 @@ class Problem extends BaseDao
     public function update(Array $problem_info)
     {
         $pdo = $this->database->update($this->table, [
-            'problem' => $problem_info['problem'],
+            'title' => $problem_info['title'],
             'option_num' => $problem_info['option_num'],
             'options' => $problem_info['options_json'],
             'answers' => $problem_info['answers_json'],
@@ -110,7 +110,7 @@ class Problem extends BaseDao
             'classification' => $problem_info['classification'],
             'pro_type' => $problem_info['pro_type'],
             'pro_source' => $problem_info['pro_source'],
-            'latest' => date('Y-m-d H:i:s'),
+            'edit_time' => date(DB_TIME_FORMAT),
             'total_edit[+]' => 1
         ], [
             'AND' => [

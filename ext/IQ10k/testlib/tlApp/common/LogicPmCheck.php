@@ -79,7 +79,7 @@ class LogicPmCheck extends PmCheck
         }
 
         //补齐字段
-        $problem_base = json_decode(PROBLEM_BASE_INFO_JSON);
+        $problem_base = json_decode(PROBLEM_BASE_INFO_JSON,true);
 
         if($has_pid == true){
             $problem_base['pid'] = null;
@@ -204,7 +204,7 @@ class LogicPmCheck extends PmCheck
                     }
                     break;
 
-                case 'problem':
+                case 'title':
                 case 'language':
                 case 'classification':
                 case 'pro_type':
@@ -234,12 +234,12 @@ class LogicPmCheck extends PmCheck
     protected function regionCheck(Array $problem_info)
     {
         //范围检查
-        $region_lang = json_decode(PM_REGION_LANG_JSON);
+        $region_lang = json_decode(PM_REGION_LANG_JSON,true);
         if (!in_array($problem_info['language'], $region_lang)) {
             throw new Exception('language: ' . $problem_info['language'] . ' not in region', 400);
         }
 
-        $region_type = json_decode(PM_REGION_PROTYPE_JSON);
+        $region_type = json_decode(PM_REGION_PROTYPE_JSON,true);
         if (!in_array($problem_info['pro_type'], $region_type)) {
             throw new Exception('proType: ' . $problem_info['language'] . ' not in region', 400);
         }
