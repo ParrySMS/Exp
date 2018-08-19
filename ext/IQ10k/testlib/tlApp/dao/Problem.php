@@ -41,7 +41,7 @@ class Problem extends BaseDao
 
     protected $table = DB_PREFIX . "_problem_test";
 
-    /** 插入除选项往的题目信息主体 不含图片
+    /** 插入除选项往的题目信息主体 不含图片 不含option
      * @param array $problem_info
      * @param bool $ret_id
      * @return int
@@ -95,7 +95,7 @@ class Problem extends BaseDao
     }
 
 
-    /** 更新题目主体信息 （需要先更新提示）
+    /** 更新题目主体信息 （需要先更新其他）
      * @param array $problem_info
      * @throws Exception
      */

@@ -51,10 +51,10 @@ class Problem extends BaseService
         //把数组json化
         $problem_info['answers_json'] = json_encode($problem_info['answers']);
 
-        //dao 先插入题目主干
+        //dao 先插入题目主干 因为选项需要pid绑定
         $pid = $this->pro->insert($problem_info);
 
-        //再插入题目选项内容
+        //插入题目选项内容
         $options = $problem_info['options'];
         $op = new Option();
         unset($oid);
@@ -95,26 +95,29 @@ class Problem extends BaseService
         //更新选项 先拿到已有选项的集合
         $op = new Option();
         $option_ids = $this->pro->getOids($pid);
+        //获取原有选项数据
         $db_options_data = $op->selectGroup($pid,$option_ids);
 
-
+        //方便最后更新题目主体索引
+        unset($new_oids);
+        $new_oids = [];
 
 //        然后对比修改
         $options = $problem_info['options'];
 
         foreach ($options as $key => $value) {
-            //todo 换个思路 oid的问题
             foreach ($db_options_data as $d) {
-                if ($key == $d['key'] && $value != $d['content']) { //数据库原有的选项 并且值不同 那么就更新
+                if ($key == $d['key'] && $value != $d['content']) { // 每个新数据去遍历匹配 旧数据库原有的选项 匹配到并且值不同 那么就更新
                     $op->update($d['id'], $pid, $key, $value);
-                    break;
+                    $new_oids[] = $d['id'];
+                    break;//检验到 之后就可以跳出 进行下一个新数据了
                 }
             }
-            //todo 要判断 已经更新 不需要再插入 不在key里需要插入  七夕先休息一下
-
-
-
+            //如果这个选项没有匹配到已有数据 把它看做新数据
+            $new_oids[] = $op->insert($pid,$key,$value);
         }
+
+        $problem_info['options_json'] = json_encode($new_oids);
 
         //最后再插入题目主体 因为要记录时间
         $this->pro->update($problem_info);
