@@ -32,7 +32,7 @@ $pm = new \tlApp\common\PmCheck();
 $app->group('/problem', function () {
 
 
-    //todo 获取某条题目的信息
+    // 获取某条题目的信息
     $this->get('/{pid}',function($request, $response, array $args){
         $pid = isset($args['pid'])?$args['pid']:null;
         $c_gp = new tlApp\controller\GetProblem();

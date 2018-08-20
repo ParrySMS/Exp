@@ -32,7 +32,7 @@ class Problem
         $this->title = isset($options['title']) ? $options['title'] : null;
         $this->title_pic = isset($options['title_pic']) ? $options['title_pic'] : null;
         $this->options = isset($options['options']) ? $options['options'] : [];
-        $this->answer = isset($options['answer']) ? $options['answer'] : [];
+        $this->answers = isset($options['answers']) ? $options['answers'] : [];
         $this->language = isset($options['language']) ? $options['language'] : null;
         $this->classification = isset($options['classification']) ? $options['classification'] : null;
         $this->pro_type = isset($options['pro_type']) ? $options['pro_type'] : null;

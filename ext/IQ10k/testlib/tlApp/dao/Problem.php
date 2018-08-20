@@ -132,16 +132,16 @@ class Problem extends BaseDao
      */
     public function selectOne($pid)
     {
-        $table_h = DB_PREFIX . "_hint";
+        $table_h = DB_PREFIX . "_hint_test";
 
         $data = $this->database->select($this->table . '(p)', [
-            "[>]" . "$table_h" . "(h)" => ['id' => 'pid'],
+            "[>]" . "$table_h" . "(h)" => ['p.id' => 'pid'],
         ], [
             'p.id',
             'p.title',
             'p.title_pic',
             'p.option_ids',
-            'p.answers',
+            'p.answers',//这个是json
             'p.language',
             'p.classification',
             'p.pro_type',

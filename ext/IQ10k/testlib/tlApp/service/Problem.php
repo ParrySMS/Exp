@@ -157,6 +157,7 @@ class Problem extends BaseService
     {
         //先获取在主体题目信息（可能有hint）
         $pro_data = $this->pro->selectOne($pid);
+        $pro_data['answers'] = json_decode( $pro_data['answers']);
         //然后获取选项信息
         $oids = $pro_data['option_ids'];
         //对象数组
