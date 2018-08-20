@@ -17,6 +17,9 @@ class GetProblem extends BaseController
     public function withPid($pid)
     {
         try {
+            //日志记录
+            parent::actionLog();
+
             //参数逻辑检查
             $pm = new LogicPmCheck();
             $pid = $pm->pidCheck($pid,true);

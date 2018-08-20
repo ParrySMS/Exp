@@ -26,8 +26,10 @@ try {
     ]);
 
     //数据库表
-    $table_p = DB_PREFIX . '_problem';
-    $table_h = DB_PREFIX . '_hint';
+//    $table_p = DB_PREFIX . '_problem';
+    $table_p = DB_PREFIX . '_problem_test';
+//    $table_h = DB_PREFIX . '_hint';
+    $table_h = DB_PREFIX . '_hint_test';
 
 } catch (Exception $e) {
     echo '错误信息<br/>' . $e->getMessage();
@@ -41,14 +43,12 @@ function getTr($database, $table)
 
     $data = $database->select($table, [
         'id',
-        'problem',
-        'option_num',
-//            'options',
+        'title',
         'answers',
         'language',
         'classification',
-        'pro_type'
-//        'pro_source'
+        'pro_type',
+        'pro_source'
     ], [
 //        'visible' => 1,
 		'AND'=>[
@@ -64,13 +64,12 @@ function echoTr()
 {
     echo '<tr>';
     echo '<th>id</th>';
-    echo '<th>problem</th>';
+    echo '<th>title</th>';
     echo '<th>pro_type <br/>（exclusive单个<br/> 
             multiple多个<br/>
             fill填空<br/>
             choice选择）
             </th>';
-    echo '<th>option_num</th>';
     echo '<th>answers</th>';
     echo '<th>language <br/> (中文zh <br/>
             英文en<br/> 
@@ -78,7 +77,7 @@ function echoTr()
             数字all)
             </th>';
     echo '<th>类目</th>';
-//    echo '<th>pro_source</th>';
+    echo '<th>来源文件</th>';
     echo '</tr>';
 }
 
@@ -87,13 +86,12 @@ function echoTd($datas)
     foreach ($datas as $data) {
         echo '<tr>';
         echo '<td>' . $data['id'] . '</td>';
-        echo '<td>' . $data['problem'] . '</td>';
+        echo '<td>' . $data['title'] . '</td>';
         echo '<td>' . $data['pro_type'] . '</td>';
-        echo '<td>' . $data['option_num'] . '</td>';
         echo '<td>' . $data['answers'] . '</td>';
         echo '<td>' . $data['language'] . '</td>';
         echo '<td>' . $data['classification'] . '</td>';
-//        echo '<td>' . $data['pro_source'] . '</td>';
+        echo '<td>' . $data['pro_source'] . '</td>';
         echo '</tr>';
     }
 }

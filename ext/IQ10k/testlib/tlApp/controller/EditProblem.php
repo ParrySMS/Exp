@@ -18,9 +18,13 @@ class EditProblem extends BaseController
     public function __construct(Array $body)
     {
         try {
+            //日志记录
+            parent::actionLog();
+
             //参数逻辑检查
             $pm = new LogicPmCheck();
-            $pm->setAllowNullArray(true);
+            //todo 临时关闭
+//            $pm->setAllowNullArray(true);
 
             $pm->proInfoCheck($body,true);
 

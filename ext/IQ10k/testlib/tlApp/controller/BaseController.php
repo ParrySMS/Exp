@@ -6,6 +6,7 @@
  * Time: 1:02
  */
 namespace tlApp\controller;
+use tlApp\common\Log;
 use tlApp\model\Json;
 use \Exception;
 class BaseController
@@ -49,4 +50,16 @@ class BaseController
             print_r(json_encode($json));
         }
     }
+
+    /** 做用户行为记录
+     * @param null $uid
+     * @param null $error_code
+     */
+    public function actionLog($uid = null,$error_code = null)
+    {
+        $this->uid = $uid;
+        $log = new Log();
+        $log->action($uid,$error_code);
+    }
+
 }

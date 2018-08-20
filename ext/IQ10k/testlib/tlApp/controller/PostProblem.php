@@ -19,10 +19,13 @@ class PostProblem extends BaseController
     public function __construct(Array $body)
     {
         try {
+            //日志记录
+            parent::actionLog();
+
             //参数逻辑检查
             $pm = new LogicPmCheck();
-            //todo 临时开启
-            $pm->setAllowNullArray(true);
+            //todo 临时关闭
+//            $pm->setAllowNullArray(true);
 
             $pm->proInfoCheck($body);
 
