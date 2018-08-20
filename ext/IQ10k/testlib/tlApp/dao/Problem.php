@@ -125,13 +125,12 @@ class Problem extends BaseDao
     }
 
 
-    /** 临时方法 根据pid 返回一个题目信息
-     * todo 拆分proble表字段之后要弃用
+    /** 根据pid 返回一个题目信息
      * @param $pid
      * @return array|bool
      * @throws Exception
      */
-    public function selectOne_tmp($pid)
+    public function selectOne($pid)
     {
         $table_h = DB_PREFIX . "_hint";
 
@@ -139,15 +138,17 @@ class Problem extends BaseDao
             "[>]" . "$table_h" . "(h)" => ['id' => 'pid'],
         ], [
             'p.id',
-            'p.problem',
-            //todo 之后去掉option_num
-            'p.option_num',
-            'p.options',
+            'p.title',
+            'p.title_pic',
+            'p.option_ids',
             'p.answers',
             'p.language',
             'p.classification',
             'p.pro_type',
             'p.pro_source',
+            'p.time',
+            'p.edit_time',
+            'p.total_edit',
             'h.hint'
         ], [
             'AND' => [
@@ -165,47 +166,6 @@ class Problem extends BaseDao
     }
 
 
-    /** 获取题目主要信息（除option外）todo 需要修改problem表后使用
-     * @param $pid
-     * @return array|bool
-     * @throws Exception
-     */
-    public function selectOne($pid)
-    {
-        $table_h = DB_PREFIX . "_hint";
-
-        $data = $this->database->select($this->table.'(p)',
-            [
-                "[>]$table_h(h)" => [
-                    "p.id" => "pid"
-                ]
-            ],
-            [
-                'p.id',
-                'p.title_text',
-                'p.title_pic',
-                'p.answers',
-                'p.language',
-                'p.classification',
-                'p.pro_type',
-                'p.pro_source',
-                'h.hint'
-
-            ], [
-                'AND' => [
-                    'p.id' => $pid,
-                    'p.visible[!]' => VISIBLE_DELETE
-                ]
-            ]);
-
-        //一条
-        if (!is_array($data) || sizeof($data) != 1) {
-//            var_dump($this->database->error());
-            throw new Exception(__CLASS__ .'->'.__FUNCTION__ . '():  error', 500);
-        }
-
-        return $data[0];
-    }
 
 
     /** 获取题目标题类型 todo 拆分proble表字段之后才能用

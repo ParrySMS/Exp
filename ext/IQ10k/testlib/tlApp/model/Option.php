@@ -12,18 +12,21 @@ namespace tlApp\model;
 class Option
 {
 
-    public $type; //0无图文字 1有图url
-    public $value;
+    public $key;
+    public $is_pic;//0无图文字 1有图url
+    public $content;
 
     /**
-     * Item constructor.
-     * @param $type
-     * @param $value
+     * Option constructor.
+     * @param $key
+     * @param $content
+     * @param $is_pic
      */
-    public function __construct($type, $value)
+    public function __construct($key, $is_pic, $content)
     {
-        $this->type = $type;
-        $this->value = $value;
+        $this->key = $key;
+        $this->is_pic = $is_pic;
+        $this->content = $content;
     }
 
 

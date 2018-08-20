@@ -31,6 +31,10 @@ class GetProblem extends BaseController
         }
     }
 
+    /**
+     * @param $pid
+     * @throws Exception
+     */
     private function getProblemById($pid)
     {
         $pro = new Problem();

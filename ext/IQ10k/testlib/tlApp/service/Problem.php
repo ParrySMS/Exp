@@ -79,7 +79,11 @@ class Problem extends BaseService
     }
 
 
-
+    /** 实现选项的更新
+     * @param array $problem_info
+     * @return Json
+     * @throws Exception
+     */
     public function edit(Array $problem_info)
     {
 //        先不考虑图片
@@ -143,40 +147,50 @@ class Problem extends BaseService
         return $this->json;
     }
 
+
+    /** 获取一条完整的题目数据
+     * @param $pid
+     * @return Json
+     * @throws Exception
+     */
     public function getOne($pid)
     {
-        //todo 当前临时方法 先获取在主体题目信息 已含有title的text值
-        $pro_data = $this->pro->selectOne_tmp($pid);
+        //先获取在主体题目信息（可能有hint）
+        $pro_data = $this->pro->selectOne($pid);
+        //然后获取选项信息
+        $oids = $pro_data['option_ids'];
+        //对象数组
+        $pro_data['options'] = [];
 
-        //todo 改数据表 把problem变成 title_text 和 title_pic 单独抽出option做表
-//        $pro_main = $this->pro->selectOne($pid);
-//          $pro_main['answers'] = json_decode($pro_main['answers']);
-//        $options = $this->getOptions($pid);
-//        $pro_main['options'] = $options;
+        if(is_array($oids)&&sizeof($oids)!=0){
+            $pro_data['options'] = $this->getOptions($pid,$oids);
+        }
 
-// todo 明确题目里每个属性的类型 有图有文字  属性是item对象  string，pic数组
-// todo 根据题目属性 去改数据库
+        $pro = new \tlApp\model\Problem($pro_data);
+        $retdata = (object)['problem'=>$pro];
+        $this->json->setRetdata($retdata);
+
+        return $this->json;
     }
 
-    /** 获取选项的关联数组 name取小写
+    /**获取选项的对象数组 key取小写
      * @param $pid
      * @return array
      * @throws Exception
      */
-    protected function getOptions($pid)
+    protected function getOptions($pid,$oids)
     {
         $op = new \tlApp\dao\Option();
-        $data = $op->selectGroup($pid);
+        $data = $op->selectGroup($pid,$oids);
 
         unset($options);
         $options = [];
 
         foreach ($data as $d) {
-            $options[$d['name']] = new \tlApp\model\Option($d['has_pic'], $d['content']);
+            $options[] = new \tlApp\model\Option($d['key'],$d['is_pic'], $d['content']);
         }
 
         return $options;
-
     }
 
 
