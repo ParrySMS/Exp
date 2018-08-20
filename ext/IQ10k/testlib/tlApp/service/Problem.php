@@ -137,7 +137,7 @@ class Problem extends BaseService
             }
         }
 
-        $problem_info['options_json'] = json_encode($new_oids);
+        $problem_info['option_ids'] = json_encode($new_oids);
 
         //最后再插入题目主体 因为要记录时间
         $this->pro->update($problem_info);
@@ -159,7 +159,7 @@ class Problem extends BaseService
         $pro_data = $this->pro->selectOne($pid);
         $pro_data['answers'] = json_decode( $pro_data['answers']);
         //然后获取选项信息
-        $oids = $pro_data['option_ids'];
+        $oids = json_decode($pro_data['option_ids']);
         //对象数组
         $pro_data['options'] = [];
 
@@ -182,13 +182,13 @@ class Problem extends BaseService
     protected function getOptions($pid,$oids)
     {
         $op = new \tlApp\dao\Option();
-        $data = $op->selectGroup($pid,$oids);
+        $datas = $op->selectGroup($pid,$oids);
 
         unset($options);
         $options = [];
 
-        foreach ($data as $d) {
-            $options[] = new \tlApp\model\Option($d['key'],$d['is_pic'], $d['content']);
+        foreach ($datas as $d) {
+            $options[] = new \tlApp\model\Option($d);
         }
 
         return $options;

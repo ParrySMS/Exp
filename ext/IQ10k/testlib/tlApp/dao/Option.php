@@ -85,7 +85,7 @@ class Option extends BaseDao
             'id',
             'key',
             'content',
-            'is_pic',
+            'is_pic'
         ], [
             'AND' => [
                 'id' => $option_ids,
@@ -96,7 +96,7 @@ class Option extends BaseDao
 
         //多条
         if (!is_array($data) || sizeof($data) == 0) {
-            throw new Exception(__CLASS__ . __FUNCTION__ . '(): error', 500);
+            throw new Exception(__CLASS__ . '->' .__FUNCTION__ . '(): error', 500);
         }
 
         return $data;

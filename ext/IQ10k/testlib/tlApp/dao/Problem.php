@@ -103,7 +103,7 @@ class Problem extends BaseDao
     {
         $pdo = $this->database->update($this->table, [
             'title' => $problem_info['title'],
-            'option_ids' => $problem_info['options_json'],
+            'option_ids' => $problem_info['option_ids'],
             'answers' => $problem_info['answers_json'],
             'language' => $problem_info['language'],
             'classification' => $problem_info['classification'],
