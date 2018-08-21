@@ -79,7 +79,7 @@ class Problem extends BaseService
     }
 
 
-    /** 实现选项的更新
+    /** 实现选项的更新 todo 感觉这个函数得优化 能拆一些出来 两个不同数据结构的集合交叉匹配 很烦
      * @param array $problem_info
      * @return Json
      * @throws Exception
@@ -189,6 +189,20 @@ class Problem extends BaseService
         $retdata = (object)['problem' => $pro];
         $this->json->setRetdata($retdata);
 
+        return $this->json;
+    }
+
+    /** 软删除
+     * @param $pid
+     * @param int $visible
+     * @return Json
+     * @throws Exception
+     */
+    public function delete($pid, $visible = VISIBLE_DELETE)
+    {
+        $this->pro->setVisible($pid,$visible);
+        $retdata = (object)['pid' => $pid];
+        $this->json->setRetdata($retdata);
         return $this->json;
     }
 

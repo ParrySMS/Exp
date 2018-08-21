@@ -2,25 +2,20 @@
 /**
  * Created by PhpStorm.
  * User: L
- * Date: 2018-8-3
- * Time: 17:24
+ * Date: 2018-8-21
+ * Time: 16:57
  */
 
 namespace tlApp\controller;
-use \Exception;
+
 use tlApp\common\LogicPmCheck;
+use Exception;
 use tlApp\service\Problem;
 
-class GetProblem extends BaseController
+class DeleteProblem extends BaseController
 {
-
-
-    /**
-     * GetProblem constructor.
-     */
     public function __construct()
     {
-        //日志记录
         parent::actionLog();
     }
 
@@ -33,22 +28,20 @@ class GetProblem extends BaseController
             $pm = new LogicPmCheck();
             $pid = $pm->pidCheck($pid);
 
-            $this->getProblemById($pid);
+            $this->delete($pid);
 
         } catch (Exception $e) {
             $this->error($e);
         }
     }
 
-    /**
+    /** 实现删除
      * @param $pid
      * @throws Exception
      */
-    private function getProblemById($pid)
-    {
+    private function delete($pid){
         $pro = new Problem();
-        $this->echoJson($pro->getOne($pid));
-
+        $this->echoJson($pro->delete($pid));
     }
 
 }

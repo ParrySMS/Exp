@@ -50,7 +50,7 @@ class LogicPmCheck extends PmCheck
      * @return int|null|string
      * @throws Exception
      */
-    public function pidCheck($pid, $return = false)
+    public function pidCheck($pid)
     {
         $pid = parent::getNumeric($pid);
         if ($pid === null) {
@@ -59,9 +59,7 @@ class LogicPmCheck extends PmCheck
 
         $this->pid = $pid;
 
-        if ($return == true) {
             return $pid;
-        }
     }
 
 

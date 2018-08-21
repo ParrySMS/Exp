@@ -241,5 +241,26 @@ class Problem extends BaseDao
 
     }
 
+    /** 设置可见属性
+     * @param $pid
+     * @param $visible
+     * @throws Exception
+     */
+    public function setVisible($pid,$visible)
+    {
+        $pdo = $this->database->update($this->table,[
+            'visible'=>$visible,
+            'edit_time'=>date(DB_TIME_FORMAT)
+        ],[
+            'AND'=>[
+                'id'=>$pid,
+            ]
+        ]);
+
+        $affected = $pdo->rowCount();
+        if (!is_numeric($affected) || $affected != 1) {
+            throw new Exception(__CLASS__ .'->'.__FUNCTION__ . '():  error', 500);
+        }
+    }
 
 }

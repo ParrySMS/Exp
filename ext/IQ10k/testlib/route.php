@@ -63,6 +63,11 @@ $app->group('/problem', function () {
     //todo 搜索
 
     //todo 删除
+    $this->post('/delete/{pid}',function($request, $response, array $args){
+        $body = array_merge($request->getParsedBody(),$args);
+        $c_ep = new tlApp\controller\EditProblem($body);
+        return $response->withStatus($c_ep->getStatus());
+    });
 
     //todo 添加评论
 
