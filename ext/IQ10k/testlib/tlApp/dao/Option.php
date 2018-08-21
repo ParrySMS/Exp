@@ -27,7 +27,7 @@ class Option extends BaseDao
         $pdo = $this->database->insert($this->table, [
             'pid' => $pid,
             'key' => $key,
-            'content' => $content,
+            'content[JSON]' => $content,
             'is_pic' => $is_pic,
             'time'=>date(DB_TIME_FORMAT),
             'visible' => VISIBLE_NORMAL

@@ -42,6 +42,7 @@ $app->group('/problem', function () {
 
     //todo 获取某页的题目信息（流式分页）
     $this->get('', function ($request, $response) {
+        //todo 输入source来源参数 输入last_id
 
     });
 
@@ -53,12 +54,19 @@ $app->group('/problem', function () {
 
     // 编辑某题目
     $this->post('/{pid}',function($request, $response, array $args){
+//        var_dump($request->getParsedBody());
         $body = array_merge($request->getParsedBody(),$args);
         $c_ep = new tlApp\controller\EditProblem($body);
         return $response->withStatus($c_ep->getStatus());
     });
 
+    //todo 搜索
 
+    //todo 删除
+
+    //todo 添加评论
+
+    //todo 查看有评论的题
 
 });
 

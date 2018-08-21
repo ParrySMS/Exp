@@ -56,7 +56,7 @@ class Problem extends BaseService
 
         //插入题目选项内容
         $options = $problem_info['options'];
-        if(is_array($options)) {//如果有选项
+        if (is_array($options)) {//如果有选项
             $op = new Option();
 
             unset($oid);
@@ -91,7 +91,6 @@ class Problem extends BaseService
 //   这个有pid
 //   problem_info = {'pid','problem',  'options', 'answers', 'language', 'classification', 'pro_type', 'pro_source', 'hint'};
 
-        //todo 如果是选项减少 要删除原选项
 
         $pid = $problem_info['pid'];
         //把数组json化
@@ -104,38 +103,57 @@ class Problem extends BaseService
         }
 
         //方便最后更新题目主体索引
+        //新选项参数默认空
         unset($new_oids);
         $new_oids = [];
-        //选项参数
-        $options = $problem_info['options'];
-        if(sizeof($options)!=0) {//如果有参数
-            //更新选项 先拿到已有选项的集合
-            $op = new Option();
-            $option_ids = $this->pro->getOids($pid);
-            //获取原有选项数据
-            $db_options_data = $op->selectGroup($pid,$option_ids);
+        //准备更新的选项参数
+        $new_options = $problem_info['options'];
+        //拿到已有选项的集合
+        $op = new Option();
+        $option_ids = $this->pro->getOids($pid);
 
-            //删除非添加的数据 引用传递
-            foreach ($db_options_data as &$d) {
-                if (array_key_exists($d['key'], $options)) {
-                    $op->delete($d['id']);
-                    unset($d);
-                }
-            }
+        if (sizeof($new_options) != 0) {//新选项不为空 有新参数
 
-            //每个新数据去遍历匹配 旧数据库原有的选项
-            foreach ($options as $key => $value) {
-                foreach ($db_options_data as $d) {
-                    if ($key == $d['key'] && $value != $d['content']) { //  匹配到并且值不同 那么就更新
-                        $op->update($d['id'], $pid, $key, $value);
-                        $new_oids[] = $d['id'];
-                        break;//检验到 之后就可以跳出 进行下一个新数据了
+            //如果是选项减少 要删除原选项
+            if (is_array($option_ids) && sizeof($option_ids) != 0) {//存在原有的选项
+                //获取原有选项数据
+                $db_options_data = $op->selectGroup($pid, $option_ids);
+                //删除不添加的数据 引用传递
+                foreach ($db_options_data as $k =>$d) {
+                    //取交集
+                    if (!array_key_exists($d['key'], $new_options)) {
+                        $op->delete($d['id']);
+                        unset($db_options_data[$k]);
                     }
                 }
-                //如果这个选项没有匹配到已有数据 把它看做新数据
-                $new_oids[] = $op->insert($pid, $key, $value);
             }
-        }
+
+
+            //每个新数据去遍历匹配 旧数据库原有的选项
+            foreach ($new_options as $key => $value) {
+                $update = 0;//默认无更新
+
+                if (sizeof($db_options_data) != 0) {//找旧数据里存在的已有的
+                    foreach ($db_options_data as $d) {
+                        if ($key == $d['key']) { //匹配到
+                            $update++;//发生了一次更新
+                            $new_oids[] = $d['id'];//加入新的选项id序列
+
+                            if ($value != $d['content']) { //  匹配到并且值不同 那么就真更新
+                                $op->update($d['id'], $pid, $key, $value);
+                                break;//检验到 之后就可以跳出 进行下一个新数据了
+                            }//否则假更新
+                        }
+                    }
+                }//旧数据里没选项了
+
+                //如果这个选项没有匹配到已有数据 把它看做新数据
+                if ($update == 0) {
+                    $new_oids[] = $op->insert($pid, $key, $value);
+                }
+            }
+
+        }//新选项是空的
 
         $problem_info['option_ids'] = json_encode($new_oids);
 
@@ -157,18 +175,18 @@ class Problem extends BaseService
     {
         //先获取在主体题目信息（可能有hint）
         $pro_data = $this->pro->selectOne($pid);
-        $pro_data['answers'] = json_decode( $pro_data['answers']);
+        $pro_data['answers'] = json_decode($pro_data['answers']);
         //然后获取选项信息
         $oids = json_decode($pro_data['option_ids']);
         //对象数组
         $pro_data['options'] = [];
 
-        if(is_array($oids)&&sizeof($oids)!=0){
-            $pro_data['options'] = $this->getOptions($pid,$oids);
+        if (is_array($oids) && sizeof($oids) != 0) {
+            $pro_data['options'] = $this->getOptions($pid, $oids);
         }
 
         $pro = new \tlApp\model\Problem($pro_data);
-        $retdata = (object)['problem'=>$pro];
+        $retdata = (object)['problem' => $pro];
         $this->json->setRetdata($retdata);
 
         return $this->json;
@@ -179,10 +197,10 @@ class Problem extends BaseService
      * @return array
      * @throws Exception
      */
-    protected function getOptions($pid,$oids)
+    protected function getOptions($pid, $oids)
     {
         $op = new \tlApp\dao\Option();
-        $datas = $op->selectGroup($pid,$oids);
+        $datas = $op->selectGroup($pid, $oids);
 
         unset($options);
         $options = [];

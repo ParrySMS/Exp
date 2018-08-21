@@ -227,7 +227,6 @@ class Problem extends BaseDao
         $pro_type = json_decode(PM_REGION_PROTYPE_JSON);
         //前两项 选择题
         $choice = [$pro_type[0],$pro_type[1]];
-
         $json = $this->database->get($this->table,
             'option_ids'
         ,[
@@ -238,7 +237,7 @@ class Problem extends BaseDao
             ]
         ]);
 
-        return json_decode($json);
+        return is_null(json_decode($json))?[]:json_decode($json);
 
     }
 

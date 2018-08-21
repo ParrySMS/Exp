@@ -173,13 +173,14 @@ class LogicPmCheck extends PmCheck
 
 
         // 部分参数的空检查 字符索引检查
-        foreach ($problem_info as $key => $value) {
+        foreach ($problem_info as $key => & $value) {
 
             //索引检查
             switch ($key) {
                 case 'options':
+                    //关联数组狐狸
+//                    $value = $value[0];
                 case 'answers':
-
                     //类型检查
                     if (!is_array($value) && !$this->isAllowNullArray()) {
                         throw new \Exception("$key is not array", 400);
