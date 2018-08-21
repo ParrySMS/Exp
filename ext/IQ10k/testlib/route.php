@@ -71,7 +71,11 @@ $app->group('/problem', function () {
     });
 
     //todo 添加评论
-
+    $this->post('/comment/{pid}',function($request, $response, array $args){
+        $body = array_merge($request->getParsedBody(),$args);
+        $c_ct = new tlApp\controller\Comment();
+        return $response->withStatus($c_ep->getStatus());
+    });
     //todo 查看有评论的题
 
 });

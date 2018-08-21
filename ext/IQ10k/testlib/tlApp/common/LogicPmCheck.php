@@ -18,6 +18,7 @@ class LogicPmCheck extends PmCheck
 
     private $problem_info;
     private $pid;
+    private $comment;
 
 
     /** 检查题目信息 可选是否有pid
@@ -25,7 +26,7 @@ class LogicPmCheck extends PmCheck
      * @param bool $has_pid
      * @throws Exception
      */
-    public function proInfoCheck(Array $body, $has_pid = false)
+    public function proInfoCheck(array $body, $has_pid = false)
     {
 
         //补齐body体的参数
@@ -60,6 +61,31 @@ class LogicPmCheck extends PmCheck
         $this->pid = $pid;
 
             return $pid;
+    }
+
+
+    /** 添加评论的参数检查
+     * @param array $body
+     * @throws Exception
+     */
+    public function proCommentCheck(array $body)
+    {
+
+        $pid = isset($body['pid'])?$this->pidCheck($body['pid']):null;
+
+        if(empty($pid)){
+            throw new \Exception("pid null", 400);
+        }
+
+        if(empty($body['comment'])){
+            throw new \Exception("comment null", 400);
+        }
+
+        $comment = parent::lenCheck($body['comment']);
+        $comment = parent::strCheck($comment);
+
+        $this->pid = $pid;
+        $this->comment = $comment;
     }
 
 
@@ -243,6 +269,16 @@ class LogicPmCheck extends PmCheck
             throw new Exception('proType: ' . $problem_info['language'] . ' not in region', 400);
         }
     }
+
+    /**
+     * @return mixed
+     */
+    public function getComment()
+    {
+        return $this->comment;
+    }
+
+
 
     /**
      * @return mixed

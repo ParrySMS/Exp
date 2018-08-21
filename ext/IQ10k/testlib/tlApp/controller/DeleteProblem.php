@@ -14,11 +14,17 @@ use tlApp\service\Problem;
 
 class DeleteProblem extends BaseController
 {
+    /**
+     * DeleteProblem constructor.
+     */
     public function __construct()
     {
         parent::actionLog();
     }
 
+    /** 通过id删除
+     * @param $pid
+     */
     public function withPid($pid)
     {
         try {

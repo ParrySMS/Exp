@@ -16,6 +16,14 @@ class PmCheck
 
     public function __construct($is_encode = false)
     {
+        //todo 参数检查的有效性 可能有bug
+        //如果是json格式
+        $raw = file_get_contents('php://input');
+        $raw = json_decode($raw,true);
+        if(!empty($raw)){
+            $this->arrayCheck($raw);
+        }
+
         if ($is_encode == false) {
             //默认检查
             $_GET = $this->arrayCheck($_GET);
@@ -132,6 +140,26 @@ class PmCheck
             $params = base64_decode(base64_decode($params));
         }
         return $params;
+    }
+
+
+    /** 长度检查
+     * @param $str
+     * @param $min
+     * @param $max
+     * @return array|string
+     * @throws Exception
+     */
+    protected function lenCheck($str, $min = 0, $max = 1000)
+    {
+        if (mb_strlen($str) < $min) {
+            throw new Exception("STRLEN_ERROR: min $min byte, $str", 400);
+            //die ("min: $min byte");
+        } else if (mb_strlen($str) > $max) {
+            throw new Exception("STRLEN_ERROR: max $max byte, $str", 400);
+            //die ("max: $max byte");
+        }
+        return $this->stripslashesArray($str);
     }
 
 
