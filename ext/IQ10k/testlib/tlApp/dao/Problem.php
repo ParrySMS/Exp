@@ -9,6 +9,7 @@
 namespace tlApp\dao;
 
 use \Exception;
+
 //use Medoo\Medoo;
 //
 //require '../../config/database_info.php';
@@ -69,7 +70,7 @@ class Problem extends BaseDao
 
         $pid = $this->database->id();
         if (!is_numeric($pid) || $pid < 1) {
-            throw new Exception(__CLASS__ .'->'.__FUNCTION__ . '():  pid error', 500);
+            throw new Exception(__CLASS__ . '->' . __FUNCTION__ . '():  pid error', 500);
 
         }
 
@@ -86,12 +87,12 @@ class Problem extends BaseDao
 
             $hid = $this->database->id();
             if (!is_numeric($hid) || $hid < 1) {
-                throw new Exception(__CLASS__ .'->'.__FUNCTION__ . '():  hid error', 500);
+                throw new Exception(__CLASS__ . '->' . __FUNCTION__ . '():  hid error', 500);
             }
         }
         //问题选项放到选项表里单独插
 
-        return  $pid;
+        return $pid;
     }
 
 
@@ -120,7 +121,7 @@ class Problem extends BaseDao
 
         $affected = $pdo->rowCount();
         if (!is_numeric($affected) || $affected != 1) {
-            throw new Exception(__CLASS__ .'->'.__FUNCTION__ . '():  error', 500);
+            throw new Exception(__CLASS__ . '->' . __FUNCTION__ . '():  error', 500);
         }
     }
 
@@ -159,13 +160,11 @@ class Problem extends BaseDao
 
         //一条
         if (!is_array($data) || sizeof($data) != 1) {
-            throw new Exception(__CLASS__ .'->'.__FUNCTION__ . '():  error', 500);
+            throw new Exception(__CLASS__ . '->' . __FUNCTION__ . '():  error', 500);
         }
 
         return $data[0];
     }
-
-
 
 
     /** 获取题目标题类型 todo 拆分proble表字段之后才能用
@@ -185,7 +184,7 @@ class Problem extends BaseDao
 
         //一条
         if (!is_array($data) || sizeof($data) != 1) {
-            throw new Exception(__CLASS__ .'->'.__FUNCTION__ . '():  error', 500);
+            throw new Exception(__CLASS__ . '->' . __FUNCTION__ . '():  error', 500);
         }
 
 
@@ -200,9 +199,9 @@ class Problem extends BaseDao
     public function setOids($pid, $option_ids_json)
     {
         $pdo = $this->database->update($this->table, [
-            'option_ids'=>$option_ids_json
-        ],[
-            'AND'=>[
+            'option_ids' => $option_ids_json
+        ], [
+            'AND' => [
                 'id' => $pid,
                 'visible[!]' => VISIBLE_DELETE
             ]
@@ -211,7 +210,7 @@ class Problem extends BaseDao
 
         $affected = $pdo->rowCount();
         if (!is_numeric($affected) || $affected != 1) {
-            throw new Exception(__CLASS__ . '->'.__FUNCTION__ . '(): error', 500);
+            throw new Exception(__CLASS__ . '->' . __FUNCTION__ . '(): error', 500);
         }
 
     }
@@ -226,39 +225,40 @@ class Problem extends BaseDao
     {
         $pro_type = json_decode(PM_REGION_PROTYPE_JSON);
         //前两项 选择题
-        $choice = [$pro_type[0],$pro_type[1]];
+        $choice = [$pro_type[0], $pro_type[1]];
         $json = $this->database->get($this->table,
             'option_ids'
-        ,[
-            'AND'=>[
-                'id' => $pid,
-                'pro_type'=>$choice,
-                'visible[!]' => VISIBLE_DELETE
-            ]
-        ]);
+            , [
+                'AND' => [
+                    'id' => $pid,
+                    'pro_type' => $choice,
+                    'visible[!]' => VISIBLE_DELETE
+                ]
+            ]);
 
-        return is_null(json_decode($json))?[]:json_decode($json);
+        return is_null(json_decode($json)) ? [] : json_decode($json);
 
     }
 
-    /** 设置可见属性
+    /** 设置可见属性 不考虑重复删除
      * @param $pid
      * @param $visible
      * @throws Exception
      */
-    public function setVisible($pid,$visible)
+    public function setVisible($pid, $visible)
     {
-        $pdo = $this->database->update($this->table,[
-            'visible'=>$visible,
-            'edit_time'=>date(DB_TIME_FORMAT)
-        ],[
-            'AND'=>[
-                'id'=>$pid,
-            ]
+        $pdo = $this->database->update($this->table, [
+            'visible' => $visible,
+            'edit_time' => date(DB_TIME_FORMAT)
+        ], [
+                'id' => $pid
         ]);
 
         $affected = $pdo->rowCount();
+
         if (!is_numeric($affected) || $affected != 1) {
+//            var_dump($affected);
+//            var_dump($this->database->error());
             throw new Exception(__CLASS__ .'->'.__FUNCTION__ . '():  error', 500);
         }
     }
