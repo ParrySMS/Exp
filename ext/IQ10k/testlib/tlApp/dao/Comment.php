@@ -22,7 +22,7 @@ class Comment extends BaseDao
     public function insert($pid, $comment)
     {
         //todo 写一个插入
-        //id主键自增  uid pid comment time visible
+        //字段： id主键自增不管  uid不管  pid comment time visible
     }
 
 }
