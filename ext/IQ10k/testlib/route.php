@@ -43,6 +43,8 @@ $app->group('/problem', function () {
     //todo 获取某页的题目信息（流式分页）
     $this->get('', function ($request, $response) {
         //todo 输入source来源参数 输入last_id
+        $c_gp = new tlApp\controller\GetProblem();
+        $c_gp->withPage($request->getParsedBody());
 
     });
 
@@ -70,12 +72,13 @@ $app->group('/problem', function () {
         return $response->withStatus($c_dp->getStatus());
     });
 
-    //todo 添加评论
+    //todo 添加评论 还差dao
     $this->post('/comment/{pid}',function($request, $response, array $args){
         $body = array_merge($request->getParsedBody(),$args);
         $c_ct = new tlApp\controller\Comment();
-        return $response->withStatus($c_ep->getStatus());
+        return $response->withStatus($c_ct->getStatus());
     });
+
     //todo 查看有评论的题
 
 });

@@ -245,7 +245,8 @@ class LogicPmCheck extends PmCheck
                     break;
 
                 default://索引不存在
-                    throw new Exception("key: $key invaild", 400);
+                    //todo 临时关闭冗余索引检查
+//                    throw new Exception("key: $key invaild", 400);
                     break;
             }
         }

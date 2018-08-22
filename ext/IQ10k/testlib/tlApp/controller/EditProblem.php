@@ -23,7 +23,7 @@ class EditProblem extends BaseController
 
             //参数逻辑检查
             $pm = new LogicPmCheck();
-            //todo 临时关闭
+            //todo 临时关闭允许空数组
 //            $pm->setAllowNullArray(true);
 
             $pm->proInfoCheck($body,true);

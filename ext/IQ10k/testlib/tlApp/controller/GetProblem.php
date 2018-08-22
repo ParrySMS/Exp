@@ -40,6 +40,13 @@ class GetProblem extends BaseController
         }
     }
 
+    public function withPage(array $body)
+    {
+        
+
+    }
+
+
     /**
      * @param $pid
      * @throws Exception

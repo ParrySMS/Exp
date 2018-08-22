@@ -9,20 +9,21 @@
 namespace tlApp\model;
 
 
-//todo 新增之后返回对象
 class Problem
 {
-    public $pid;
-    public $title;
-    public $title_pic;
-    public $options = [];
-    public $answers = [];
-    public $language;
-    public $classification;
-    public $pro_type;
-    public $pro_source;
-    public $edit_time;
-    public $total_edit;
+    public $pid; //题目唯一id
+    public $title; //题目标题
+    public $title_pic; //题目图片 可能为空
+    public $options = []; //选项的对象数组 对象内容参见 Option对象
+    public $hint; //提示文字
+    public $answers = []; //答案的索引数组
+    public $language; //语言类别
+    public $classification; //题目类目
+    public $pro_type; //题型
+    public $pro_source; //题目来源
+    public $comment; //审核的评论意见
+    public $edit_time; //最后一次编辑时间
+    public $total_edit; //编辑次数
 
 
     public function __construct(array $options)
@@ -39,6 +40,11 @@ class Problem
         $this->pro_source = isset($options['pro_source']) ? $options['pro_source'] : null;
         $this->edit_time = isset($options['edit_time']) ? $options['edit_time'] : null;
         $this->total_edit = isset($options['total_edit']) ? $options['total_edit'] : null;
+
+        $this->hint = isset($options['hint']) ? $options['hint'] : null;
+        $this->comment = isset($options['comment']) ? $options['comment'] : null;
+
+
     }
 
 

@@ -126,7 +126,7 @@ class Problem extends BaseDao
     }
 
 
-    /** 根据pid 返回一个题目信息
+    /** 根据pid 返回一个题目信息 连表提示和评论
      * @param $pid
      * @return array|bool
      * @throws Exception
@@ -134,9 +134,11 @@ class Problem extends BaseDao
     public function selectOne($pid)
     {
         $table_h = DB_PREFIX . "_hint_test";
+        $table_c = DB_PREFIX . "_comment_test";
 
         $data = $this->database->select($this->table . '(p)', [
             "[>]" . "$table_h" . "(h)" => ['p.id' => 'pid'],
+            "[>]" . "$table_c" . "(c)" => ['p.id' => 'pid']
         ], [
             'p.id',
             'p.title',
@@ -150,7 +152,8 @@ class Problem extends BaseDao
             'p.time',
             'p.edit_time',
             'p.total_edit',
-            'h.hint'
+            'h.hint',
+            'c.comment'
         ], [
             'AND' => [
                 'p.id' => $pid,
