@@ -27,13 +27,15 @@ $pm = new \tlApp\common\PmCheck();
 
 //路由处理
 
+//todo 导入数据 展示题目图片 展示选项图片
+//todo 机器处理 转成英文
 
 //题目路由组
 $app->group('/problem', function () {
 
 
     // 获取某条题目的信息
-    $this->get('/{pid}', function ($request, $response, array $args) {
+    $this->get('/{pid}/', function ($request, $response, array $args) {
         $pid = isset($args['pid']) ? $args['pid'] : null;
         $c_gp = new tlApp\controller\GetProblem();
         $c_gp->withPid($pid);
@@ -51,7 +53,7 @@ $app->group('/problem', function () {
 
     });
 
-    // 插入一条题目  先暂时不管图片处理 todo 评论展示
+    // 插入一条题目  先暂时不管图片处理
     $this->post('', function ($request, $response) {
         $c_pp = new tlApp\controller\PostProblem($request->getParsedBody());
         return $response->withStatus($c_pp->getStatus());
@@ -76,7 +78,7 @@ $app->group('/problem', function () {
         return $response->withStatus($c_dp->getStatus());
     });
 
-    //todo 添加评论 还差dao
+    //添加评论
     $this->post('/comment/{pid}', function ($request, $response, array $args) {
         $body = array_merge($request->getParsedBody(), $args);
         $c_ct = new tlApp\controller\Comment();
@@ -84,12 +86,14 @@ $app->group('/problem', function () {
         return $response->withStatus($c_ct->getStatus());
     });
 
-    //todo 查看有评论的题
-//    $this->get('/comment', function ($request, $response) {
-//        $c_gp = new tlApp\controller\GetProblem();
-//        $c_gp->hasComments();
-//
-//    });
+    //查看有评论的题
+    $this->get('/comment', function ($request, $response) {
+        // 不允许0
+        $last_id = empty($query['last_id']) ? null : $query['last_id'];
+        $c_gp = new tlApp\controller\GetProblem();
+        $c_gp->hasComment($last_id);
+        return $response->withStatus($c_gp->getStatus());
+    });
 
 });
 

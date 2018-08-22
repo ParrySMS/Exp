@@ -120,7 +120,7 @@ class Problem extends BaseService
                 //获取原有选项数据
                 $db_options_data = $op->selectGroup($pid, $option_ids);
                 //删除不添加的数据 引用传递
-                foreach ($db_options_data as $k =>$d) {
+                foreach ($db_options_data as $k => $d) {
                     //取交集
                     if (!array_key_exists($d['key'], $new_options)) {
                         $op->delete($d['id']);
@@ -167,45 +167,60 @@ class Problem extends BaseService
     }
 
 
-    /** 获取流式页面数据
+    /** 获取流式页面数据 分为三类
+     * 全来源普通题目
+     * 条件来源普通题目
+     * 全来源评论题目
      * @param $last_id
      * @param $source
      * @return Json
      * @throws Exception
      */
-    public function getFlow($last_id, $source)
+    public function getFlow($last_id, $source = 'all', $has_comment = false)
     {
-        if($source === 'all'){//获取全部分类
+        //分类讨论
+        if ($has_comment) {//筛选有评论的题目 默认全部分类
+            $pro_data = $this->pro->selectFlowComment($last_id);
+
+        } else if ($source === 'all') {//普通题目 获取全部分类
             $pro_data = $this->pro->selectFlowAll($last_id);
-        }else{
-            $pro_data = $this->pro->selectFlow($last_id,$source);
+        } else {//获取某个分类
+            $pro_data = $this->pro->selectFlow($last_id, $source);
+        }
+
+        //拿出数据 算next id
+        if (sizeof($pro_data) == 0) {
+            $next_id = null;
+        } else {//有数据
+            $end = $pro_data[sizeof($pro_data) - 1];
+            $next_id = isset($end['pid']) ? $end['pid'] : null;
         }
 
 
-        $end = $pro_data[sizeof($pro_data)-1];
-        $next_id =isset($end['pid'])?$end['pid']:null;
-
         //页面数据
-        $pageObj = $this->getSourcePageUri($source, $next_id);
+        if ($has_comment) {//comment 评论题目
+            $pageObj = $this->getCommentPageUri($next_id);
+        }else {//source 普通题目
+            $pageObj = $this->getSourcePageUri($source, $next_id);
+        }
 
-        $retdata = [
-            'page'=>$pageObj,
-            'brief_problems'=>$pro_data,
-            ];
+        $retdata = ['page' => $pageObj,
+            'brief_problems' => $pro_data,];
 
         $this->json->setRetdata($retdata);
 
         return $this->json;
 
-
     }
+
 
     /** 获取一条完整的题目数据
      * @param $pid
      * @return Json
      * @throws Exception
      */
-    public function getOne($pid)
+    public
+    function getOne($pid)
     {
         //先获取在主体题目信息（可能有hint）
         $pro_data = $this->pro->selectOne($pid);
@@ -236,12 +251,22 @@ class Problem extends BaseService
      * @return Json
      * @throws Exception
      */
-    public function delete($pid, $visible = VISIBLE_DELETE)
+    public
+    function delete($pid, $visible = VISIBLE_DELETE)
     {
-        $this->pro->setVisible($pid,$visible);
+        $this->pro->setVisible($pid, $visible);
         $retdata = (object)['pid' => $pid];
         $this->json->setRetdata($retdata);
         return $this->json;
+    }
+
+    /**评论数加1 用于给别的service调用的
+     * @throws Exception
+     */
+    public
+    function addCommentNum($pid)
+    {
+        $this->pro->addCommentNum($pid);
     }
 
     /**获取选项的对象数组 key取小写
@@ -249,7 +274,8 @@ class Problem extends BaseService
      * @return array
      * @throws Exception
      */
-    protected function getOptions($pid, $oids)
+    protected
+    function getOptions($pid, $oids)
     {
         $op = new \tlApp\dao\Option();
         $datas = $op->selectGroup($pid, $oids);
@@ -270,14 +296,35 @@ class Problem extends BaseService
      * @param $next_id
      * @return Page
      */
-    protected function getSourcePageUri($source, $next_id){
+    protected
+    function getSourcePageUri($source, $next_id)
+    {
         $pre = null;//下滑加载暂时不需要上一页
         $self = $_SERVER['REQUEST_URI'];
         $source = urlencode($source);
         if ($next_id === null) {
             $next = null;
         } else {
-            $next = GET_PRO_PAGE_API."?source=$source&last_id=$next_id";
+            $next = GET_PRO_API . "?source=$source&last_id=$next_id";
+        }
+
+        $page = new Page($pre, $self, $next);
+        return $page;
+    }
+
+    /** 获取带评论的题目page对象
+     * @param $next_id
+     * @return Page
+     */
+    protected
+    function getCommentPageUri($next_id)
+    {
+        $pre = null;//下滑加载暂时不需要上一页
+        $self = $_SERVER['REQUEST_URI'];
+        if ($next_id === null) {
+            $next = null;
+        } else {
+            $next = GET_PRO_API . "/comment?last_id=$next_id";
         }
 
         $page = new Page($pre, $self, $next);

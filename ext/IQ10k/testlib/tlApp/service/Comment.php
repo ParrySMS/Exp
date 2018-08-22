@@ -29,8 +29,10 @@ class Comment extends BaseService
      */
     public function add($pid, $comment)
     {
-        //todo 等zd完成
         $cid = $this->com->insert($pid, $comment);
+        //还有更新评论数
+        $pro = new Problem();
+        $pro->addCommentNum($pid);
 
         $retdata = (object)[
             'pid' => $pid,

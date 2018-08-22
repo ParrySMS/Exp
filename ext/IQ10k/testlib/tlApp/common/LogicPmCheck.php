@@ -92,12 +92,12 @@ class LogicPmCheck extends PmCheck
 
 
     /** 获取分页数据的参数检查
-     * @param array $body
+     * @param array $query
      * @throws Exception
      */
-    public function pageCheck(array $body)
+    public function pageCheck(array $query)
     {
-        $source = isset($body['source']) ? $body['source'] : null;
+        $source = isset($query['source']) ? $query['source'] : null;
 
         if (empty($source)) {
             throw new \Exception('source null', 400);
@@ -106,17 +106,29 @@ class LogicPmCheck extends PmCheck
         $source = urldecode($source);
 
         //可选参数 不允许0
-        $last_id = empty($body['last_id']) ? null : $body['last_id'];
-
-        if (!empty($last_id)) {
-            $last_id = parent::getNumeric($last_id, true);
-        }
+        $last_id = empty($query['last_id']) ? null : $query['last_id'];
 
         $this->source = $source;
-        $this->last_id = $last_id;
+        $this->last_id = $this->lastIdCheck($last_id);
 
 
 
+    }
+
+    /** 可选参数last_id检查
+     * @param $last_id
+     * @return int|null|string
+     */
+    public function lastIdCheck($last_id)
+    {
+
+        if (!empty($last_id)) {
+             $last_id = parent::getNumeric($last_id, true);
+        }else{
+            $last_id = null;
+        }
+
+        return $last_id;
     }
 
 

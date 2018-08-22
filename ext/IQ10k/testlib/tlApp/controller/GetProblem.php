@@ -15,6 +15,7 @@ use tlApp\service\Problem;
 class GetProblem extends BaseController
 {
     private $pm;
+    private $pro;
 
     /**
      * GetProblem constructor.
@@ -25,6 +26,8 @@ class GetProblem extends BaseController
         parent::actionLog();
         //参数逻辑检查
         $this->pm = new LogicPmCheck();
+        $this->pro = new Problem();
+
     }
 
     /** 获取单条
@@ -44,26 +47,38 @@ class GetProblem extends BaseController
     }
 
     /** 获取页面
-     * @param array $body
+     * @param array $query
      */
-    public function withFlow(array $body)
+    public function withFlow(array $query)
     {
 
         try {
             //参数逻辑检查
-            $this->pm->pageCheck($body);
+            $this->pm->pageCheck($query);
             $source = $this->pm->getSource();
             $last_id = $this->pm->getLastId();
 
-            $this->getProblemByFlow($last_id,$source);
+            $this->getProblemByFlow($last_id, $source);
 
         } catch (Exception $e) {
             $this->error($e);
         }
     }
 
-    public function hasComment(){
-        //todo
+    /** 获取评论题目页面
+     * @param $last_id
+     */
+    public function hasComment($last_id)
+    {
+        try {
+            //可选参数
+            $last_id = $this->pm->lastIdCheck($last_id);
+
+            $this->getComProByFlow($last_id);
+
+        } catch (Exception $e) {
+            $this->error($e);
+        }
     }
 
 
@@ -73,8 +88,7 @@ class GetProblem extends BaseController
      */
     private function getProblemById($pid)
     {
-        $pro = new Problem();
-        $this->echoJson($pro->getOne($pid));
+        $this->echoJson($this->pro->getOne($pid));
 
     }
 
@@ -85,8 +99,17 @@ class GetProblem extends BaseController
      */
     private function getProblemByFlow($last_id, $source)
     {
-        $pro = new Problem();
-        $this->echoJson($pro->getFlow($last_id,$source));
+        $this->echoJson($this->pro->getFlow($last_id, $source));
     }
 
+
+    /**获取有评论的流式页面
+     * @param $last_id
+     * @throws Exception
+     */
+    private function getComProByFlow($last_id){
+
+        $this->echoJson($this->pro->getFlow($last_id,'all',true));
+
+    }
 }

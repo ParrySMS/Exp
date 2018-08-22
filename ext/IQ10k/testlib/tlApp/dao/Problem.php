@@ -64,7 +64,8 @@ class Problem extends BaseDao
             'time' => date(DB_TIME_FORMAT),
             'edit_time' => date(DB_TIME_FORMAT),
             'total_edit' => 0,
-            'visible' => VISIBLE_NORMAL
+            'visible' => VISIBLE_NORMAL,
+            'comment_num' => 0
 
         ]);
 
@@ -155,10 +156,62 @@ class Problem extends BaseDao
 //            'p.time',
 //            'p.edit_time',
 //            'p.total_edit',
+            'p.comment_num',
 //            'h.hint',
         ], [
             'AND' => [
-                'p.id[<]'=>$last_id,
+                'p.id[<]' => $last_id,
+                'p.visible[!]' => VISIBLE_DELETE
+            ],
+            "ORDER" => [
+                'p.id' => 'DESC'
+            ],
+            "LIMIT" => PROBLEM_PAGE_LIMIT
+        ]);
+
+        //0-n条
+        if (!is_array($data)) {
+            throw new Exception(__CLASS__ . '->' . __FUNCTION__ . '():  error', 500);
+        }
+
+        return $data;
+    }
+
+    /** 挑选有评论的题目
+     * @param $last_id
+     * @return array|bool
+     * @throws Exception
+     */
+    public function selectFlowComment($last_id)
+    {
+        if ($last_id == null) {
+            //请求最新的首页
+            $last_id = $this->getLastId();
+        }
+
+        $table_h = DB_PREFIX . "_hint_test";
+
+        $data = $this->database->select($this->table . '(p)', [
+            "[>]" . "$table_h" . "(h)" => ['p.id' => 'pid'],
+        ], [
+            'p.id(pid)',
+            'p.title',
+            'p.title_pic',
+//            'p.option_ids',
+//            'p.answers',//这个是json
+//            'p.language',
+            'p.classification',
+            'p.pro_type',
+            'p.pro_source',
+//            'p.time',
+//            'p.edit_time',
+//            'p.total_edit',
+            'p.comment_num',
+//            'h.hint',
+        ], [
+            'AND' => [
+                'p.id[<]' => $last_id,
+                'p.comment_num[>]' => 0,
                 'p.visible[!]' => VISIBLE_DELETE
             ],
             "ORDER" => [
@@ -205,11 +258,12 @@ class Problem extends BaseDao
 //            'p.time',
 //            'p.edit_time',
 //            'p.total_edit',
+            'p.comment_num',
 //            'h.hint',
         ], [
             'AND' => [
-                'p.id[<]'=>$last_id,
-                'p.pro_source'=>$source,
+                'p.id[<]' => $last_id,
+                'p.pro_source' => $source,
                 'p.visible[!]' => VISIBLE_DELETE
             ],
             "ORDER" => [
@@ -227,7 +281,7 @@ class Problem extends BaseDao
     }
 
 
-    /** 根据pid 返回一个题目信息 连表提示和评论
+    /** 根据pid 返回一个题目信息 连表提示 评论单独取
      * @param $pid
      * @return array|bool
      * @throws Exception
@@ -251,6 +305,7 @@ class Problem extends BaseDao
             'p.time',
             'p.edit_time',
             'p.total_edit',
+//            'p.comment_num',
             'h.hint',
         ], [
             'AND' => [
@@ -266,7 +321,6 @@ class Problem extends BaseDao
 
         return $data[0];
     }
-
 
 
     /** 插入题目的选项id数组json
@@ -355,5 +409,27 @@ class Problem extends BaseDao
         //因为last_id是不取数据的，所以+1保证第一次取到最大的id，即最新的数据
         return $last_id + 1;
     }
+
+    /** 增加一个评论数
+     * @throws Exception
+     */
+    public function addCommentNum($pid)
+    {
+        $pdo = $this->database->update($this->table, [
+            'comment_num[+]' => 1
+        ], [
+            'AND' => [
+                'id' => $pid,
+                'visible[!]' => VISIBLE_DELETE
+            ]
+        ]);
+
+        $affected = $pdo->rowCount();
+
+        if (!is_numeric($affected) || $affected != 1) {
+            throw new Exception(__CLASS__ . '->' . __FUNCTION__ . '():  error', 500);
+        }
+    }
+
 
 }
