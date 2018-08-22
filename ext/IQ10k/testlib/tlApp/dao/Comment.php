@@ -8,12 +8,14 @@
 
 namespace tlApp\dao;
 
+use \Exception;
 
 class Comment extends BaseDao
 {
     protected $table = DB_PREFIX . "_comment_test";
 
-    /** todo 查入数据 visible用常量 time也用常量 插入之后要检查 异常直接throw Exception里的内容参考其他 500报错都是一样的
+
+    /** 插入数据
      * @param $pid
      * @param $comment
      * @return int
@@ -21,8 +23,47 @@ class Comment extends BaseDao
      */
     public function insert($pid, $comment)
     {
-        //todo 写一个插入
-        //字段： id主键自增不管  uid不管  pid comment time visible
+        $pdo = $this->database->insert($this->table, [
+            'pid' => $pid,
+            'comment' => $comment,
+            'time' => date(DB_TIME_FORMAT),
+            'visible' => VISIBLE_NORMAL
+
+        ]);
+
+        //插入成功后通过id检查是否异常
+        $id = $this->database->id();
+        if (!is_numeric($id) || $id < 1) {
+            throw new Exception(__CLASS__ . '->' . __FUNCTION__ . '():  id error', 500);
+        }
+        return $id;
+    }
+
+
+    /** 选取pid对应的多条评论
+     * @param $pid
+     * @return array|bool
+     * @throws Exception
+     */
+    public function select($pid){
+        $data = $this->database->select($this->table, [
+            'id(cid)',
+            'uid',
+            'comment',
+            'time'
+        ],
+            [
+                'AND' => [
+                    'pid' => $pid,
+                    'visible[!]' => VISIBLE_DELETE
+                ]
+            ]);
+        //多条
+        if (!is_array($data)) {
+            throw new Exception(__CLASS__ . '->' .__FUNCTION__ . '(): error', 500);
+        }
+
+        return $data;
     }
 
 }

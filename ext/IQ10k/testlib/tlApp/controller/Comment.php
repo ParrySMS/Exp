@@ -47,6 +47,11 @@ class Comment extends BaseController
         }
     }
 
+    /** 添加一条评论
+     * @param $pid
+     * @param $comment
+     * @throws \Exception
+     */
     private function addComment($pid, $comment)
     {
         $this->echoJson($this->com->add($pid, $comment));

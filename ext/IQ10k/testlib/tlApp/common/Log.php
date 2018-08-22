@@ -21,9 +21,10 @@ class Log
         $ip = $http->getIP();
         $agent = $http->getAgent();
         $uri = $_SERVER['REQUEST_URI'];
+        $method = $_SERVER['REQUEST_METHOD'];
         // 实现dao类
         $action = new Action();
-        $action->insert($uid, $ip, $agent, $uri, $error_code);
+        $action->insert($uid, $ip, $agent, $uri,$method, $error_code);
     }
 
 

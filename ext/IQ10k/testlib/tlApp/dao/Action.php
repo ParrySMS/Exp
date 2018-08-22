@@ -28,7 +28,7 @@ class Action extends BaseDao
      * @param null $time
      * @return int|mixed|string
      */
-    public function insert($uid,$ip,$agent,$uri,$error_code,$time = null)
+    public function insert($uid,$ip,$agent,$uri,$method,$error_code,$time = null)
     {
         //秒级时间
         if ($time === null) {
@@ -39,6 +39,7 @@ class Action extends BaseDao
             'agent'=>$agent,
             'ip'=>$ip,
             'uri'=>$uri,
+            'method'=>$method,
             'error_code'=>$error_code,
             'time'=>$time,
             'visible'=>VISIBLE_NORMAL

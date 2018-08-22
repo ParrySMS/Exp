@@ -19,6 +19,8 @@ class LogicPmCheck extends PmCheck
     private $problem_info;
     private $pid;
     private $comment;
+    private $source;
+    private $last_id;
 
 
     /** 检查题目信息 可选是否有pid
@@ -30,7 +32,7 @@ class LogicPmCheck extends PmCheck
     {
 
         //补齐body体的参数
-        $problem_info = $this->keyComplete($body,$has_pid);
+        $problem_info = $this->keyComplete($body, $has_pid);
 
         //空检查
         $this->nullCheck($problem_info);
@@ -53,14 +55,14 @@ class LogicPmCheck extends PmCheck
      */
     public function pidCheck($pid)
     {
-        $pid = parent::getNumeric($pid);
+        $pid = parent::getNumeric($pid, true);
         if ($pid === null) {
             throw new Exception('pid type error', 400);
         }
 
         $this->pid = $pid;
 
-            return $pid;
+        return $pid;
     }
 
 
@@ -71,14 +73,14 @@ class LogicPmCheck extends PmCheck
     public function proCommentCheck(array $body)
     {
 
-        $pid = isset($body['pid'])?$this->pidCheck($body['pid']):null;
+        $pid = isset($body['pid']) ? $this->pidCheck($body['pid']) : null;
 
-        if(empty($pid)){
-            throw new \Exception("pid null", 400);
+        if (empty($pid)) {
+            throw new \Exception('pid null', 400);
         }
 
-        if(empty($body['comment'])){
-            throw new \Exception("comment null", 400);
+        if (empty($body['comment'])) {
+            throw new \Exception('comment null', 400);
         }
 
         $comment = parent::lenCheck($body['comment']);
@@ -86,6 +88,35 @@ class LogicPmCheck extends PmCheck
 
         $this->pid = $pid;
         $this->comment = $comment;
+    }
+
+
+    /** 获取分页数据的参数检查
+     * @param array $body
+     * @throws Exception
+     */
+    public function pageCheck(array $body)
+    {
+        $source = isset($body['source']) ? $body['source'] : null;
+
+        if (empty($source)) {
+            throw new \Exception('source null', 400);
+        }
+
+        $source = urldecode($source);
+
+        //可选参数 不允许0
+        $last_id = empty($body['last_id']) ? null : $body['last_id'];
+
+        if (!empty($last_id)) {
+            $last_id = parent::getNumeric($last_id, true);
+        }
+
+        $this->source = $source;
+        $this->last_id = $last_id;
+
+
+
     }
 
 
@@ -97,19 +128,19 @@ class LogicPmCheck extends PmCheck
     protected function keyComplete(Array $body, $has_pid = false)
     {
         //解决前端options关键字的问题
-        if(isset($body['optionAr'])){
-            $body['options']=$body['optionAr'];
+        if (isset($body['optionAr'])) {
+            $body['options'] = $body['optionAr'];
             unset($body['optionAr']);
         }
 
         //补齐字段
-        $problem_base = json_decode(PROBLEM_BASE_INFO_JSON,true);
+        $problem_base = json_decode(PROBLEM_BASE_INFO_JSON, true);
 
-        if($has_pid == true){
+        if ($has_pid == true) {
             $problem_base['pid'] = null;
         }
 
-        return array_merge($problem_base,$body);
+        return array_merge($problem_base, $body);
 
     }
 
@@ -192,7 +223,7 @@ class LogicPmCheck extends PmCheck
     protected function nullCheck(Array $problem_info)
     {
         if (sizeof($problem_info) == 0) {
-            throw new \Exception("problem_info array null", 400);
+            throw new \Exception('problem_info array null', 400);
         }
 
 
@@ -224,8 +255,8 @@ class LogicPmCheck extends PmCheck
                         throw new Exception("$key null", 400);
                     }
                     //类型检查 整数检查
-                    if (parent::getNumeric($value,true) === null) {
-                        throw new Exception( "$key : $value type error", 400);
+                    if (parent::getNumeric($value, true) === null) {
+                        throw new Exception("$key : $value type error", 400);
                     }
                     break;
 
@@ -260,12 +291,12 @@ class LogicPmCheck extends PmCheck
     protected function regionCheck(Array $problem_info)
     {
         //范围检查
-        $region_lang = json_decode(PM_REGION_LANG_JSON,true);
+        $region_lang = json_decode(PM_REGION_LANG_JSON, true);
         if (!in_array($problem_info['language'], $region_lang)) {
             throw new Exception('language: ' . $problem_info['language'] . ' not in region', 400);
         }
 
-        $region_type = json_decode(PM_REGION_PROTYPE_JSON,true);
+        $region_type = json_decode(PM_REGION_PROTYPE_JSON, true);
         if (!in_array($problem_info['pro_type'], $region_type)) {
             throw new Exception('proType: ' . $problem_info['language'] . ' not in region', 400);
         }
@@ -274,11 +305,28 @@ class LogicPmCheck extends PmCheck
     /**
      * @return mixed
      */
+    public function getSource()
+    {
+        return $this->source;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastId()
+    {
+        return $this->last_id;
+    }
+
+
+
+    /**
+     * @return mixed
+     */
     public function getComment()
     {
         return $this->comment;
     }
-
 
 
     /**
@@ -329,7 +377,6 @@ class LogicPmCheck extends PmCheck
     {
         $this->allow_null_params = $allow_null_params;
     }
-
 
 
 }

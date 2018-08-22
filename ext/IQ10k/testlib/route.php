@@ -33,53 +33,63 @@ $app->group('/problem', function () {
 
 
     // 获取某条题目的信息
-    $this->get('/{pid}',function($request, $response, array $args){
-        $pid = isset($args['pid'])?$args['pid']:null;
+    $this->get('/{pid}', function ($request, $response, array $args) {
+        $pid = isset($args['pid']) ? $args['pid'] : null;
         $c_gp = new tlApp\controller\GetProblem();
         $c_gp->withPid($pid);
         return $response->withStatus($c_gp->getStatus());
     });
 
-    //todo 获取某页的题目信息（流式分页）
+    //todo 要做一个获取各个来源的列表的接口
+
+
+    //获取某页的题目信息（流式分页）
     $this->get('', function ($request, $response) {
-        //todo 输入source来源参数 输入last_id
         $c_gp = new tlApp\controller\GetProblem();
-        $c_gp->withPage($request->getParsedBody());
+        $c_gp->withFlow($request->getQueryParams());
+        return $response->withStatus($c_gp->getStatus());
 
     });
 
-    // 插入一条题目  先暂时不管图片处理
+    // 插入一条题目  先暂时不管图片处理 todo 评论展示
     $this->post('', function ($request, $response) {
         $c_pp = new tlApp\controller\PostProblem($request->getParsedBody());
         return $response->withStatus($c_pp->getStatus());
     });
 
     // 编辑某题目
-    $this->post('/{pid}',function($request, $response, array $args){
+    $this->post('/{pid}', function ($request, $response, array $args) {
 //        var_dump($request->getParsedBody());
-        $body = array_merge($request->getParsedBody(),$args);
+        $body = array_merge($request->getParsedBody(), $args);
         $c_ep = new tlApp\controller\EditProblem($body);
         return $response->withStatus($c_ep->getStatus());
     });
 
     //todo 搜索
 
+
     //删除
-    $this->post('/delete/{pid}',function($request, $response, array $args){
-        $pid = isset($args['pid'])?$args['pid']:null;
+    $this->post('/delete/{pid}', function ($request, $response, array $args) {
+        $pid = isset($args['pid']) ? $args['pid'] : null;
         $c_dp = new tlApp\controller\DeleteProblem();
         $c_dp->withPid($pid);
         return $response->withStatus($c_dp->getStatus());
     });
 
     //todo 添加评论 还差dao
-    $this->post('/comment/{pid}',function($request, $response, array $args){
-        $body = array_merge($request->getParsedBody(),$args);
+    $this->post('/comment/{pid}', function ($request, $response, array $args) {
+        $body = array_merge($request->getParsedBody(), $args);
         $c_ct = new tlApp\controller\Comment();
+        $c_ct->add($body);
         return $response->withStatus($c_ct->getStatus());
     });
 
     //todo 查看有评论的题
+//    $this->get('/comment', function ($request, $response) {
+//        $c_gp = new tlApp\controller\GetProblem();
+//        $c_gp->hasComments();
+//
+//    });
 
 });
 

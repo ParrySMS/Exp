@@ -12,6 +12,7 @@ use tlApp\dao\Hint;
 use tlApp\dao\Option;
 use tlApp\model\Json;
 use \Exception;
+use tlApp\model\Page;
 
 
 class Problem extends BaseService
@@ -166,7 +167,40 @@ class Problem extends BaseService
     }
 
 
-    /** 获取一条完整的题目数据 //todo 得加个评论内容 model可能得调
+    /** 获取流式页面数据
+     * @param $last_id
+     * @param $source
+     * @return Json
+     * @throws Exception
+     */
+    public function getFlow($last_id, $source)
+    {
+        if($source === 'all'){//获取全部分类
+            $pro_data = $this->pro->selectFlowAll($last_id);
+        }else{
+            $pro_data = $this->pro->selectFlow($last_id,$source);
+        }
+
+
+        $end = $pro_data[sizeof($pro_data)-1];
+        $next_id =isset($end['pid'])?$end['pid']:null;
+
+        //页面数据
+        $pageObj = $this->getSourcePageUri($source, $next_id);
+
+        $retdata = [
+            'page'=>$pageObj,
+            'brief_problems'=>$pro_data,
+            ];
+
+        $this->json->setRetdata($retdata);
+
+        return $this->json;
+
+
+    }
+
+    /** 获取一条完整的题目数据
      * @param $pid
      * @return Json
      * @throws Exception
@@ -184,6 +218,10 @@ class Problem extends BaseService
         if (is_array($oids) && sizeof($oids) != 0) {
             $pro_data['options'] = $this->getOptions($pid, $oids);
         }
+
+        //评论可能0-n条
+        $com = new Comment();
+        $pro_data['comments'] = $com->getComments($pid);
 
         $pro = new \tlApp\model\Problem($pro_data);
         $retdata = (object)['problem' => $pro];
@@ -224,6 +262,26 @@ class Problem extends BaseService
         }
 
         return $options;
+    }
+
+
+    /** 获取uri 返回一个page对象
+     * @param $source
+     * @param $next_id
+     * @return Page
+     */
+    protected function getSourcePageUri($source, $next_id){
+        $pre = null;//下滑加载暂时不需要上一页
+        $self = $_SERVER['REQUEST_URI'];
+        $source = urlencode($source);
+        if ($next_id === null) {
+            $next = null;
+        } else {
+            $next = GET_PRO_PAGE_API."?source=$source&last_id=$next_id";
+        }
+
+        $page = new Page($pre, $self, $next);
+        return $page;
     }
 
 
