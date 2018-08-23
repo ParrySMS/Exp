@@ -205,7 +205,7 @@ class Problem extends BaseService
         }
 
         $retdata = ['page' => $pageObj,
-            'brief_problems' => $pro_data,];
+            'brief_problems' => $pro_data];
 
         $this->json->setRetdata($retdata);
 
@@ -267,6 +267,21 @@ class Problem extends BaseService
     function addCommentNum($pid)
     {
         $this->pro->addCommentNum($pid);
+    }
+
+    /** 返回全部的检索数据
+     * @param $word
+     * @return Json
+     * @throws Exception
+     */
+    public function search($word)
+    {
+        $pro_data = $this->pro->selectPageLike($word);
+        $retdata = ['brief_problems' => $pro_data];
+
+        $this->json->setRetdata($retdata);
+
+        return $this->json;
     }
 
     /**获取选项的对象数组 key取小写

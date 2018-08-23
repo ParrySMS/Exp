@@ -82,6 +82,23 @@ class GetProblem extends BaseController
     }
 
 
+    /** 获取搜索结果页面
+     * @param $word
+     */
+    public function search($word)
+    {
+        try {
+            //可选参数
+            $word = $this->pm->wordCheck($word);
+
+            $this->getSearch($word);
+
+        } catch (Exception $e) {
+            $this->error($e);
+        }
+
+    }
+
     /** 获取某个具体的题目详情
      * @param $pid
      * @throws Exception
@@ -112,4 +129,15 @@ class GetProblem extends BaseController
         $this->echoJson($this->pro->getFlow($last_id,'all',true));
 
     }
+
+    /**获取搜索结果页
+     * @param $word
+     * @throws Exception
+     */
+    private function getSearch($word)
+    {
+
+        $this->echoJson($this->pro->search($word));
+    }
+
 }

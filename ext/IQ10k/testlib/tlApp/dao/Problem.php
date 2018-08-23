@@ -127,7 +127,7 @@ class Problem extends BaseDao
     }
 
 
-    /** 获取全来源的页面
+    /** 获取全来源的页面 修改为不需要连表 简略信息
      * @param $last_id
      * @return array|bool
      * @throws Exception
@@ -139,11 +139,11 @@ class Problem extends BaseDao
             $last_id = $this->getLastId();
         }
 
-        $table_h = DB_PREFIX . "_hint_test";
+//        $table_h = DB_PREFIX . "_hint_test";
 
         $data = $this->database->select($this->table . '(p)', [
-            "[>]" . "$table_h" . "(h)" => ['p.id' => 'pid'],
-        ], [
+//            "[>]" . "$table_h" . "(h)" => ['p.id' => 'pid'],
+//        ], [
             'p.id(pid)',
             'p.title',
             'p.title_pic',
@@ -177,7 +177,7 @@ class Problem extends BaseDao
         return $data;
     }
 
-    /** 挑选有评论的题目
+    /** 挑选有评论的题目 修改为不需要连表 简略信息
      * @param $last_id
      * @return array|bool
      * @throws Exception
@@ -189,11 +189,11 @@ class Problem extends BaseDao
             $last_id = $this->getLastId();
         }
 
-        $table_h = DB_PREFIX . "_hint_test";
+//        $table_h = DB_PREFIX . "_hint_test";
 
         $data = $this->database->select($this->table . '(p)', [
-            "[>]" . "$table_h" . "(h)" => ['p.id' => 'pid'],
-        ], [
+//            "[>]" . "$table_h" . "(h)" => ['p.id' => 'pid'],
+//        ], [
             'p.id(pid)',
             'p.title',
             'p.title_pic',
@@ -241,11 +241,11 @@ class Problem extends BaseDao
             $last_id = $this->getLastId();
         }
 
-        $table_h = DB_PREFIX . "_hint_test";
+//        $table_h = DB_PREFIX . "_hint_test";
 
         $data = $this->database->select($this->table . '(p)', [
-            "[>]" . "$table_h" . "(h)" => ['p.id' => 'pid'],
-        ], [
+//            "[>]" . "$table_h" . "(h)" => ['p.id' => 'pid'],
+//        ], [
             'p.id(pid)',
             'p.title',
             'p.title_pic',
@@ -429,6 +429,51 @@ class Problem extends BaseDao
         if (!is_numeric($affected) || $affected != 1) {
             throw new Exception(__CLASS__ . '->' . __FUNCTION__ . '():  error', 500);
         }
+    }
+
+
+    /** 搜索相似的页面
+     * @param $word
+     * @return array|bool
+     * @throws Exception
+     */
+    public function selectPageLike($word)
+    {
+        $table_h = DB_PREFIX . "_hint_test";
+
+        $data = $this->database->select($this->table . '(p)', [
+            "[>]" . "$table_h" . "(h)" => ['p.id' => 'pid'],
+        ], [
+            'p.id(pid)',
+            'p.title',
+            'p.title_pic',
+            'p.classification',
+            'p.pro_type',
+            'p.pro_source',
+            'p.comment_num',
+        ], [
+
+            'AND' => [
+                'OR' => [
+                    'p.title[~]' => $word,
+                    'p.answers[~]' => $word,
+                    'p.classification[~]' => $word,
+                    'h.hint[~]' => $word,
+                ],
+                'p.visible[!]' => VISIBLE_DELETE
+            ],
+
+            "ORDER" => [
+                'p.id' => 'DESC'
+            ]
+        ]);
+
+        //0-n条
+        if (!is_array($data)) {
+            throw new Exception(__CLASS__ . '->' . __FUNCTION__ . '():  error', 500);
+        }
+
+        return $data;
     }
 
 

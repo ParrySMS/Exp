@@ -35,18 +35,23 @@ $app->group('/problem', function () {
 
 
     // 获取某条题目的信息
-    $this->get('/{pid}/', function ($request, $response, array $args) {
+    $this->get('/{pid}', function ($request, $response, array $args) {
         $pid = isset($args['pid']) ? $args['pid'] : null;
         $c_gp = new tlApp\controller\GetProblem();
         $c_gp->withPid($pid);
         return $response->withStatus($c_gp->getStatus());
     });
 
-    //todo 要做一个获取各个来源的列表的接口
+
+    //todo 新建 source表 原本Pro表的source 改成source_id
+    //todo 取题目要连表 入/编辑题目要查souce然后得id 做source限制 页面改成来源选项
+    //todo 要加多一个添加来源的接口
+    //todo 要做一个获取各个来源的列表的接口 取遍source表即可
 
 
     //获取某页的题目信息（流式分页）
     $this->get('', function ($request, $response) {
+//        xxxxxxxxxx?source={urlencode（必选来源参数pro_source)}&last_id=可选参数
         $c_gp = new tlApp\controller\GetProblem();
         $c_gp->withFlow($request->getQueryParams());
         return $response->withStatus($c_gp->getStatus());
@@ -66,11 +71,17 @@ $app->group('/problem', function () {
         $c_ep = new tlApp\controller\EditProblem($body);
         return $response->withStatus($c_ep->getStatus());
     });
+//
+//    //todo 搜索
+    $this->get('/search/', function ($request, $response, array $args) {
+//        xxxxxxxxxx/search/?word=xxxxx
+        $word = isset($request->getQueryParams()['word']) ? $request->getQueryParams()['word'] : null;
+        $c_gp = new tlApp\controller\GetProblem();
+        $c_gp->search($word);
+        return $response->withStatus($c_gp->getStatus());
+    });
 
-    //todo 搜索
-
-
-    //删除
+        //删除
     $this->post('/delete/{pid}', function ($request, $response, array $args) {
         $pid = isset($args['pid']) ? $args['pid'] : null;
         $c_dp = new tlApp\controller\DeleteProblem();
@@ -87,7 +98,7 @@ $app->group('/problem', function () {
     });
 
     //查看有评论的题
-    $this->get('/comment', function ($request, $response) {
+    $this->get('/comment/', function ($request, $response) {
         // 不允许0
         $last_id = empty($query['last_id']) ? null : $query['last_id'];
         $c_gp = new tlApp\controller\GetProblem();

@@ -32,13 +32,13 @@ class LogicPmCheck extends PmCheck
     {
 
         //补齐body体的参数
-        $problem_info = $this->keyComplete($body, $has_pid);
+        $problem_info = $this->proKeyComplete($body, $has_pid);
 
         //空检查
-        $this->nullCheck($problem_info);
+        $this->proNullCheck($problem_info);
 
         //参数范围定义检查
-        $this->regionCheck($problem_info);
+        $this->proRegionCheck($problem_info);
 
         //todo 临时关闭 题型限制逻辑检查
 //        $this->proTypeCheck($problem_info);
@@ -104,6 +104,8 @@ class LogicPmCheck extends PmCheck
         }
 
         $source = urldecode($source);
+        $source = parent::strCheck($source);
+        $source = parent::lenCheck(($source));
 
         //可选参数 不允许0
         $last_id = empty($query['last_id']) ? null : $query['last_id'];
@@ -132,12 +134,29 @@ class LogicPmCheck extends PmCheck
     }
 
 
+    /** 检查word字符串
+     * @param $word
+     * @throws Exception
+     */
+    public function wordCheck($word)
+    {
+        if(empty($word)){
+            throw new \Exception('word null', 400);
+        }
+
+        $word = urlencode($word);
+        $word = parent::strCheck($word);
+        $word = parent::lenCheck(($word));
+
+        return $word;
+    }
+
     /** 补齐body体的key 用于后面的检查
      * @param array $body
      * @param bool $has_pid 是否需要pid检查
      * @return array
      */
-    protected function keyComplete(Array $body, $has_pid = false)
+    protected function proKeyComplete(Array $body, $has_pid = false)
     {
         //解决前端options关键字的问题
         if (isset($body['optionAr'])) {
@@ -232,7 +251,7 @@ class LogicPmCheck extends PmCheck
      * @param array $problem_info
      * @throws Exception
      */
-    protected function nullCheck(Array $problem_info)
+    protected function proNullCheck(Array $problem_info)
     {
         if (sizeof($problem_info) == 0) {
             throw new \Exception('problem_info array null', 400);
@@ -300,7 +319,7 @@ class LogicPmCheck extends PmCheck
      * @param array $problem_info
      * @throws Exception
      */
-    protected function regionCheck(Array $problem_info)
+    protected function proRegionCheck(Array $problem_info)
     {
         //范围检查
         $region_lang = json_decode(PM_REGION_LANG_JSON, true);

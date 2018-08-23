@@ -66,4 +66,22 @@ class Comment extends BaseDao
         return $data;
     }
 
+
+    /** 是否该题目有comment
+     * @param $pid
+     * @return bool
+     */
+    public function has($pid)
+    {
+        $has = $this->database->has($this->table,[
+            'AND'=>[
+                'pid'=>$pid,
+                'visible'=>VISIBLE_DELETE
+            ]
+        ]);
+
+        return $has;
+
+    }
+
 }
