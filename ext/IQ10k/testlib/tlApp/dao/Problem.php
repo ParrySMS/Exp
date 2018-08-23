@@ -20,25 +20,6 @@ use \Exception;
 
 class Problem extends BaseDao
 {
-//    protected $database;
-//
-//    /**
-//     * BaseDao constructor.
-//     */
-//    public function __construct()
-//    {
-//        $this->database = new Medoo([
-//            'database_type' => DATABASE_TYPE,
-//            'database_name' => DATABASE_NAME,
-//            'server' => SERVER,
-//            'username' => USERNAME,
-//            'password' => PASSWORD,
-//            'charset' => CHARSET,
-//            'port' => PORT,
-//            'check_interval' => CHECK_INTERVAL
-//        ]);
-//    }
-
 
     protected $table = DB_PREFIX . "_problem_test";
 
