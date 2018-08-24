@@ -30,6 +30,15 @@ $pm = new \tlApp\common\PmCheck();
 //todo 导入数据 展示题目图片 展示选项图片
 //todo 机器处理 转成英文
 
+//todo 获取某个分类下有效的题目id数组
+$app->get('/pids', function ($request, $response) {
+//    xxxxxxxxxx/pids?source={urlencode（必选来源参数pro_source)}&last_id=可选参数
+    $c_gp = new tlApp\controller\GetProblem();
+    $c_gp->idList($request->getQueryParams());
+    return $response->withStatus($c_gp->getStatus());
+});
+
+
 //题目路由组
 $app->group('/problem', function () {
 
@@ -72,7 +81,7 @@ $app->group('/problem', function () {
         return $response->withStatus($c_ep->getStatus());
     });
 //
-//    //todo 搜索
+    // 搜索
     $this->get('/search/', function ($request, $response, array $args) {
 //        xxxxxxxxxx/search/?word=xxxxx
         $word = isset($request->getQueryParams()['word']) ? $request->getQueryParams()['word'] : null;
@@ -81,7 +90,7 @@ $app->group('/problem', function () {
         return $response->withStatus($c_gp->getStatus());
     });
 
-        //删除
+    //删除
     $this->post('/delete/{pid}', function ($request, $response, array $args) {
         $pid = isset($args['pid']) ? $args['pid'] : null;
         $c_dp = new tlApp\controller\DeleteProblem();
@@ -105,6 +114,7 @@ $app->group('/problem', function () {
         $c_gp->hasComment($last_id);
         return $response->withStatus($c_gp->getStatus());
     });
+
 
 });
 

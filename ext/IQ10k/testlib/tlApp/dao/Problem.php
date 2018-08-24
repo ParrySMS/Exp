@@ -59,7 +59,7 @@ class Problem extends BaseDao
         //插入 问题提示
         if (!empty($problem_info['hint'])) {
 
-            $table_hint = DB_PREFIX . '_hint';
+            $table_hint = DB_PREFIX . '_hint_test';
             $pdo = $this->database->insert($table_hint, [
                 'pid' => $pid,
                 'hint' => $problem_info['hint'],
@@ -207,6 +207,77 @@ class Problem extends BaseDao
         }
 
         return $data;
+    }
+
+    /** 获取某来源下的有效题目id数据
+     * @param $last_id
+     * @param $source
+     * @return array|bool
+     * @throws Exception
+     */
+    public function selectIds($last_id,$source)
+    {
+        if ($last_id == null) {
+            //请求最新的首页
+            $last_id = $this->getLastId();
+        }
+
+        $data = $this->database->select($this->table, [
+            'id'
+        ], [
+            'AND'=>[
+                'id[<]'=>$last_id,
+                'pro_source'=>$source,
+                'visible[!]'=>VISIBLE_DELETE
+            ],
+            "ORDER" => [
+                'id' => 'DESC'
+            ],
+            "LIMIT" => PROBLEM_IDS_LIMIT
+        ]);
+
+        //0-n条
+        if (!is_array($data)) {
+            throw new Exception(__CLASS__ . '->' . __FUNCTION__ . '():  error', 500);
+        }
+
+        return $data;
+
+    }
+
+
+    /** 获取全部来源下的有效题目id数据
+     * @param $last_id
+     * @return array|bool
+     * @throws Exception
+     */
+    public function selectIdsAll($last_id)
+    {
+        if ($last_id == null) {
+            //请求最新的首页
+            $last_id = $this->getLastId();
+        }
+
+        $data = $this->database->select($this->table, [
+            'id'
+        ], [
+            'AND'=>[
+                'id[<]'=>$last_id,
+                'visible[!]'=>VISIBLE_DELETE
+            ],
+            "ORDER" => [
+                'id' => 'DESC'
+            ],
+            "LIMIT" => PROBLEM_IDS_LIMIT
+        ]);
+
+        //0-n条
+        if (!is_array($data)) {
+            throw new Exception(__CLASS__ . '->' . __FUNCTION__ . '():  error', 500);
+        }
+
+        return $data;
+
     }
 
     /** 获取某个来源下的页面

@@ -284,6 +284,34 @@ class Problem extends BaseService
         return $this->json;
     }
 
+    /** 获取有效的id数组
+     * @param $last_id
+     * @param $source
+     * @return Json
+     * @throws Exception
+     */
+    public function getVaildIds($last_id,$source)
+    {
+        if ($source === 'all') {//获取全部分类
+            $data = $this->pro->selectIdsAll($last_id);
+        } else {//获取某个分类
+            $data = $this->pro->selectIds($last_id, $source);
+        }
+
+        unset($pids);
+        $pids = [];
+
+        foreach ($data as $d){
+            $pids[] = $d['id'];
+        }
+
+        $retdata = ['pids' => $pids];
+
+        $this->json->setRetdata($retdata);
+
+        return $this->json;
+    }
+
     /**获取选项的对象数组 key取小写
      * @param $pid
      * @return array

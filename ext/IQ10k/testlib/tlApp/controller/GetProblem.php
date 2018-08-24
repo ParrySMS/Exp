@@ -99,6 +99,25 @@ class GetProblem extends BaseController
 
     }
 
+
+    /** 获取题目id集合
+     * @param array $query
+     */
+    public function idList(array $query){
+        try {
+            //可选参数
+            //参数逻辑检查
+            $this->pm->pageCheck($query);
+            $source = $this->pm->getSource();
+            $last_id = $this->pm->getLastId();
+
+            $this->getIds($last_id,$source);
+
+        } catch (Exception $e) {
+            $this->error($e);
+        }
+    }
+
     /** 获取某个具体的题目详情
      * @param $pid
      * @throws Exception
@@ -138,6 +157,16 @@ class GetProblem extends BaseController
     {
 
         $this->echoJson($this->pro->search($word));
+    }
+
+    /** 获取有效的题目id数组
+     * @param $last_id
+     * @throws Exception
+     */
+    private function getIds($last_id,$source)
+    {
+        $this->echoJson($this->pro->getVaildIds($last_id,$source));
+
     }
 
 }
