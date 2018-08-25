@@ -46,7 +46,7 @@ class GetProblem extends BaseController
         }
     }
 
-    /** 获取页面
+    /** 获取页面 流式分页
      * @param array $query
      */
     public function withFlow(array $query)
@@ -59,6 +59,24 @@ class GetProblem extends BaseController
             $last_id = $this->pm->getLastId();
 
             $this->getProblemByFlow($last_id, $source);
+
+        } catch (Exception $e) {
+            $this->error($e);
+        }
+    }
+
+    /** 获取页面 不分页
+     * @param array $query
+     */
+    public function withAll(array $query)
+    {
+
+        try {
+            //参数逻辑检查
+            $this->pm->pageCheck($query);
+            $source = $this->pm->getSource();
+
+            $this->getAllProblem($source);
 
         } catch (Exception $e) {
             $this->error($e);
@@ -136,6 +154,16 @@ class GetProblem extends BaseController
     private function getProblemByFlow($last_id, $source)
     {
         $this->echoJson($this->pro->getFlow($last_id, $source));
+    }
+
+
+    /** 获取对应分类全部的页面简略题目信息
+     * @param $source
+     * @throws Exception
+     */
+    private function getAllProblem($source)
+    {
+        $this->echoJson($this->pro->getAll($source));
     }
 
 

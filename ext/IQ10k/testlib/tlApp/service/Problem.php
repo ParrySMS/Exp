@@ -19,6 +19,8 @@ class Problem extends BaseService
 {
     private $pro;
 
+    private $limit = 10000;//全部题目的限制数
+
     /**创建json对象
      * Problem constructor.
      */
@@ -206,6 +208,51 @@ class Problem extends BaseService
 
         $retdata = ['page' => $pageObj,
             'brief_problems' => $pro_data];
+
+        $this->json->setRetdata($retdata);
+
+        return $this->json;
+
+    }
+
+    /** 获取分类全部题目
+     * @param string $source
+     * @param bool $has_comment
+     * @return Json
+     * @throws Exception
+     */
+    public function getAll($source = 'all', $has_comment = false)
+    {
+        //分类讨论
+        if ($has_comment) {//筛选有评论的题目 默认全部分类
+            $pro_data = $this->pro->selectFlowComment(null,$this->limit);
+
+        } else if ($source === 'all') {//普通题目 获取全部分类
+            $pro_data = $this->pro->selectFlowAll(null,$this->limit);
+        } else {//获取某个分类
+            $pro_data = $this->pro->selectFlow(null,$source);
+        }
+
+        //拿出数据 算next id
+        if (sizeof($pro_data) == 0) {
+            $next_id = null;
+        } else {//有数据
+            $end = $pro_data[sizeof($pro_data) - 1];
+            $next_id = isset($end['pid']) ? $end['pid'] : null;
+        }
+
+
+//        //页面数据
+//        if ($has_comment) {//comment 评论题目
+//            $pageObj = $this->getCommentPageUri($next_id);
+//        }else {//source 普通题目
+//            $pageObj = $this->getSourcePageUri($source, $next_id);
+//        }
+
+        $retdata = [
+//            'page' => $pageObj,
+            'brief_problems' => $pro_data
+        ];
 
         $this->json->setRetdata($retdata);
 

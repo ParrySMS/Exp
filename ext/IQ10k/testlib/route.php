@@ -30,7 +30,7 @@ $pm = new \tlApp\common\PmCheck();
 //todo 导入数据 展示题目图片 展示选项图片
 //todo 机器处理 转成英文
 
-//todo 获取某个分类下有效的题目id数组
+//获取某个分类下有效的题目id数组
 $app->get('/pids', function ($request, $response) {
 //    xxxxxxxxxx/pids?source={urlencode（必选来源参数pro_source)}&last_id=可选参数
     $c_gp = new tlApp\controller\GetProblem();
@@ -65,6 +65,14 @@ $app->group('/problem', function () {
         $c_gp->withFlow($request->getQueryParams());
         return $response->withStatus($c_gp->getStatus());
 
+    });
+
+    //获取全部的题目信息（不分页）
+    $this->get('/all/', function ($request, $response) {
+//        xxxxxxxxxx?source={urlencode（必选来源参数pro_source)}
+        $c_gp = new tlApp\controller\GetProblem();
+        $c_gp->withAll($request->getQueryParams());
+        return $response->withStatus($c_gp->getStatus());
     });
 
     // 插入一条题目  先暂时不管图片处理

@@ -113,7 +113,7 @@ class Problem extends BaseDao
      * @return array|bool
      * @throws Exception
      */
-    public function selectFlowAll($last_id)
+    public function selectFlowAll($last_id,$limit = PROBLEM_PAGE_LIMIT)
     {
         if ($last_id == null) {
             //请求最新的首页
@@ -147,7 +147,7 @@ class Problem extends BaseDao
             "ORDER" => [
                 'p.id' => 'DESC'
             ],
-            "LIMIT" => PROBLEM_PAGE_LIMIT
+            "LIMIT" => $limit
         ]);
 
         //0-n条
@@ -163,7 +163,7 @@ class Problem extends BaseDao
      * @return array|bool
      * @throws Exception
      */
-    public function selectFlowComment($last_id)
+    public function selectFlowComment($last_id,$limit = PROBLEM_PAGE_LIMIT)
     {
         if ($last_id == null) {
             //请求最新的首页
@@ -198,7 +198,7 @@ class Problem extends BaseDao
             "ORDER" => [
                 'p.id' => 'DESC'
             ],
-            "LIMIT" => PROBLEM_PAGE_LIMIT
+            "LIMIT" => $limit
         ]);
 
         //0-n条
@@ -286,7 +286,7 @@ class Problem extends BaseDao
      * @return array|bool
      * @throws Exception
      */
-    public function selectFlow($last_id, $source)
+    public function selectFlow($last_id, $source,$limit = PROBLEM_PAGE_LIMIT )
     {
         if ($last_id == null) {
             //请求最新的首页
@@ -321,7 +321,7 @@ class Problem extends BaseDao
             "ORDER" => [
                 'p.id' => 'DESC'
             ],
-            "LIMIT" => PROBLEM_PAGE_LIMIT
+            "LIMIT" => $limit
         ]);
 
         //0-n条
