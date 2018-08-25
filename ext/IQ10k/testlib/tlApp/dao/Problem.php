@@ -63,6 +63,7 @@ class Problem extends BaseDao
             $pdo = $this->database->insert($table_hint, [
                 'pid' => $pid,
                 'hint' => $problem_info['hint'],
+                'time' => date(DB_TIME_FORMAT),
                 'visible' => VISIBLE_NORMAL
 
             ]);

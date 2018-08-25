@@ -14,7 +14,7 @@ class Hint extends BaseDao
 
     protected $table = DB_PREFIX . "_hint_test";
 
-    /** 更新一条提示
+    /** 更新一条提示 可能会相同
      * @param $pid
      * @param $hint
      * @throws Exception
@@ -23,6 +23,7 @@ class Hint extends BaseDao
     {
         $pdo = $this->database->update($this->table, [
             'hint' => $hint,
+            'time'=>date(DB_TIME_FORMAT)
         ],[
             'AND'=>[
                 'pid'=>$pid,
