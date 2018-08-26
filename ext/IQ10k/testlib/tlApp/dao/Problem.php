@@ -508,7 +508,7 @@ class Problem extends BaseDao
 
             'AND' => [
                 'OR' => [
-                    'p.id[~]',
+                    'p.id[~]'=>$word,
                     'p.title[~]' => $word,
                     'p.answers[~]' => $word,
                     'p.classification[~]' => $word,
