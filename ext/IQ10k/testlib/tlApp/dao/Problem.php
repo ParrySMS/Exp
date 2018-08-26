@@ -56,23 +56,23 @@ class Problem extends BaseDao
 
         }
 
-        //插入 问题提示
-        if (!empty($problem_info['hint'])) {
-
-            $table_hint = DB_PREFIX . '_hint_test';
-            $pdo = $this->database->insert($table_hint, [
-                'pid' => $pid,
-                'hint' => $problem_info['hint'],
-                'time' => date(DB_TIME_FORMAT),
-                'visible' => VISIBLE_NORMAL
-
-            ]);
-
-            $hid = $this->database->id();
-            if (!is_numeric($hid) || $hid < 1) {
-                throw new Exception(__CLASS__ . '->' . __FUNCTION__ . '():  hid error', 500);
-            }
-        }
+        //弄个新的dao 插入 问题提示
+//        if (!empty($problem_info['hint'])) {
+//
+//            $table_hint = DB_PREFIX . '_hint_test';
+//            $pdo = $this->database->insert($table_hint, [
+//                'pid' => $pid,
+//                'hint' => $problem_info['hint'],
+//                'time' => date(DB_TIME_FORMAT),
+//                'visible' => VISIBLE_NORMAL
+//
+//            ]);
+//
+//            $hid = $this->database->id();
+//            if (!is_numeric($hid) || $hid < 1) {
+//                throw new Exception(__CLASS__ . '->' . __FUNCTION__ . '():  hid error', 500);
+//            }
+//        }
         //问题选项放到选项表里单独插
 
         return $pid;
@@ -508,6 +508,7 @@ class Problem extends BaseDao
 
             'AND' => [
                 'OR' => [
+                    'p.id[~]',
                     'p.title[~]' => $word,
                     'p.answers[~]' => $word,
                     'p.classification[~]' => $word,

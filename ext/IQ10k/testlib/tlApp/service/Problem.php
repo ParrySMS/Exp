@@ -57,6 +57,12 @@ class Problem extends BaseService
         //dao 先插入题目主干 因为选项需要pid绑定
         $pid = $this->pro->insert($problem_info);
 
+        //插入提示
+        if (!empty($problem_info['hint'])) {
+            $hint = new Hint();
+            $hint->insert($pid, $problem_info['hint']);
+        }
+
         //插入题目选项内容
         $options = $problem_info['options'];
         if (is_array($options)) {//如果有选项
@@ -99,11 +105,10 @@ class Problem extends BaseService
         //把数组json化
         $problem_info['answers_json'] = json_encode($problem_info['answers']);
 
-        //先插入提示
-        if (!empty($problem_info['hint'])) {
-            $hint = new Hint();
-            $hint->update($pid, $problem_info['hint']);
-        }
+
+        //先处理提示
+        $this->editHint($pid, $problem_info['hint']);
+
 
         //方便最后更新题目主体索引
         //新选项参数默认空
@@ -118,12 +123,13 @@ class Problem extends BaseService
         if (sizeof($new_options) != 0) {//新选项不为空 有新参数
 
             //如果是选项减少 要删除原选项
-            if (is_array($option_ids) && sizeof($option_ids) != 0) {//存在原有的选项
+            if (is_array($option_ids) && sizeof($option_ids) != 0) {//原有的选项不为空 有旧选选
                 //获取原有选项数据
                 $db_options_data = $op->selectGroup($pid, $option_ids);
-                //删除不添加的数据 引用传递
+
                 foreach ($db_options_data as $k => $d) {
                     //取交集
+                    //删除 无用key的旧选项数据 引用传递
                     if (!array_key_exists($d['key'], $new_options)) {
                         $op->delete($d['id']);
                         unset($db_options_data[$k]);
@@ -150,13 +156,13 @@ class Problem extends BaseService
                     }
                 }//旧数据里没选项了
 
-                //如果这个选项没有匹配到已有数据 把它看做新数据
+                //如果这个选项没有匹配到已有数据 无更新行为 把它看做新数据
                 if ($update == 0) {
                     $new_oids[] = $op->insert($pid, $key, $value);
                 }
             }
 
-        }//新选项是空的
+        }//新选项是空的 不管
 
         $problem_info['option_ids'] = json_encode($new_oids);
 
@@ -166,6 +172,31 @@ class Problem extends BaseService
         $retdata = (object)['pid' => $pid];
         $this->json->setRetdata($retdata);
         return $this->json;
+    }
+
+
+    /** 处理提示的编辑更新
+     * @param $pid
+     * @param $hint_string
+     * @throws Exception
+     */
+    public function editHint($pid, $hint_string)
+    {
+        $hint = new Hint();
+        $has_hint = $hint->has($pid);
+
+        if (empty($hint_string) && $has_hint) { //空提示 原本有 相当于删除
+            $hint->setVisible($pid);
+
+        } else if (empty($hint_string) && !$has_hint) {//空提示 原本无 不管
+            return;
+
+        } else if (!empty($hint_string) && $has_hint) {//有提示 原本有 更新
+            $hint->update($pid, $hint_string);
+
+        } else if (!empty($hint_string) && !$has_hint) {//有提示 原本无 插入
+            $hint->insert($pid, $hint_string);
+        }
     }
 
 
@@ -202,7 +233,7 @@ class Problem extends BaseService
         //页面数据
         if ($has_comment) {//comment 评论题目
             $pageObj = $this->getCommentPageUri($next_id);
-        }else {//source 普通题目
+        } else {//source 普通题目
             $pageObj = $this->getSourcePageUri($source, $next_id);
         }
 
@@ -225,12 +256,12 @@ class Problem extends BaseService
     {
         //分类讨论
         if ($has_comment) {//筛选有评论的题目 默认全部分类
-            $pro_data = $this->pro->selectFlowComment(null,$this->limit);
+            $pro_data = $this->pro->selectFlowComment(null, $this->limit);
 
         } else if ($source === 'all') {//普通题目 获取全部分类
-            $pro_data = $this->pro->selectFlowAll(null,$this->limit);
+            $pro_data = $this->pro->selectFlowAll(null, $this->limit);
         } else {//获取某个分类
-            $pro_data = $this->pro->selectFlow(null,$source);
+            $pro_data = $this->pro->selectFlow(null, $source);
         }
 
         //拿出数据 算next id
@@ -337,7 +368,7 @@ class Problem extends BaseService
      * @return Json
      * @throws Exception
      */
-    public function getVaildIds($last_id,$source)
+    public function getVaildIds($last_id, $source)
     {
         if ($source === 'all') {//获取全部分类
             $data = $this->pro->selectIdsAll($last_id);
@@ -348,7 +379,7 @@ class Problem extends BaseService
         unset($pids);
         $pids = [];
 
-        foreach ($data as $d){
+        foreach ($data as $d) {
             $pids[] = $d['id'];
         }
 
