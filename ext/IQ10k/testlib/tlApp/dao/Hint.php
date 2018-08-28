@@ -34,7 +34,7 @@ class Hint extends BaseDao
         $affected = $pdo->rowCount();
 
         //可能相同 0条或1条
-        if (!is_numeric($affected) || $affected <= 1) {
+        if (!is_numeric($affected) || $affected > 1) {
 //            var_dump($affected);
 //            $this->database->error();
             throw new Exception(__CLASS__ .'->'. __FUNCTION__ . '(): error', 500);
