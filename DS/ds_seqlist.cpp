@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdio.h>
 #include <cstring>
 
 using namespace std;
@@ -16,7 +17,6 @@ class SeqList {
 	public:
 		SeqList();
 		~SeqList();
-		int list_size();
 		int list_insert(int i,int item);
 		int list_del(int i);
 		int list_get(int i);
@@ -35,7 +35,7 @@ SeqList::~SeqList() {
 
 }
 
-SeqList::list_insert(int i,int item) {
+int SeqList::list_insert(int i,int item) {
 	int ar [1000];
 	int index;
 
@@ -43,8 +43,7 @@ SeqList::list_insert(int i,int item) {
 	if(size == 0) {
 		list[0]=item;
 		size++;
-	} else if(i>size+1 || i<0) {
-		cout << "error" << endl;
+	} else if(i>size+1 || i<=0) {
 		return error;
 	} else {
 		//normal
@@ -94,14 +93,48 @@ void SeqList::list_show(int res) {
 				cout << list[i] << endl;
 			}
 		}
+	} else {
+		cout << "error";
 	}
+
 	cout << '\n';
 }
 
+int SeqList::list_del(int i) {
+	int index;
+
+	if(i<=0||i>size) {
+		return error;
+	}
+
+
+	if(i==size) {
+		size--;
+	} else {
+		i=i-1;//turn index
+			
+		for(index = i; index < size-1 ; index++) {
+			list[index]=list[index+1];
+		}
+		size--;
+	}
+
+	return ok;
+
+}
+
+int SeqList::list_get(int i) {
+	if(i<=0||i>size) {
+		cout << "error" << endl;
+		return error;
+	} else {
+		return list[i-1];
+	}
+}
 
 
 int main() {
-	int num,i,j,k,index,data,res;
+	int num,i,index,data,res;
 	SeqList sq;
 
 	//init insert
@@ -121,13 +154,19 @@ int main() {
 
 	//delete
 	for(i=0; i<2; i++) {
-		scanf("%d ",&index);
+		scanf("%d",&index);
 		res = sq.list_del(index);
 		sq.list_show(res);
 	}
 
-
-
+	//search
+	for(i=0; i<2; i++) {
+		scanf("%d",&index);
+		data = sq.list_get(index);
+		if(data!=error) {
+			cout << data << endl;
+		}
+	}
 	return 0;
 }
 
