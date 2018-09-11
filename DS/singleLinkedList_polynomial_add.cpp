@@ -5,7 +5,8 @@ using namespace std;
 #define error -1
 class ListNode {
 	public:
-		int data;
+		int ratio;
+		int exp;
 		ListNode *next;
 		ListNode() {
 			next = NULL;
@@ -20,9 +21,13 @@ class LinkList {
 		~LinkList();
 		ListNode * last_index(int i);//i-1
 		int get(int i);
-		int insert(int i ,int item);
+		
+		//[]
+		int insert(int i ,int ratio,int exp);
+		
 		int del(int i);
 		void show(int res);
+		int swap (int  pa, int pb);
 
 };
 
@@ -68,15 +73,15 @@ void LinkList::show(int res) {
 		ListNode *p;
 		p = head->next;
 		while(p!=NULL) {
-//			cout << "p:"<< p <<endl;
-			cout<< p->data << ' ';
-			p=p->next;
+////			cout << "p:"<< p <<endl;
+//			cout<< p->data << ' ';
+//			p=p->next;
 		}
 	}
 	cout<<endl;
 }
 
-int LinkList::insert(int i ,int item) {
+int LinkList::insert(int i ,int ratio,int exp) {
 	ListNode *p,*q;
 	if(i<=0||i>len+1) {
 		return error;
@@ -87,7 +92,8 @@ int LinkList::insert(int i ,int item) {
 	p = last_index(i);//i-1
 
 	q->next = p->next;
-	q->data = item;
+	q->ratio = ratio;
+	q->exp = exp;
 	p->next = q;
 	len++;
 
@@ -115,64 +121,62 @@ int LinkList::del(int i) {
 
 }
 
-int LinkList::get(int i) {
-	ListNode *p;
-		
-	if(i<=0||i>len) {
+
+
+int LinkList::swap(int pa, int pb) {
+	if(pa<=0||pa>len) {
 		return error;
 	}
-	
-	p = last_index(i+1);
-	
-	if(p==NULL){
+
+	if(pb<=0||pb>len) {
 		return error;
-	} 
-	
-	return p->data;
-	
+	}
+
+	//sort
+	if(pa>pb) {
+		pa = pa+pb;
+		pb = pa-pb;
+		pa = pa-pb;
+	}
+
+
+	ListNode *p,*q,*pre,*next;
+	p = last_index(pa);
+	q = last_index(pb);
+
+	if(p==NULL||q == NULL) {
+		return error;
+	}
+
+	pre = p->next;
+	next = p->next->next;
+
+	p->next->next = q->next->next;
+	p->next = q->next;
+
+	q->next->next = next;
+	q->next = pre;
+
+	return ok;
+
 }
 
 
+
 int main() {
-	int num,i,index,data,res;
-	LinkList sll;
-	//init insert
-	scanf("%d ",&num);
-	for(i=1; i<num+1; i++) {
-		scanf("%d",&data);
-		res = sll.insert(i,data);
-	}
-	sll.show(res);
+	int num,res,t,i,j,n,ratio,exp;
+	LinkList sll[10];
 
+	scanf("%d",&t);
 
-	//normal insert
-	for(i=0; i<2; i++) {
-		scanf("%d %d",&index,&data);
-		res = sll.insert(index,data);
-		sll.show(res);
-	}
-
-
-	//delete
-	for(i=0; i<2; i++) {
-		scanf("%d",&index);
-		res = sll.del(index);
-		sll.show(res);
-	}
-
-
-	//search
-	for(i=0; i<2; i++) {
-		scanf("%d",&index);
-		data = sll.get(index);
-		if(data!=error) {
-			cout << data << endl;
-		}else{
-			cout << "error" << endl;
+	for(i=0; i<t; i++) {
+		scanf("%d",&n);
+		for(j=0; j<n; j++){
+			scanf("%d %d",&ratio,&exp);
+			sll[i].insert(j+1,ratio,exp);// i group
 		}
 	}
 
-	sll.~LinkList();
 	return 0;
 }
 

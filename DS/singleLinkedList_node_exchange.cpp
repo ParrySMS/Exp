@@ -23,6 +23,7 @@ class LinkList {
 		int insert(int i ,int item);
 		int del(int i);
 		void show(int res);
+		int swap (int  pa, int pb);
 
 };
 
@@ -117,25 +118,65 @@ int LinkList::del(int i) {
 
 int LinkList::get(int i) {
 	ListNode *p;
-		
+
 	if(i<=0||i>len) {
 		return error;
 	}
-	
+
 	p = last_index(i+1);
-	
-	if(p==NULL){
+
+	if(p==NULL) {
 		return error;
-	} 
-	
+	}
+
 	return p->data;
+
+}
+
+int LinkList::swap(int pa, int pb) {
+	if(pa<=0||pa>len) {
+		return error;
+	}
+
+	if(pb<=0||pb>len) {
+		return error;
+	}
+
+	//sort
+	if(pa>pb) {
+		pa = pa+pb;
+		pb = pa-pb;
+		pa = pa-pb;
+	}
+
+
+	ListNode *p,*q,*pre,*next;
+	p = last_index(pa);
+	q = last_index(pb);
+
+	if(p==NULL||q == NULL) {
+		return error;
+	}
+
+	pre = p->next;
+	next = p->next->next;
+
+	p->next->next = q->next->next;
+	p->next = q->next;
 	
+	q->next->next = next;
+	q->next = pre;
+
+	return ok;
+
 }
 
 
+
 int main() {
-	int num,i,index,data,res;
+	int num,i,pa,pb,data,res;
 	LinkList sll;
+
 	//init insert
 	scanf("%d ",&num);
 	for(i=1; i<num+1; i++) {
@@ -144,35 +185,11 @@ int main() {
 	}
 	sll.show(res);
 
-
-	//normal insert
 	for(i=0; i<2; i++) {
-		scanf("%d %d",&index,&data);
-		res = sll.insert(index,data);
+		scanf("%d %d",&pa,&pb);
+		res = sll.swap(pa,pb);
 		sll.show(res);
 	}
-
-
-	//delete
-	for(i=0; i<2; i++) {
-		scanf("%d",&index);
-		res = sll.del(index);
-		sll.show(res);
-	}
-
-
-	//search
-	for(i=0; i<2; i++) {
-		scanf("%d",&index);
-		data = sll.get(index);
-		if(data!=error) {
-			cout << data << endl;
-		}else{
-			cout << "error" << endl;
-		}
-	}
-
-	sll.~LinkList();
 	return 0;
 }
 
