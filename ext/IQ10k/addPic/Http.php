@@ -1,57 +1,44 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: haier
- * Date: 2018-6-17
- * Time: 22:46
+ * User: L
+ * Date: 2018-7-31
+ * Time: 9:12
  */
+
+namespace www\AI;
 
 class Http
 {
-
-    /**
-     * 模拟get进行url请求
-     * @param string $url
-     * @param array $post_data
+    /** 定时跳转到指定页面
+     * @param $url string 跳转地址
+     * @param $time int 指定秒数
      */
-    public function get($url, array $data = [])
+    public function jump2Url($url, $time = 0)
     {
-        $ch = curl_init();
-        /* 设置验证方式 */
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Accept:text/plain;charset=utf-8',
-            'Content-Type:application/x-www-form-urlencoded',
-            'charset=utf-8'
-        ));
-        /* 设置返回结果为流 */
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        /* 设置超时时间*/
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-        /* 设置通信方式 */
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        if (!empty($data)) {
-            $url = $url . '?' . http_build_query($data);
-        }
-        curl_setopt($ch, CURLOPT_URL, $url);
-        $result = curl_exec($ch);
-        $error = curl_error($ch);
-        curl_close($ch);
-        if ($result === false) {
-            throw new Exception('Curl error: ' . $error, 501);
-//            echo 'Curl error: ' . $error;
-//            return null;
-        } else {
-            return $result;
-        }
+        print <<<to
+    <head><meta http-equiv="refresh" content=$time;url="$url"></head>
+to;
     }
 
-    /**
-     * 模拟post进行url请求
-     * @param string $url
-     * @param array $post_data
+
+    /** 弹窗并跳转到某页面
+     * @param $info
+     * @param null $url
      */
-    public function post($url, array $data = [])
+    public function alert2Url($info, $url = null)
+    {
+        echo '<script language="JavaScript">';
+        echo 'alert(" ' . $info . ' ");';
+        echo 'location.href=" ' . $url . ' ";</script>';
+    }
+
+    /** 发送请求
+     * @param $url
+     * @param null $data
+     * @return mixed
+     */
+    public function post($url, $data = null)
     {
         $ch = curl_init();
         /* 设置验证方式 */
@@ -76,41 +63,67 @@ class Http
         $error = curl_error($ch);
         curl_close($ch);
         if ($result === false) {
-            throw new Exception('Curl error: ' . $error, 501);
-//            return null;
+//        echo 'Curl error: ' . $error;
+//            return 'Curl error: ' . $error;
+            throw new Exception('Curl error: ' . $error, 500);
         } else {
             return $result;
         }
     }
 
-    /** 获取用户ip
-     * @return array|false|string
-     */
-    public function getIP()
+    public function get($url, $data = null)
     {
-        if (getenv("HTTP_CLIENT_IP") && strcasecmp(getenv("HTTP_CLIENT_IP"), "unknown"))
-            $ip = getenv("HTTP_CLIENT_IP");
-        else if (getenv("HTTP_X_FORWARDED_FOR") && strcasecmp(getenv("HTTP_X_FORWARDED_FOR"), "unknown"))
-            $ip = getenv("HTTP_X_FORWARDED_FOR");
-        else if (getenv("REMOTE_ADDR") && strcasecmp(getenv("REMOTE_ADDR"), "unknown"))
-            $ip = getenv("REMOTE_ADDR");
-        else if (isset($_SERVER['REMOTE_ADDR']) && $_SERVER['REMOTE_ADDR'] && strcasecmp($_SERVER['REMOTE_ADDR'], "unknown"))
-            $ip = $_SERVER['REMOTE_ADDR'];
-        else
-            $ip = "unknown";
-        return ($ip);
+        $ch = curl_init();
+        /* 设置验证方式 */
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Accept:text/plain;charset=utf-8',
+            'Content-Type:application/x-www-form-urlencoded',
+            'charset=utf-8'
+        ));
+        /* 设置返回结果为流 */
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        /* 设置超时时间*/
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+        /* 设置通信方式 */
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        if (!empty($data)) {
+            $url = $url . '?' . http_build_query($data);
+        }
+        curl_setopt($ch, CURLOPT_URL, $url);
+        $result = curl_exec($ch);
+        $error = curl_error($ch);
+        curl_close($ch);
+        if ($result === false) {
+//            return 'Curl error: ' . $error;
+            throw new Exception('Curl error: ' . $error, 500);
+        } else {
+            return $result;
+        }
     }
 
-    /** 获取客户端信息
-     * @return string
-     */
-    public function getAgent()
+    public function is200($url)
     {
-        if (!empty($_SERVER['HTTP_USER_AGENT'])) {
-            return $_SERVER['HTTP_USER_AGENT'];
-        }else{
-            return 'unknown';
+
+        $ch = curl_init(); //初始化curl
+        curl_setopt($ch, CURLOPT_URL, $url); //设置链接
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); //设置是否返回信息
+        curl_setopt($ch, CURLOPT_POST, 0); //设置为GET方式
+        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.1; WOW64)');
+
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_NOBODY, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); // 是否跟踪301或302递归
+        $res = curl_exec($ch);
+        $error = curl_error($ch);
+        if ($res === false) {
+            echo 'Curl error: ' . $error;
+//            throw new Exception('Curl error: ' . $error, 500);
         }
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        return ($httpCode == 200);
     }
 
     public function status($status_code)
@@ -158,5 +171,4 @@ class Http
         );
         header($http[$status_code]);
     }
-
 }

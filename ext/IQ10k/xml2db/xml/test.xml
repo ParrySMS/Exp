@@ -1,0 +1,195 @@
+<Label>
+    <Data>
+        <Problem>
+            一辆时速为每小时90 英里的火车进入一条长3.5隧道，火车的长度为 0.25英里。那么，火车从车头进入隧道到车尾离开隧道，即整辆火车通过隧道，需要多长时间？
+        </Problem>
+        <Answer>
+            2.5 min
+        </Answer>
+        <Classification>
+            logic
+        </Classification>
+        <Hint>
+            90英里每小时等于1.5英里每分钟
+            （3.5+0.25）/1.5=2.5 min
+        </Hint>
+    </Data>
+
+    <Data>
+        <Problem>
+            如果十五分钟前离上午九点钟的分钟数是现在离正午十二点的分钟数的四倍，那么，现在离正午十二点还有多少分钟呢？
+        </Problem>
+        <Answer>
+            33
+        </Answer>
+        <Classification>
+            logic
+        </Classification>
+        <Hint>
+            (180-15)/5=33
+        </Hint>
+    </Data>
+
+    <Data>
+        <Problem>
+            一位游客问:“到艾菲尔铁塔塔顶共有几级台阶？”896级加上总台阶数的一半。”警察答道。请问到艾菲尔铁塔塔顶有多少级台阶？
+        </Problem>
+        <Answer>
+            1792
+        </Answer>
+        <Classification>
+            logic
+        </Classification>
+        <Hint>
+            896/0.5=1792
+        </Hint>
+    </Data>
+
+
+    <Data>
+        <Problem>
+            一辆汽车在一段高速公路上行驶，前半段它的平均速度为每小时40英里，后半段它的平均速度为每小时60英里，请问汽车在整段高速公路上的平均速度是多少？
+        </Problem>
+        <Answer>
+            48
+        </Answer>
+        <Classification>
+            logic
+        </Classification>
+        <Hint>
+            1/(0.5/40+0.5/60)=48
+        </Hint>
+    </Data>
+
+    <Data>
+        <Problem>
+            从我出生以来，每年过生日都会有一个插着蜡烛的生日蛋糕，蜡烛的根数等于我的年龄。至今为止，我已经有325根蜡烛了，你知道我现在有几岁吗？
+        </Problem>
+        <Answer>
+            25
+        </Answer>
+        <Classification>
+            logic
+        </Classification>
+        <Hint>
+            (1+25)*25/2=325
+        </Hint>
+    </Data>
+
+    <Data>
+        <Problem>
+            一个雕刻家要把一块原重量为250公斤的大理石雕刻成一尊雕塑。第一星期，他刻掉了总重量30% ；第二星期，他刻掉了剩余重量的20%；第三星期，他又刻掉了剩余重量的25%，于是完成了这尊雕塑。你知道这尊雕塑最后有多重吗？
+        </Problem>
+        <Answer>
+            105
+        </Answer>
+        <Classification>
+            logic
+        </Classification>
+        <Hint>
+            250*0.7*0.8*0.75=105
+        </Hint>
+    </Data>
+
+    <Data>
+        <Problem>
+            星期日、星期一、星期二、星期三、星期四、星期五、星期六。你知道星期五前一天的后两天的前三天的后一天的前两天是星期几吗？
+        </Problem>
+        <Answer>
+            星期二
+        </Answer>
+        <Classification>
+            logic
+        </Classification>
+        <Hint>
+
+        </Hint>
+    </Data>
+
+    <Data>
+        <Problem>
+            最近的一次选举中，四个候选人共得到93648张选票，获胜者分别超出他的竞争对手们25267，10681，5924张选票。请问获胜者得了多少张选票？
+        </Problem>
+        <Answer>
+            33790
+        </Answer>
+        <Classification>
+            logic
+        </Classification>
+        <Hint>
+            (93648+25267+10681+5924)/4=33790
+        </Hint>
+    </Data>
+
+    <Data>
+        <Problem>
+            ABCDEFG
+            在上面字母串中，字母E左边第一个字母的右边第三个字母的左边第二个字母的右边第一个字母的右边第二个字母是哪个字母？
+        </Problem>
+        <Answer>
+            H
+        </Answer>
+        <Classification>
+            logic
+        </Classification>
+        <Hint>
+
+        </Hint>
+    </Data>
+
+    <Data>
+        <Problem>
+            1袋马铃薯总重量为16公斤，它的袋重等于总重量除以袋重的四分之一，请问袋重为多少公斤？
+        </Problem>
+        <Answer>
+            8
+        </Answer>
+        <Classification>
+            logic
+        </Classification>
+        <Hint>
+            16/(8/4)=8
+        </Hint>
+    </Data>
+
+    <Data>
+        <Problem>
+            如果行星A绕太阳转一圈需要两年时间，行星B绕太阳转一圈需要一年时间，现在它们和太阳位于一条直线上，那么，请问下一次它们和太阳位于一条直线上需要经过多长时间？
+        </Problem>
+        <Answer>
+            12月
+        </Answer>
+        <Classification>
+            logic
+        </Classification>
+        <Hint>
+
+        </Hint>
+    </Data>
+
+    <Data>
+        <Problem>
+            只有遇到下雨天，客车才不会准时到达。现在，客车没有准时到达，所以（）遇到下雨天。
+        </Problem>
+        <Option>
+            <A>没有
+            </A>
+            <B>可能
+            </B>
+            <C>一定
+            </C>
+            <D>不可能
+            </D>
+        </Option>
+        <Answer>
+            C
+        </Answer>
+        <Classification>
+            logic
+        </Classification>
+        <Hint>
+            ¬Q∧(P→Q) ⇒¬P
+        </Hint>
+    </Data>
+	
+	</Label>

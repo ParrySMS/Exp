@@ -123,6 +123,7 @@ int LinkList::del(int i) {
 
 
 
+
 int LinkList::swap(int pa, int pb) {
 	if(pa<=0||pa>len) {
 		return error;
@@ -173,7 +174,9 @@ int main() {
 		scanf("%d",&n);
 		for(j=0; j<n; j++){
 			scanf("%d %d",&ratio,&exp);
+				//todo 
 			sll[i].insert(j+1,ratio,exp);// i group
+		
 		}
 	}
 
