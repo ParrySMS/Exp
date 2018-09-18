@@ -5,8 +5,8 @@ using namespace std;
 #define error -1
 class ListNode {
 	public:
-		int ratio;
 		int exp;
+		int ratio;
 		ListNode *next;
 		ListNode() {
 			next = NULL;
@@ -21,13 +21,9 @@ class LinkList {
 		~LinkList();
 		ListNode * last_index(int i);//i-1
 		int get(int i);
-		
-		//[]
 		int insert(int i ,int ratio,int exp);
-		
 		int del(int i);
 		void show(int res);
-		int swap (int  pa, int pb);
 
 };
 
@@ -69,13 +65,42 @@ void LinkList::show(int res) {
 	if(res == error) {
 		cout << "error";
 	} else {
-
+		bool has_count = false;
 		ListNode *p;
 		p = head->next;
-		while(p!=NULL) {
-////			cout << "p:"<< p <<endl;
-//			cout<< p->data << ' ';
-//			p=p->next;
+		
+		while(p!=NULL||p!=0) {
+			if(p->ratio == 0) {
+				if(p->next!=NULL && has_count ) {
+					cout<<" + ";
+				}
+//				cout << "continue  ";
+				p=p->next;
+				continue;
+			}
+
+			if(p->ratio<0) {
+				cout<<"("<< p->ratio << ")";
+				has_count = true;
+			} else { //>0
+				cout<< p->ratio ;
+				has_count = true;
+			}
+
+
+			if(p->exp<0) {
+				cout<<"x^("<< p->exp << ")";
+					has_count = true;
+			} else if (p->exp>0) {
+				cout<<"x^"<< p->exp;
+					has_count = true;
+			}
+
+			if(p->next!= NULL && p->next->ratio != 0) {
+				cout<<" + ";
+			}
+
+			p=p->next;
 		}
 	}
 	cout<<endl;
@@ -121,63 +146,133 @@ int LinkList::del(int i) {
 
 }
 
+int LinkList::get(int i) {
+	ListNode *p;
 
-
-
-int LinkList::swap(int pa, int pb) {
-	if(pa<=0||pa>len) {
+	if(i<=0||i>len) {
 		return error;
 	}
 
-	if(pb<=0||pb>len) {
+	p = last_index(i+1);
+
+	if(p==NULL) {
 		return error;
 	}
-
-	//sort
-	if(pa>pb) {
-		pa = pa+pb;
-		pb = pa-pb;
-		pa = pa-pb;
-	}
-
-
-	ListNode *p,*q,*pre,*next;
-	p = last_index(pa);
-	q = last_index(pb);
-
-	if(p==NULL||q == NULL) {
-		return error;
-	}
-
-	pre = p->next;
-	next = p->next->next;
-
-	p->next->next = q->next->next;
-	p->next = q->next;
-
-	q->next->next = next;
-	q->next = pre;
 
 	return ok;
 
 }
 
+int merge(LinkList* la,LinkList* lb) {
 
+	int i;
+	int min_len = (la->len>lb->len)?lb->len:la->len;
+	bool pre_insert = false;
 
-int main() {
-	int num,res,t,i,j,n,ratio,exp;
-	LinkList sll[10];
+	if(la->len + lb->len == 0) {
+		return error;
+	}
 
-	scanf("%d",&t);
+	//la is result
+	if(lb->len == 0) {
+		return ok;
+	}
 
-	for(i=0; i<t; i++) {
-		scanf("%d",&n);
-		for(j=0; j<n; j++){
-			scanf("%d %d",&ratio,&exp);
-				//todo 
-			sll[i].insert(j+1,ratio,exp);// i group
-		
+	//link lb to null la
+	if(la->len == 0 && lb->len !=0) {
+		la = lb;
+		return ok;
+	}
+
+	//la lb merge
+	ListNode *pa,*pb;
+	pa = la->last_index(2);//self
+	pb = lb->last_index(2);
+
+//	cout<<" get pa pb\n";
+	for(i=1; i<=min_len+1; i++) {
+		pre_insert = false;
+
+		if(pa == NULL) {
+//			cout<<" link lb \n";
+			pa=la->last_index(i);
+			pa->next = pb;
+			return ok;
+		} else if(pb == NULL) { //la finish
+//			cout<<" lb null ,la finish \n";
+			return ok;
 		}
+
+		if(pa->exp > pb->exp) {
+//			cout<<" insert <- \n";
+			la->insert(i,pb->ratio,pb->exp);
+			pre_insert = true;
+
+		} else if(pa->exp<pb->exp) {
+//			cout<<" insert -> \n";
+			la->insert(i+1,pb->ratio,pb->exp);
+		} else if(pa->exp == pb->exp) {
+//			cout<<" counting \n";
+			pa->ratio +=pb->ratio;
+		}
+
+
+
+		//next
+
+		if(!pre_insert && pa!=NULL) {//pre insert mean pa has become next one
+			pa = pa->next;
+		}
+
+		if(pb!=NULL) {
+//			cout<<" del lb \n";
+			pb = pb->next;
+//			lb->del(i);
+		}
+
+//		cout<<" pa:"<<pa<<'\n';
+//		cout<<" pb:"<<pb<<'\n';
+	}
+	return ok;
+
+}
+
+
+//main
+
+int merge(LinkList* la,LinkList* lb);
+int main() {
+
+	int num,i,j,n,t,index,ratio,exp,res;
+
+	LinkList* ll[10];
+	//init
+	for(i=0; i<10; i++) {
+		ll[i]= new LinkList();
+	}
+
+	cin >> t;
+
+	for(i=0; i<2*t; i++) {// t group
+		cin>> n;
+		for(j=0; j<n; j++) { //n item group 1
+			cin>>ratio>>exp;
+			ll[i]->insert(j+1,ratio,exp);
+		}
+
+		ll[i]->show(ok);
+
+		if((i+1)%2 == 0 && i!=0) { //even
+//			cout<<" even\n";
+			res = merge(ll[i-1],ll[i]);
+			ll[i-1]->show(res);
+		}
+	}
+
+
+
+	for(i=0; i<10; i++) {
+		ll[i]->~LinkList();
 	}
 
 	return 0;
