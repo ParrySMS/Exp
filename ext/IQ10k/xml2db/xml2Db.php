@@ -72,8 +72,24 @@ class Xml
     }
 
     //todo 实现插入题目基本内容 返回pid
+
     public function insertPro(array $pro)
     {
+        /**
+         * pro_array
+         *  [title]
+         *  [answers]
+         *  [answers_json]
+         *  [lang]
+         *  [classification]
+         *  [pro_type]
+         *  [hint]
+         */
+
+        $pdo = $this->database->insert($this->table,[
+
+        ]);
+
 
     }
 
@@ -130,7 +146,17 @@ class Xml
 
         $answers_json = json_encode($answers);
 
-        $pro_array = compact('title', 'answers', 'answers_json', '$lang', 'classification', 'pro_type', 'hint');
+        $pro_array = compact('title', 'answers', 'answers_json', 'lang', 'classification', 'pro_type', 'hint');
+        /**
+         * pro_array
+         *  [title]
+         *  [answers]
+         *  [answers_json]
+         *  [lang]
+         *  [classification]
+         *  [pro_type]
+         *  [hint]
+         */
 
         return $pro_array;
     }
