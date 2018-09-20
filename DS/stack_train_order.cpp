@@ -32,7 +32,7 @@ int main () {
 			method[k]=IN;
 			k++;
 
-			while(str_out[j] == s.top() && j<n && !s.empty()) {
+			while(str_out[j] == s.top() && !s.empty()) {
 
 				s.pop();
 				j++;
@@ -41,6 +41,11 @@ int main () {
 				method[k]=OUT;
 				k++;
 				cout <<"out  ";
+				
+				if(j==n){
+					break;//avoid  str_out[j] over
+				}
+				
 			}
 
 		}//end for
