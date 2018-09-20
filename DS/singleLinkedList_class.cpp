@@ -1,8 +1,10 @@
 #include<iostream>
 #include<stdio.h>
 using namespace std;
+
 #define ok 0
 #define error -1
+
 class ListNode {
 	public:
 		int data;
