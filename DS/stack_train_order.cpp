@@ -35,7 +35,7 @@ int main () {
 			k++;
 
             //then check and pop out
-			while(str_out[j] == s.top() && !s.empty()) {
+			while( !s.empty() && str_out[j] == s.top()) {
 
 				s.pop();
 				j++;
@@ -44,11 +44,7 @@ int main () {
 				method[k]=OUT;
 				k++;
 				//cout <<"out  ";
-				
-				if(j==n){
-					break;//avoid  str_out[j] over
-				}
-				
+								
 			}
 
 		}//end for
