@@ -23,24 +23,27 @@ int main () {
 
 	while(cin>>n>>str_in>>str_out) {
 
+
 		for(i=0,j=0,k=0; i<n; i++) {
 			//i for stack
 			//j for str out
 			//k fot method
 
+            //first push in
 			s.push(str_in[i]);
 			method[k]=IN;
 			k++;
 
+            //then check and pop out
 			while(str_out[j] == s.top() && !s.empty()) {
 
 				s.pop();
 				j++;
-				cout<<"pop  ";
+				//cout<<"pop  ";
 
 				method[k]=OUT;
 				k++;
-				cout <<"out  ";
+				//cout <<"out  ";
 				
 				if(j==n){
 					break;//avoid  str_out[j] over
@@ -50,24 +53,21 @@ int main () {
 
 		}//end for
 
-		cout<<"end for ";
-		cout<<" i: "<<i;
-		cout<<" j: "<<j;
-		cout<<" k: "<<k;
 
 		if(s.empty() && j==n) { //pop n times
 			cout<<"Yes."<<endl;
+			coutMethod(method,k);
 
 		} else {
 			cout<<"No."<<endl;
 		}
-
-		cout<<"method ";
-		coutMethod(method,k);
+		
+		cout<<"FINISH"<<endl;
+		
 
 		//clear
 		while(!s.empty()) {
-			cout<<"clear pop ";
+			//cout<<"clear pop ";
 			s.pop();
 		}
 
@@ -75,7 +75,7 @@ int main () {
 		for(k=0; k<len; k++) {
 			method[k]= ' ';
 		}
-		cout<<"clear array ";
+//		cout<<"clear array ";
 
 
 	}
