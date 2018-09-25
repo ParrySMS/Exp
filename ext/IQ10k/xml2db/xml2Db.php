@@ -13,7 +13,7 @@ require './config/Medoo.php';
 $filePath = './xml/';
 $fileName = 'test.xml';
 
-define('SOURCE', '');//todo 手动调整
+define('SOURCE', 'test');//todo 手动调整
 
 $xml_file = simplexml_load_file($filePath . $fileName);
 
@@ -24,7 +24,7 @@ $xml = new Xml();
 
 try {
     foreach ($xml_file->Data as $d) {
-        //todo 实现参数处理
+        //实现参数处理
         $pro_array = $xml->pmcheck($d);
 
         //插入题目
@@ -43,6 +43,9 @@ try {
     $http->status($e->getCode());
 }
 
+
+
+/** 处理题目内容的xml类 **/
 
 class Xml
 {
@@ -71,9 +74,15 @@ class Xml
 
     }
 
-    //todo 实现插入题目基本内容 返回pid
+    //实现插入题目基本内容 返回pid
 
-    public function insertPro(array $pro)
+    /**
+     * [insertPro description]
+     * @param  array  $problem_info [description]
+     * @return [type]               [description]
+     * @throws Exception
+     */
+    public function insertPro(array $problem_info)
     {
         /**
          * pro_array
@@ -86,9 +95,29 @@ class Xml
          *  [hint]
          */
 
-        $pdo = $this->database->insert($this->table,[
+        //插入 问题主体
+        $pdo = $this->database->insert($this->table, [
+            'title' => $problem_info['title'],
+            'answers' => $problem_info['answers_json'],
+            'language' => $problem_info['lang'],
+            'classification' => $problem_info['classification'],
+            'pro_type' => $problem_info['pro_type'],
+            'pro_source' => SOURCE,
+            'time' => date(DB_TIME_FORMAT),
+            'edit_time' => date(DB_TIME_FORMAT),
+            'total_edit' => 0,
+            'visible' => VISIBLE_NORMAL,
+            'comment_num' => 0
 
         ]);
+
+        $pid = $this->database->id();
+        if (!is_numeric($pid) || $pid < 1) {
+            throw new Exception(__CLASS__ . '->' . __FUNCTION__ . '():  pid error', 500);
+
+        }
+
+        return $pid;
 
 
     }
@@ -183,15 +212,40 @@ class Xml
     }
 
 
+    /**
+     * [insertOption description]
+     * @param  [type]  $pid     [description]
+     * @param  [type]  $key     [description]
+     * @param  [type]  $content [description]
+     * @param  integer $is_pic  [description]
+     * @return [type]           [description]
+     * @throws Exception
+     */
     public function insertOption($pid, $key, $content, $is_pic = 0)
     {
-        //todo 数据库插入1条 返回oid
+        //数据库插入1条 返回oid
+         $pdo = $this->database->insert($this->table, [
+            'pid' => $pid,
+            'key' => $key,
+            'content' => $content,
+            'is_pic' => $is_pic,
+            'time'=>date(DB_TIME_FORMAT),
+            'visible' => VISIBLE_NORMAL
+        ]);
+
+        $id = $this->database->id();
+        if (!is_numeric($id) || $id < 1) {
+            throw new Exception(__CLASS__ . __FUNCTION__ . '():  pid error', 500);
+
+        }
+        return $id;
 
     }
 
     /** 获取语言类型
      * @param $str
      * @return string
+     * @throws Exception
      */
     public function getLang($str)
     {
