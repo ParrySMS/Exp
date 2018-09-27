@@ -31,6 +31,10 @@ int main() {
 	while(1) {
 		cin>>op;
 		if(op.compare("STOP") == 0) {
+			while(!q2.empty()) {
+				cout<< q2.front()<<endl;
+				q2.pop();
+			}
 			break;
 		}
 
@@ -83,6 +87,10 @@ int main() {
 						        && q1_group_num != data_group_num) {//next one another group
 							//so it is end of last group
 							q2.push(data);
+						} else if(q1.size()==1 && q1_group_num == data_group_num) {//all is same group
+							q2.push(q1.front());
+							q1.pop();
+							q2.push(data);
 						} else {
 							//let other in
 							q2.push(q1.front());
@@ -92,8 +100,13 @@ int main() {
 
 				} else { //not has group
 					q1.push(data);
+					q2 = q1;
 				}
-				//todo cout
+				
+				//store back data
+				q1 = q2;
+
+
 			}
 		}
 
