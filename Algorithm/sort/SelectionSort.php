@@ -6,7 +6,14 @@
  * Time: 11:29
  */
 
+$ar = [5, 8, 6, 4, 12, 5, 3, 1, 89, 54];
+$ar = merge($ar);
+print_r($ar);
 
+/** 选择排序
+ * @param array $ar
+ * @param null $len
+ */
 function selection(array & $ar, $len = null)
 {
     if ($len === null) {
