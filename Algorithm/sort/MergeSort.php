@@ -11,17 +11,22 @@ $ar = [5, 8, 6, 4, 12, 5, 3, 1, 89, 54];
 $ar = merge($ar);
 print_r($ar);
 
+/** 归并排序 先拆左右 在两两合并
+ * @param array $ar
+ * @param null $len
+ * @return array
+ */
 function merge(array $ar, $len = null)
 {
     if ($len === null) {
         $len = sizeof($ar);
     }
 
-    if ($len <= 1) {//finish
+    if ($len <= 1) {//len = 1 finish cuting
         return $ar;
     }
 
-    //len>1 --> need sort
+    //len>1 --> need sort and merge left and right
 
     //cut into 2 part -- left and right
     $mid = $mid = intval($len / 2);
@@ -31,14 +36,16 @@ function merge(array $ar, $len = null)
     //  xxxx mid - end
     $right = array_slice($ar, $mid);
 
-    $left = merge($left);//continue
+    $left = merge($left);//continue cut into 2 part until len = 1
     $right = merge($right);
 
-    //smallest sorted unit to merge
+    //get the smallest sorted unit to merge (len is decided by last function result)
     $merge = [];
 
     $len_left = sizeof($left);
     $len_right = sizeof($right);
+
+    //init index, i for left ,j for right
     $i = $j = 0;
     //put left and right into merge by sorting
     while (sizeof($merge) < $len_left + $len_right) {
