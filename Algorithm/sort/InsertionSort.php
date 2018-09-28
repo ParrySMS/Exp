@@ -6,6 +6,8 @@
  * Time: 18:16
  */
 
+require "Node.php";
+require "SingleLInkList.php";
 
 $ar = [34, 5, 5, 555, 5, 4, 14, 5, 88, 89, 54];
 echo 'ar:';
@@ -13,14 +15,18 @@ print_r(json_encode($ar));
 echo '<br/>';
 insert($ar);
 
-
+/** 基于链表实现的插入排序
+ * @param array $ar
+ * @param null $len
+ * @param bool $need_show
+ */
 function insert(array $ar, $len = null)
 {
     if ($len === null) {
         $len = sizeof($ar);
     }
 
-    $order = new SingelLinkList();
+    $order = new SingleLinkList();
     for ($i = 0; $i < $len; $i++) {//i for ar index
 
         if ($order->len == 0) {//empty order
@@ -60,99 +66,3 @@ function insert(array $ar, $len = null)
 
 }
 
-class Node
-{
-    public $data;
-    public $next;
-
-    /**
-     * Node constructor.
-     * @param $data
-     */
-    public function __construct($data = null, $next = null)
-    {
-        $this->data = $data;
-        $this->next = $next;
-    }
-}
-
-class SingelLinkList
-{
-
-    private $head;//默认取head为0位
-
-    public $len;
-
-    /**
-     * singelLinkList constructor.
-     * @param $head
-     */
-    public function __construct()
-    {
-        $this->head = new Node();
-        $this->len = 0;
-    }
-
-    /** 获取第i位置的节点
-     * @param $i
-     * @return Node|null
-     */
-    public function get($i)
-    {
-        $p = $this->head;
-//        var_dump($p);
-
-        for ($index = 0; $index < $i; $index++) {
-            $p = $p->next;
-            if (is_null($p)) {
-                break;
-            }
-        }
-
-        return $p;
-
-    }
-
-    /** 添加一个节点 默认从最尾部添加
-     * @param Node $node
-     * @param null $index
-     */
-    public function add(Node $node, $index = null)
-    {
-        if ($this->len == 0) {
-            $this->head->next = $node;
-            $this->len++;
-            return;
-        }
-
-        //cut and connect
-        if ($index == null) {
-            $index = $this->len + 1;
-        }
-
-        $last = $this->get($index - 1);
-
-        $node->next = $last->next;
-        $last->next = $node;
-        $this->len++;
-    }
-
-
-    /** 转成数组并且输出
-     * @return array
-     */
-    public function show()
-    {
-        $order = [];
-        $node = $this->head->next;
-
-        while (!is_null($node)) {
-            $order[] = $node->data;
-            $node = $node->next;
-        }
-        print_r(json_encode($order));
-        return $order;
-
-    }
-
-}
