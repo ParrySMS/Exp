@@ -66,9 +66,21 @@ SELECT * FROM emp_1008610086 WHERE deptno != 10 AND job = 'CLERK';
 
 SELECT * FROM emp_1008610086 WHERE job = 'SALESMAN' OR (job = 'ANALYST' AND deptno = 20);
 
-SELECT ename,//dept name // sal FROM emp_1008610086 WHERE sal BETWEEN 15000 AND 20000;
+SELECT e.ename, d.dname, e.sal FROM emp_1008610086 e, dept_1008610086 d WHERE e.deptno = d.deptno AND e.sal BETWEEN 15000 AND 20000;
 
+SELECT ename FROM emp_1008610086 WHERE job = 'PRESIDENT';
 
+SELECT ename FROM emp_1008610086 WHERE ename LIKE '%S';
+
+SELECT ename FROM emp_1008610086 WHERE ename LIKE '%TH%' OR ename LIKE '%LL%' ;
+
+SELECT * FROM emp_1008610086 WHERE comm IS NOT NULL;
+
+SELECT ename, job, sal, hiredate, deptno FROM emp_1008610086 ORDER BY ename;
+
+SELECT ename, job, sal, hiredate, deptno FROM emp_1008610086 ORDER BY sal;
+
+SELECT sal,COUNT(sal) FROM (SELECT * FROM emp_1008610086 WHERE job = 'SALESMAN' ORDER BY comm ) GROUP BY sal 
 
 
 
