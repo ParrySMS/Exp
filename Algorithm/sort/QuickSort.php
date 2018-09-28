@@ -8,6 +8,8 @@
 
 
 $ar = [34, 5, 5, 555, 5, 4, 14, 5, 88, 89, 54];
+print_r(json_encode($ar));
+
 quick($ar);
 print_r(json_encode($ar));
 
@@ -18,6 +20,7 @@ print_r(json_encode($ar));
  */
 function quick(array & $ar, $left = 0, $right = null)
 {
+
     //default left = 0 ,right = len-1
     if ($right === null) {
         $right = sizeof($ar) - 1;
@@ -44,7 +47,7 @@ function quick(array & $ar, $left = 0, $right = null)
         }//until a[l] > key
 
         if ($left < $right) { //swap
-//            echo "swap ar[$left] = $ar[$left] <-->ar[$right] = $ar[$right] <br/>";
+            echo "<br/> swap ar[$left] = $ar[$left] <-->ar[$right] = $ar[$right] <br/>";
             $t = $ar[$left];
             $ar[$left] = $ar[$right];
             $ar[$right] = $t;
@@ -55,17 +58,18 @@ function quick(array & $ar, $left = 0, $right = null)
     //left == right == mid
 
     if ($first_index != $left) {//first_index == mid_index not need to swap, just len = 1
-//        echo "put key  ar[$first_index] = $key  <--> ar[$left] =$ar[$left] <br/>";
+        echo "put key  ar[$first_index] = $key  <--> ar[$left] =$ar[$left] <br/>";
 
         //put mid to first(location of key)
         $ar[$first_index] = $ar[$left];
         //put key into mid
         $ar [$left] = $key;
     }
+    print_r(json_encode($ar));
 
     //continue cut and sort
     //left == right == mid
-    //echo "cut  $first_index ---- $left-1 || $left+1 ---- $last_index  <br/>";
+    echo " <br/> cut into:  $first_index ---- | $left |---- $last_index  <br/>";
     quick($ar, $first_index, $left - 1);
     quick($ar, $left + 1, $last_index);
 
