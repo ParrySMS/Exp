@@ -19,6 +19,7 @@ date_default_timezone_set('Asia/Shanghai');
 class Sort
 {
     protected $database;
+    protected $table;
 
     /**
      * BaseDao constructor.
@@ -35,6 +36,34 @@ class Sort
             'port' => PORT,
             'check_interval' => CHECK_INTERVAL
         ]);
+
+        $this->table = "exp_sort";
+    }
+
+    /** 记录一次执行时间
+     * @param $funcname
+     * @param $len
+     * @param $num
+     * @param $exc_time
+     * @throws Exception
+     */
+    public function exc_log($funcname,$len,$num,$exc_time){
+
+        $pdo = $this->database->insert($this->table,[
+            'funcname'=>$funcname,
+            'len'=>$len,
+            'sample_num'=>$num,
+            'exc_time'=>$exc_time,
+            'log_time'=>date('Y-m-d H:i:s'),
+            'visible'=>1
+        ]);
+
+        $id = $this->database->id();
+
+        if (!is_numeric($id) || $id < 1) {
+            throw new Exception(__CLASS__ . '->' . __FUNCTION__ . '():   error');
+        }
+
     }
 
 
