@@ -10,10 +10,13 @@ require "Node.php";
 require "SingleLInkList.php";
 
 $ar = [34, 5, 5, 555, 5, 4, 14, 5, 88, 89, 54];
-echo 'ar:';
+echo "input: <br/>";
 print_r(json_encode($ar));
-echo '<br/>';
+echo "<br/>";
+echo "<br/>";
+
 insert($ar);
+
 
 /** 基于链表实现的插入排序
  * @param array $ar
@@ -39,13 +42,6 @@ function insert(array $ar, $len = null)
                 //j for node index,next one -> node++ j++,
                 // link :: head-->1-->2-....->len->null , so j from 1 to len+1
 
-//                echo '<br/>';
-//                echo "j:$j  ";
-//                var_dump($node);
-//                echo '<br/>';
-//                echo "ar[i]:$ar[$i]  ";
-//                echo '<br/>';
-
                 if (is_null($node)) {//j to the end
                     $order->add(new Node($ar[$i]));
                     break;
@@ -59,9 +55,10 @@ function insert(array $ar, $len = null)
 
 
         }
-    }
 
-    $order->show();
+        $order->show();
+        echo "<br/>";
+    }
 
 
 }

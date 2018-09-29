@@ -8,7 +8,6 @@
 
 $ar = [5,8,6,4,12,5,3,1,89,54];
 print_r(json_encode($ar));
-
 echo "<br/>";
 
 bubble($ar);
@@ -33,7 +32,7 @@ function bubble(array & $ar, $len = null)
                 echo "swap [$j]--[";
                 echo $j+1;
                 echo ']';
-                
+
                 echo "<br/>";
 
                 $t = $ar[$j];

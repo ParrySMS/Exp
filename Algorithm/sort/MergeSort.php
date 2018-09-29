@@ -8,8 +8,15 @@
 
 
 $ar = [5, 8, 6, 4, 12, 5, 3, 1, 89, 54];
+echo "input: <br/>";
+print_r(json_encode($ar));
+echo "<br/>";
+echo "<br/>";
 $ar = merge($ar);
-print_r($ar);
+echo "result: <br/>";
+print_r(json_encode($ar));
+echo "<br/>";
+echo "<br/>";
 
 /** 归并排序 先拆左右 在两两合并
  * @param array $ar
@@ -25,9 +32,7 @@ function merge(array $ar, $len = null)
     if ($len <= 1) {//len = 1 finish cuting
         return $ar;
     }
-
     //len>1 --> need sort and merge left and right
-
     //cut into 2 part -- left and right
     $mid = $mid = intval($len / 2);
 
@@ -35,6 +40,12 @@ function merge(array $ar, $len = null)
     $left = array_slice($ar, 0, $mid);
     //  xxxx mid - end
     $right = array_slice($ar, $mid);
+
+    echo "left:";
+    print_r(json_encode($left));
+    echo " -- right:";
+    print_r(json_encode($right));
+    echo "<br/>";
 
     $left = merge($left);//continue cut into 2 part until len = 1
     $right = merge($right);
@@ -61,6 +72,10 @@ function merge(array $ar, $len = null)
             $j++;
         }
     }
+
+    echo "  merge:";
+    print_r(json_encode($merge));
+    echo "<br/>";
 
     return $merge;
 

@@ -132,8 +132,8 @@ class Sort
         //  xxxx mid - end
         $right = array_slice($ar, $mid);
 
-        $left = merge($left);//continue cut into 2 part until len = 1
-        $right = merge($right);
+        $left = $this->merge($left);//continue cut into 2 part until len = 1
+        $right = $this->merge($right);
 
         //get the smallest sorted unit to merge (len is decided by last function result)
         $merge = [];
@@ -214,8 +214,8 @@ class Sort
         }
         //continue cut and sort
         //left == right == mid
-        quick($ar, $first_index, $left - 1);
-        quick($ar, $left + 1, $last_index);
+        $this->quick($ar, $first_index, $left - 1);
+        $this->quick($ar, $left + 1, $last_index);
 
     }
 

@@ -72,7 +72,7 @@ class SingleLinkList
     /** 转成数组并且输出
      * @return array
      */
-    public function show()
+    public function show($print = true)
     {
         $order = [];
         $node = $this->head->next;
@@ -81,7 +81,9 @@ class SingleLinkList
             $order[] = $node->data;
             $node = $node->next;
         }
-        print_r(json_encode($order));
+        if($print) {
+            print_r(json_encode($order));
+        }
         return $order;
 
     }

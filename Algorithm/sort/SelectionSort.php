@@ -7,8 +7,16 @@
  */
 
 $ar = [5, 8, 6, 4, 12, 5, 3, 1, 89, 54];
-$ar = merge($ar);
-print_r($ar);
+
+echo "input: <br/>";
+print_r(json_encode($ar));
+echo "<br/>";
+
+selection($ar);
+
+echo "result: <br/>";
+print_r(json_encode($ar));
+echo "<br/>";
 
 /** 选择排序
  * @param array $ar
@@ -34,6 +42,10 @@ function selection(array & $ar, $len = null)
             $ar[$i]=$ar[$min];
             $ar[$min] = $t;
         }
+
+        echo "after 1 times: <br/>";
+        print_r(json_encode($ar));
+        echo "<br/>";
     }
 }
 
