@@ -6,26 +6,35 @@
  * Time: 22:12
  */
 
+set_time_limit(0);
 
 require "Sort.php";
 
+try {
+    $func = ['bubble', 'insert', 'merge', 'quick', 'selection'];
 
-$func = ['bubble', 'insert', 'merge', 'quick', 'selection'];
+//for ($len = 10; $len < 100000; $len *= 10) {
+    //testForAvg($func, $len);
+//}
+    testForGraph($func);
 
-for () //todo
-testForAvg($func,100);
 
-
+}catch(Exception $e){
+    echo $e->getMessage();
+    echo PHP_EOL;
+}
 /** 获取长度为len的随机数字数组
  * @param $len
  * @return array
  */
 function getArray($len)
 {
-    $ar = [];
     for ($i = 0; $i < $len; $i++) {
         $ar[] = rand();
+
     }
+//    echo "create an array[$len]";
+//    echo PHP_EOL;
     return $ar;
 }
 
@@ -37,70 +46,112 @@ function getArray($len)
 function testForAvg($func, $len, $sample_num = 20)
 {
     $sort = new Sort();
-    $ar = getArray($len);
 
     foreach ($func as $funcname) {
-        echo "<br/>";
-        echo "sort function: $funcname (),array-len: $len, sample_num:$sample_num";
-        echo "<br/>";
+//        echo "<br/>";
+        echo PHP_EOL;
+        echo "sort function: $funcname ( )";
+        echo PHP_EOL;
+        echo "array's len: $len, sample:$sample_num";
+        echo PHP_EOL;
+//        echo "<br/>";
 
         $sum_exc_time = 0;
         for ($num = 0; $num < $sample_num; $num++) {
+
+            unset($ar);
+            $ar = getArray($len);
 
             $start_time = microtime(true);
             $sort->$funcname($ar);
             $end_time = microtime(true);
 
             $exc_time = $end_time - $start_time;
-            echo " $exc_time ms |";
+            echo " $exc_time s ";
+            echo PHP_EOL;
             $sum_exc_time += $exc_time;
+
         }
 
-        $avg = $sum_exc_time/$sample_num;
-        echo "<br/>";
-        echo "avg:$avg ms";
-        echo "<br/>";
+        $avg = $sum_exc_time / $sample_num;
+//        echo "<br/>";
+        echo PHP_EOL;
+        echo "avg:$avg s";
+//        echo "<br/>";
+        echo PHP_EOL;
+
 
     }
 
 }
 
 
+/** 分别对小规模 中规模 大规模遍历记录执行时间
+ * @param $func
+ * @param int $sample_num
+ * @throws Exception
+ */
 function testForGraph($func)
 {
-    $sort = new Sort();
 
 //遍历每一种方法
     foreach ($func as $funcname) {
-//小规模 10-1000 每次增加10
+
+        echo "sort function: $funcname ( )";
+        echo PHP_EOL;
+
+        //小规模 10-1000 每次增加10
         for ($len = 10; $len < 1000; $len = $len + 10) {
-
-            //每次50个样本
-            for ($size = 0; $size < 50; $size++) {
-
-                $ar = getArray($len);
-
-                $start_time = microtime(true);
-
-                $sort->$funcname($ar);
-
-                $end_time = microtime(true);
-
-                $exc_time = $end_time - $start_time;
-
-                //todo  log(func,size,time,len)
-            }
+            excSort($funcname, $len);
         }
+        echo "finish 1000";
+        echo PHP_EOL;
 
-        //todo 中规模
+        // 中规模 1000-10000 step 100+
         for ($len = 1000; $len < 10000; $len = $len + 100) {
-
+            excSort($funcname, $len);
         }
+        echo "finish 10000";
+        echo PHP_EOL;
 
-        //todo 大规模
-        for ($len = 10000; $len < 100000; $len = $len + 10000) {
-
+        //大规模 10000-100000 step 30000+
+        for ($len = 10000; $len < 100000; $len = $len + 30000) {
+            excSort($funcname, $len);
         }
-
+        echo "finish 100000";
+        echo PHP_EOL;
     }
+    echo "finish all";
+    echo PHP_EOL;
+}
+
+
+/** 以某个函数funcname 对规模为len的数组进行样本测试
+ * @param $funcname
+ * @param $len
+ * @param int $sample_num
+ * @throws Exception
+ */
+function excSort($funcname, $len, $sample_num = 20){
+
+    $sort = new Sort();
+    //每个规模-每次20个样本
+    $sum_exc_time = 0;
+    for ($num = 0; $num < $sample_num; $num++) {
+        unset($ar);
+        $ar = getArray($len);
+
+        $start_time = microtime(true);
+
+        $sort->$funcname($ar);
+
+        $end_time = microtime(true);
+
+        $exc_time = $end_time - $start_time;
+        $sum_exc_time += $exc_time;
+        $sort->exc_log($funcname,$len,$num,$exc_time);
+    }
+    $avg = $sum_exc_time / $sample_num;
+
+    $sort->exc_log($funcname,$len,'avg',$avg);
 }
