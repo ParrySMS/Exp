@@ -11,12 +11,12 @@ set_time_limit(0);
 require "./Sort.php";
 
 try {
-    $func = ['bubble', 'insert', 'merge', 'quick', 'selection'];
+   // $func = ['bubble', 'insertAr', 'merge', 'quick', 'selection'];
 
 //for ($len = 10; $len < 100000; $len *= 10) {
     //testForAvg($func, $len);
 //}
-    testForGraph($func);
+    testForGraph([ 'insertAr']);
 
 
 }catch(Exception $e){
@@ -124,11 +124,12 @@ function testForGraph($func)
         }
         echo "finish 100000";
         echo PHP_EOL;
-        //超大规模 100000-1000000 step 300000+
-        for ($len = 100000; $len <= 1000000; $len = $len + 300000) {
-            excSort($funcname, $len,$sort);
 
-        }
+//        //超大规模 100000-1000000 step 300000+
+//        for ($len = 100000; $len <= 1000000; $len = $len + 300000) {
+//            excSort($funcname, $len,$sort);
+//
+//        }
 
     }
     echo "finish all";

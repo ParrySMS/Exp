@@ -96,7 +96,7 @@ class Sort
      * @param null $len
      * @param bool $need_show
      */
-    public function insert(array $ar, $len = null, $need_show = false)
+    public function insertLink(array $ar, $len = null, $need_show = false)
     {
         if ($len === null) {
             $len = sizeof($ar);
@@ -273,6 +273,75 @@ class Sort
                 $ar[$min] = $t;
             }
         }
+    }
+
+    public function insertAr(array $ar, $len = null, $insert_way = 0)
+    {
+
+        if ($len === null) {
+            $len = sizeof($ar);
+        }
+
+        $order = [];
+        for ($i = 0; $i < $len; $i++) {//i for ar index
+
+            if (sizeof($order) == 0) {//empty order
+                $order[] = $ar[$i];
+
+            } else {//compare one by one
+
+                $size = sizeof($order);
+
+                for ($j = 0; $j < $size; $j++) {
+
+                    $data = $order[$j];
+
+                    if ($j == ($size - 1)) {//j to the end
+                        $order[] = $ar[$i];
+                        break;
+                    }
+
+                    if ($data >= $ar[$i]) {//add into
+
+                        if ($insert_way == 1) {
+                            $this->cutAdd($order, $j, $ar[$i]);
+                        } else {
+                            $this->moveAdd($order, $j, $ar[$i]);
+                        }
+
+                        break;
+                    }
+                }
+
+
+            }
+
+        }
+
+    }
+
+
+    private function cutAdd(& $ar, $index, $data)
+    {
+        $left = array_slice($ar, 0, $index);
+        $right = array_slice($ar, $index);
+
+        $left[] = $data;
+
+        $ar = array_merge($left, $right);
+
+    }
+
+
+    private function moveAdd(& $ar, $index, $data)
+    {
+        $len = sizeof($ar);
+        $ar[$len] = null;
+        for ($i = $len - 1; $i >= $index; $i--) {
+            $ar[$i + 1] = $ar[$i];
+        }
+
+        $ar[$index] = $data;
     }
 
 
