@@ -11,12 +11,9 @@ set_time_limit(0);
 require "./Sort.php";
 
 try {
-    $func = ['bubble', 'insert', 'merge', 'quick', 'selection'];
+    $func = ['quick', 'selection','merge','bubble','insert'];
 
-//for ($len = 10; $len < 100000; $len *= 10) {
-    //testForAvg($func, $len);
-//}
-    testForGraph($func);
+    testForGraph($func,100000,500000,10000);
 
 
 }catch(Exception $e){
@@ -86,12 +83,14 @@ function testForAvg($func, $len, $sample_num = 20)
 }
 
 
-/** 分别对小规模 中规模 大规模遍历记录执行时间
+/** 分别对指定规模与步长遍历记录执行时间
  * @param $func
- * @param int $sample_num
+ * @param $start
+ * @param $end
+ * @param $step
  * @throws Exception
  */
-function testForGraph($func)
+function testForGraph($func,$start,$end,$step)
 {
 
 //遍历每一种方法
@@ -102,33 +101,10 @@ function testForGraph($func)
         echo "sort function: $funcname ( )";
         echo PHP_EOL;
 
-        //小规模 10-1000 每次增加10
-        for ($len = 10; $len < 1000; $len = $len + 10) {
+        for ($len = $start; $len <= $end; $len = $len + $step) {
             excSort($funcname, $len,$sort);
         }
-        echo "finish 1000";
-        echo PHP_EOL;
 
-        // 中规模 1000-10000 step 100+
-        for ($len = 1000; $len < 10000; $len = $len + 100) {
-            excSort($funcname, $len,$sort);
-
-        }
-        echo "finish 10000";
-        echo PHP_EOL;
-
-        //大规模 10000-100000 step 30000+
-        for ($len = 10000; $len < 100000; $len = $len + 30000) {
-            excSort($funcname, $len,$sort);
-
-        }
-        echo "finish 100000";
-        echo PHP_EOL;
-        //超大规模 100000-1000000 step 300000+
-        for ($len = 100000; $len <= 1000000; $len = $len + 300000) {
-            excSort($funcname, $len,$sort);
-
-        }
 
     }
     echo "finish all";

@@ -82,5 +82,9 @@ SELECT ename, job, sal, hiredate, deptno FROM emp_1008610086 ORDER BY sal;
 
 SELECT sal,COUNT(sal) FROM (SELECT * FROM emp_1008610086 WHERE job = 'SALESMAN' ORDER BY comm ) GROUP BY sal 
 
+SELECT ename, job, ROUND(sal/22,2), ROUND(sal/22/8,2) FROM emp_2015090170 
 
+SELECT ename FROM emp_2015090170 WHERE hiredate like %-2月-% 
+
+SELECT ename,hiredate FROM emp_2015090170 WHERE to_number(to_char(hiredate,'MM')) = '02'
 
