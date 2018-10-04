@@ -26,16 +26,7 @@ class Sort
      */
     public function __construct()
     {
-        $this->database = new Medoo([
-            'database_type' => DATABASE_TYPE,
-            'database_name' => DATABASE_NAME,
-            'server' => SERVER,
-            'username' => USERNAME,
-            'password' => PASSWORD,
-            'charset' => CHARSET,
-            'port' => PORT,
-            'check_interval' => CHECK_INTERVAL
-        ]);
+
 
         $this->table = "exp_sort";
     }
@@ -48,6 +39,18 @@ class Sort
      * @throws Exception
      */
     public function exc_log($funcname,$len,$num,$exc_time){
+
+        $this->database = new Medoo([
+            'database_type' => DATABASE_TYPE,
+            'database_name' => DATABASE_NAME,
+            'server' => SERVER,
+            'username' => USERNAME,
+            'password' => PASSWORD,
+            'charset' => CHARSET,
+            'port' => PORT,
+            'check_interval' => CHECK_INTERVAL
+        ]);
+
 
         $pdo = $this->database->insert($this->table,[
             'funcname'=>$funcname,
