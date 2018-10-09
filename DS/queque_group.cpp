@@ -5,7 +5,7 @@
 #include <math.h>
 #include <iostream>
 #include <iomanip>
-#include <stdio.h>
+
 using namespace std;
 
 
@@ -15,47 +15,73 @@ int main() {
 	string op;
 	map <int,int> group;
 	map <int,int>::iterator it;
-	queue <int> q,q2,*p;
-	bool has=true;
+//	queue <int> q;
+	queue <int> *qAr[10];
+	bool first = true;
+
 
 
 	cin>>t;
-	while(t--) {
+//	cout<<"get t"<<endl;
+	for(i=0; i<t; i++) {
+
 		cin>>n;
+//		cout<<"get n"<<endl;
 		for(i=0; i<n; i++) {
 			cin>>value;
 			group.insert(pair<int,int>(value,t));
+	//		cout<<"group.insert"<<endl;
 		}
+
+	}
+	
+	//init
+	for(i=0; i<t; i++) {
+	//	cout<<"init"<<endl;
+		qAr[i] = new queue <int> ;
+	//	cout<<"qAr["<<i<<"]"<<"--size:"<<qAr[i]->size()<<endl;
 	}
 
-	p = &q;
+
 	while(1) {
 		cin>>op;
 		if(op.compare("STOP") == 0) {
-	
-			while(!q.empty()) {
-				q.pop();
+			//clear
+	//		cout<<"clean"<<endl;
+			for(i=0; i<t; i++) {
+				while(!qAr[i]->empty()) {
+	//				cout<<"pop"<<endl;
+					qAr[i]->pop();
+				}
 			}
+
 			break;
 		}
 
 		if(op.compare("ENQUEUE") == 0) {
+	//		cout<<"get--ENQUEUE"<<endl;
 			cin>>data;
-			if(p[i].empty()) {
-				p[i].push(data);
-//				cout<<"push first";
 
-			} else { //check same group
+			for(i=0; i<t; i++) {
 
-				for(i=0; i<t; i++) {
+				if(qAr[i]->empty()) {
 
-					q_group_num = group[p[i].front()];
+					qAr[i]->push(data);
+		//			cout<<"push first"<<endl;
+					break;
+
+				} else { //check same group
+		//			cout<<"check same group"<<endl;
+					q_group_num = group[qAr[i]->front()];
 					data_group_num = group[data];
 
 					if(q_group_num == data_group_num) {
-						p[i].push(data);
+						qAr[i]->push(data);
+			//			cout<<"push same"<<" num:"<<q_group_num<<endl;
 						break;
 					}
+
+			//		cout<<"not same group"<<endl;
 
 				}
 			}
@@ -64,16 +90,16 @@ int main() {
 
 		if(op.compare("DEQUEUE") == 0) {
 
-			if(has) {
-				cout<<p[0].front();
-				has = false;
-				p[0].pop();
+			if(first) {
+				cout<<qAr[0]->front();
+				first = false;
+				qAr[0]->pop();
 
 			} else {
 				for(i=0; i<t; i++) {
-					if(!p[i].empty()) {
-			//			cout<<" "<<p[i].front();
-						p[i].pop();
+					if(!qAr[i]->empty()) {
+						cout<<" "<<qAr[i]->front();
+						qAr[i]->pop();
 						break;
 					}
 				}
@@ -81,10 +107,6 @@ int main() {
 		}
 
 	}
-	if(!q.empty()) {
-		q.pop();
-	}
-	delete p;
 	return 0;
 }
 
