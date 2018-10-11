@@ -16,7 +16,7 @@ try {
 //for ($len = 10; $len < 100000; $len *= 10) {
     //testForAvg($func, $len);
 //}
-    testForGraph([ 'insertAr']);
+    testForGraph([ 'bubble','insertAr']);
 
 
 }catch(Exception $e){
@@ -109,21 +109,21 @@ function testForGraph($func)
         echo "finish 1000";
         echo PHP_EOL;
 
-        // 中规模 1000-10000 step 100+
-        for ($len = 1000; $len < 10000; $len = $len + 100) {
-            excSort($funcname, $len,$sort);
-
-        }
-        echo "finish 10000";
-        echo PHP_EOL;
-
-        //大规模 10000-100000 step 30000+
-        for ($len = 10000; $len < 100000; $len = $len + 30000) {
-            excSort($funcname, $len,$sort);
-
-        }
-        echo "finish 100000";
-        echo PHP_EOL;
+//        // 中规模 1000-10000 step 100+
+//        for ($len = 1000; $len < 10000; $len = $len + 100) {
+//            excSort($funcname, $len,$sort);
+//
+//        }
+//        echo "finish 10000";
+//        echo PHP_EOL;
+//
+//        //大规模 10000-100000 step 30000+
+//        for ($len = 10000; $len < 100000; $len = $len + 30000) {
+//            excSort($funcname, $len,$sort);
+//
+//        }
+//        echo "finish 100000";
+//        echo PHP_EOL;
 
 //        //超大规模 100000-1000000 step 300000+
 //        for ($len = 100000; $len <= 1000000; $len = $len + 300000) {

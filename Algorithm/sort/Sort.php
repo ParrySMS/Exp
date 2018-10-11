@@ -80,13 +80,13 @@ class Sort
             $len = sizeof($ar);
         }
 
-        for ($i = 0; $i < $len; $i++) {
-            for ($j = $i + 1; $j < $len; $j++) {
+        for ($i = 0; $i < $len-1; $i++) {
+            for ($j = 0; $j < $len-1-$i; $j++) {
 
-                if ($ar[$i] > $ar[$j]) {//swap
-                    $t = $ar[$i];
-                    $ar[$i] = $ar[$j];
-                    $ar[$j] = $t;
+                if ($ar[$j] > $ar[$j+1]) {//swap
+                    $t = $ar[$j];
+                    $ar[$j] = $ar[$j+1];
+                    $ar[$j+1] = $t;
                 }
             }
         }
@@ -278,6 +278,11 @@ class Sort
         }
     }
 
+    /** 基于数组实现的插入排序
+     * @param array $ar
+     * @param null $len
+     * @param int $insert_way
+     */
     public function insertAr(array $ar, $len = null, $insert_way = 0)
     {
 
@@ -322,6 +327,7 @@ class Sort
         }
 
     }
+
 
 
     private function cutAdd(& $ar, $index, $data)
