@@ -8,12 +8,13 @@
 
 require './Http.php';
 require './config/database_info.php';
+require './config/params.php';
 require './config/Medoo.php';
 
 $filePath = './xml/';
 $fileName = 'test.xml';
 
-define('SOURCE', 'test');//todo 手动调整
+define('SOURCE', 'test');//todo 手动调整 测试一下
 
 $xml_file = simplexml_load_file($filePath . $fileName);
 
@@ -30,12 +31,13 @@ try {
         //插入题目
         $pid = $xml->insertPro($pro_array);
 
+        //todo 选项没插入？？？
         if (isset($data->Option)) {
-            //选项
+            //插入选项
             $optionAr = get_object_vars($d->Option);
-            $oidsJson = $xml->getOidsJson($pid,$optionAr);
-            //todo 实现
-            $xml->setProOids($oidsJson);
+            $oidsJson = $xml->getOidsJson($pid, $optionAr);
+            //实现选项id关联
+            $xml->setProOids($pid, $oidsJson);
         }
     }
 } catch (Exception $e) {
@@ -44,13 +46,12 @@ try {
 }
 
 
-
 /** 处理题目内容的xml类 **/
-
 class Xml
 {
     public $name;
     public $table;
+    public $table_op;
     public $database;
 
     /**
@@ -58,9 +59,11 @@ class Xml
      */
     public function __construct()
     {
-        $this->name = 'problem_addpic';
+//        $this->name = 'problem_addpic';
+        $this->name = 'problem_test';
 
         $this->table = DB_PREFIX . '_' . $this->name;
+        $this->table_op = DB_PREFIX . '_option_test';
 
         $this->database = new Medoo\Medoo([
             'database_type' => DATABASE_TYPE,
@@ -78,7 +81,7 @@ class Xml
 
     /**
      * [insertPro description]
-     * @param  array  $problem_info [description]
+     * @param  array $problem_info [description]
      * @return [type]               [description]
      * @throws Exception
      */
@@ -193,6 +196,7 @@ class Xml
     /** 获取oid的json
      * @param $pid
      * @param $optionAr
+     * @throws Exception
      * @return string
      */
     public function getOidsJson($pid, $optionAr)
@@ -212,24 +216,25 @@ class Xml
     }
 
 
-    /**
+    /** 数据库插入1条 返回oid
      * [insertOption description]
      * @param  [type]  $pid     [description]
      * @param  [type]  $key     [description]
      * @param  [type]  $content [description]
-     * @param  integer $is_pic  [description]
+     * @param  integer $is_pic [description]
      * @return [type]           [description]
      * @throws Exception
      */
     public function insertOption($pid, $key, $content, $is_pic = 0)
     {
-        //数据库插入1条 返回oid
-         $pdo = $this->database->insert($this->table, [
+
+        $pdo = $this->database->insert($this->table_op, [
             'pid' => $pid,
             'key' => $key,
             'content' => $content,
             'is_pic' => $is_pic,
-            'time'=>date(DB_TIME_FORMAT),
+            'time' => date(DB_TIME_FORMAT),
+            'edit_time' => date(DB_TIME_FORMAT),
             'visible' => VISIBLE_NORMAL
         ]);
 
@@ -263,6 +268,30 @@ class Xml
         } else {
             return 'mutil';
         }
+
+    }
+
+    /** 补充插回选项数据
+     * @param $pid
+     * @param $oidsJson
+     * @throws Exception
+     */
+    public function setProOids($pid, $oidsJson)
+    {
+        $pdo = $this->database->update($this->table, [
+            'option_ids' => $oidsJson
+        ], [
+            'AND' => [
+                'id' => $pid,
+                'visible' => VISIBLE_NORMAL,
+            ]
+        ]);
+
+        $affected = $pdo->rowCount();
+        if (!is_numeric($affected) || $affected != 1) {
+            throw new Exception(__CLASS__ . '->' . __FUNCTION__ . '():  error', 500);
+        }
+
 
     }
 }
