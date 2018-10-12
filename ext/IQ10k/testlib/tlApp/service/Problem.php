@@ -65,7 +65,8 @@ class Problem extends BaseService
 
         //插入题目选项内容
         $options = $problem_info['options'];
-        if (is_array($options)) {//如果有选项
+        if (is_array($options) && !empty($options) //如果有选项
+        && $this->isChoice($problem_info['pro_type'])) { //并且是选择题
             $op = new Option();
 
             unset($oid);
@@ -85,6 +86,14 @@ class Problem extends BaseService
         $this->json->setRetdata($retdata);
 
         return $this->json;
+    }
+
+    /** 判断题型是否是选择题
+     * @param $pro_type
+     * @return bool
+     */
+    private function isChoice($pro_type){
+        return ($pro_type == PM_REGION_PROTYPE_JSON[0]||$pro_type == PM_REGION_PROTYPE_JSON[1]);
     }
 
 
@@ -264,14 +273,13 @@ class Problem extends BaseService
             $pro_data = $this->pro->selectFlow(null, $source);
         }
 
-        //拿出数据 算next id
-        if (sizeof($pro_data) == 0) {
-            $next_id = null;
-        } else {//有数据
-            $end = $pro_data[sizeof($pro_data) - 1];
-            $next_id = isset($end['pid']) ? $end['pid'] : null;
-        }
-
+//        //拿出数据 算next id
+//        if (sizeof($pro_data) == 0) {
+//            $next_id = null;
+//        } else {//有数据
+//            $end = $pro_data[sizeof($pro_data) - 1];
+//            $next_id = isset($end['pid']) ? $end['pid'] : null;
+//        }
 
 //        //页面数据
 //        if ($has_comment) {//comment 评论题目
