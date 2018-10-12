@@ -12,39 +12,66 @@ require './config/params.php';
 require './config/Medoo.php';
 
 $filePath = './xml/';
-$fileName = 'test.xml';
 
-define('SOURCE', 'test');//todo 手动调整 测试一下
+//todo 根据具体情况填写参数
+//$fileName = 'test.xml';
+//$fileName = 'new-seq.xml';
 
-$xml_file = simplexml_load_file($filePath . $fileName);
+//$fileArray = ['new-verbal-C.xml','new-verbal-E.xml','new-verbal-CE.xml'];
+//$fileArray = ['new-verbal-E-4507part.xml'];
 
-$http = new Http();
-$xml = new Xml();
+//define('SOURCE', 'test');
+
+//define('SOURCE', 'verbal-E');
+
+set_time_limit(0);
+
+foreach ($fileArray as $fileName) {
+
+    $xml_file = simplexml_load_file($filePath . $fileName);
+
+    $http = new Http();
+    $xml = new Xml();
 
 //var_dump($xml_file->Data[11]);
 
-try {
-    foreach ($xml_file->Data as $d) {
-        //实现参数处理
-        $pro_array = $xml->pmcheck($d);
+    try {
+        foreach ($xml_file->Data as $d) {
+            //实现参数处理
+            $pro_array = $xml->pmcheck($d);
 
-        //插入题目
-        $pid = $xml->insertPro($pro_array);
+            //插入题目
+            $pid = $xml->insertPro($pro_array);
 
-        //todo 选项没插入？？？
-        if (isset($data->Option)) {
-            //插入选项
-            $optionAr = get_object_vars($d->Option);
-            $oidsJson = $xml->getOidsJson($pid, $optionAr);
-            //实现选项id关联
-            $xml->setProOids($pid, $oidsJson);
+            //插入有关联的提示
+            if (!empty($pro_array['hint']||$pro_array['hint']!=0)) {
+                $xml->insertHint($pid, $pro_array['hint']);
+            }
+
+            if (isset($d->Option)) {
+                //插入选项
+                $optionAr = get_object_vars($d->Option);
+                $oidsJson = $xml->getOidsJson($pid, $optionAr);
+                //实现选项id关联
+                $xml->setProOids($pid, $oidsJson);
+            }
+
+            echo 'finish one';
+            echo PHP_EOL;
+
+
         }
-    }
-} catch (Exception $e) {
-    echo $e->getMessage();
-    $http->status($e->getCode());
-}
 
+        echo 'finish all';
+        echo PHP_EOL;
+
+
+    } catch (Exception $e) {
+        echo $e->getMessage();
+//    $http->status($e->getCode());
+    }
+
+}
 
 /** 处理题目内容的xml类 **/
 class Xml
@@ -52,6 +79,7 @@ class Xml
     public $name;
     public $table;
     public $table_op;
+    public $table_hint;
     public $database;
 
     /**
@@ -59,11 +87,12 @@ class Xml
      */
     public function __construct()
     {
-//        $this->name = 'problem_addpic';
-        $this->name = 'problem_test';
+        $this->name = 'problem_addmostxml';
+//        $this->name = 'problem_test';
 
         $this->table = DB_PREFIX . '_' . $this->name;
-        $this->table_op = DB_PREFIX . '_option_test';
+        $this->table_op = DB_PREFIX . '_option_addmostxml';
+        $this->table_hint = DB_PREFIX . '_hint_addmostxml';
 
         $this->database = new Medoo\Medoo([
             'database_type' => DATABASE_TYPE,
@@ -125,6 +154,31 @@ class Xml
 
     }
 
+
+    /** 插入提示
+     * @param $pid
+     * @param $hint
+     * @return int|mixed|string
+     * @throws Exception
+     */
+    public function insertHint($pid, $hint)
+    {
+        $pdo = $this->database->insert($this->table_hint, [
+            'pid' => $pid,
+            'hint' => $hint,
+            'time' => date(DB_TIME_FORMAT),
+            'visible' => VISIBLE_NORMAL
+        ]);
+
+        $hid = $this->database->id();
+        if (!is_numeric($hid) || $hid < 1) {
+            throw new Exception(__CLASS__ . '->' . __FUNCTION__ . '():  pid error', 500);
+
+        }
+
+        return $hid;
+    }
+
     /** 参数检查 返回题目数组
      * @param $data
      * @throws Exception
@@ -140,7 +194,8 @@ class Xml
 
 
         if (!isset($data->Answer)) {
-            throw new Exception('answer null', 500);
+            $data->Answer = "null";
+//            throw new Exception("title:$title  -- answer null", 500);
         }
 
 
@@ -239,10 +294,12 @@ class Xml
         ]);
 
         $id = $this->database->id();
+
         if (!is_numeric($id) || $id < 1) {
             throw new Exception(__CLASS__ . __FUNCTION__ . '():  pid error', 500);
 
         }
+
         return $id;
 
     }
