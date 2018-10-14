@@ -17,8 +17,21 @@
 	-- 6. 	List the employees who have BLAKE as their manager.
 
 
-SELECT e.ename, e.sal FROM emp_2015090170 e,dept_2015090170 d WHERE e.deptno = d.deptno AND d.loc = 'LUTON';
+SELECT e.ename, e.sal FROM emp_1008610086 e,dept_1008610086 d WHERE e.deptno = d.deptno AND d.loc = 'LUTON';
 
-SELECT *  FROM emp_2015090170 e,dept_2015090170 d WHERE e.deptno = d.deptno AND ORDER BY(d.deptno);
+SELECT *  FROM emp_1008610086 e,dept_1008610086 d WHERE e.deptno = d.deptno AND ORDER BY(d.deptno);
 
-SELECT e.ename FROM emp_2015090170 e,dept_2015090170 d WHERE e.deptno = d.deptno AND d.dname = 'SALES'
+SELECT e.ename FROM emp_1008610086 e,dept_1008610086 d WHERE e.deptno = d.deptno AND d.dname = 'SALES'
+
+SELECT dname FROM dept_1008610086 WHERE dname NOT IN 
+	(SELECT DISTINCT d.dname FROM emp_1008610086 e,dept_1008610086 d WHERE e.deptno = d.deptno)
+
+	
+SELECT e.ename, e.sal, m.ename, m.sal FROM emp_1008610086 e,emp_1008610086 m WHERE e.sal > m.sal AND e.mgr = m.empno
+
+SELECT * FROM emp_1008610086 WHERE mgr IN
+	(SELECT empno FROM emp_1008610086 WHERE ename = 'BLAKE')
+	
+	
+	
+	
