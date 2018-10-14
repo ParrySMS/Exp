@@ -9,25 +9,37 @@
 require "Node.php";
 require "SingleLInkList.php";
 
-$ar = [34, 5, 5, 545, 5, 4, 14, 5, 88, 89, 54,10421,42,545,65,87,231,51,657,216,42];
-$ar1 = array_merge($ar,$ar);
-$ar2 = array_merge($ar,$ar);
-$ar3 = array_merge($ar,$ar);
+//$ar = [34, 5, 5, 545, 5, 4, 14, 5, 88, 89, 54,10421,42,545,65,87,231,51,657,216,42];
+// $ar1 = array_merge($ar,$ar);
+// $ar2 = array_merge($ar,$ar);
+// $ar3 = array_merge($ar,$ar);
 
-echo "input: <br/>";
+// echo "input: <br/>";
+// print_r(json_encode($ar));
+// echo "<br/>";
+// echo "<br/>";
+
+// $start_time = microtime(true);
+// insertLink($ar1);
+// $end_time = microtime(true);
+// $exc_time = $end_time - $start_time;
+// echo "ar1:<br/>";
+// echo 1000 * $exc_time;
+// echo "<br/>";
+
+
+$ar = [34, 5, 5, 555, 5, 4, 14, 5, 88, 89, 54];
+echo 'input:';
 print_r(json_encode($ar));
 echo "<br/>";
 echo "<br/>";
 
-$start_time = microtime(true);
-insertLink($ar1);
-$end_time = microtime(true);
-$exc_time = $end_time - $start_time;
-echo "ar1:<br/>";
-echo 1000 * $exc_time;
+
+$order = insertAr($ar);
 echo "<br/>";
-
-
+echo "<br/>";
+echo 'result:';
+print_r(json_encode($order));
 
 
 /** 基于链表实现的插入排序
@@ -68,9 +80,11 @@ function insertLink(array $ar, $len = null)
 
         }
 
-//        $order->show();
-//        echo "<br/>";
+
     }
+    var_dump($order);
+    $order->show();
+    echo "<br/>";
 
 }
 
@@ -80,7 +94,7 @@ function insertLink(array $ar, $len = null)
  * @param $len
  * @param $insert_way 0数组移动插入数据  1裁切插入数组数据
  */
-function insertAr(array $ar, $len=null, $insert_way = 0)
+function insertAr(array $ar, $len = null, $insert_way = 0)
 {
 
     if ($len === null) {
@@ -88,25 +102,23 @@ function insertAr(array $ar, $len=null, $insert_way = 0)
     }
 
     $order = [];
-    for ($i = 0; $i < $len; $i++) {//i for ar index
 
-        if (sizeof($order) == 0) {//empty order
+    //fill the order[]
+    for ($i = 0; $i < $len; $i++) {//i for ar index
+        echo "<br/>";
+        print_r(json_encode($order));
+
+        $size = sizeof($order);
+
+        if ($size == 0 || $ar[$i] >= $order[$size - 1]) {//empty order OR ar[i] is biggest
+
             $order[] = $ar[$i];
 
         } else {//compare one by one
 
-            $size = sizeof($order);
-
             for ($j = 0; $j < $size; $j++) {
 
-                $data = $order[$j];
-
-                if ($j == ($size - 1)) {//j to the end
-                    $order[] = $ar[$i];
-                    break;
-                }
-
-                if ($data >= $ar[$i]) {//add into
+                if ($ar[$i] <= $order[$j]) {//add into
 
                     if ($insert_way == 1) {
                         cutAdd($order, $j, $ar[$i]);
@@ -115,17 +127,25 @@ function insertAr(array $ar, $len=null, $insert_way = 0)
                     }
 
                     break;
-                }
-            }
 
+                }//end add into
 
-        }
+            }//end for of order[j]
 
-    }
+        }//end compare one by one
+
+    }//end fill the order[]
+
+    return $order;
 
 }
 
 
+/** 通过区分数组来插入一个指定位置的数据
+ * @param $ar
+ * @param $index
+ * @param $data
+ */
 function cutAdd(& $ar, $index, $data)
 {
     $left = array_slice($ar, 0, $index);
@@ -138,6 +158,11 @@ function cutAdd(& $ar, $index, $data)
 }
 
 
+/** 通过逐个移动来插入一个指定位置的数据
+ * @param $ar
+ * @param $index
+ * @param $data
+ */
 function moveAdd(& $ar, $index, $data)
 {
     $len = sizeof($ar);
