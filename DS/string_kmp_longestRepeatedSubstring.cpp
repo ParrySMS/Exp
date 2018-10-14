@@ -104,3 +104,68 @@ int myString::KMPFind(string p,int pos,int next[]) {
 	return -1;
 }
 
+
+int main() {
+	int cut_start,t,len,sublen,max,loc;
+	string mainstr,substr,leftstr;
+	int *next;
+	bool find;
+
+
+	cin>>t;
+	while(t--) {
+		myString *ms = new myString();
+
+		cin>>mainstr;
+
+		max = -1;
+		for(sublen = mainstr.length()/2; sublen > 0; sublen--) {// long to short
+			find = false;
+			for(cut_start=0; cut_start<=mainstr.length()-2*sublen; cut_start++) {
+				//cut
+				substr = mainstr.substr(cut_start,cut_start+sublen);
+				leftstr = mainstr.substr(cut_start+sublen);//left is meaning about remain, not the left side
+				
+				/** how to cut and use KMP 
+				 
+				 cut_start is from 0 to len - 2*sublen
+				 
+				 | x x x x | sub0 sub1 sub2 ... sub[k] | left0 left2  ... left[k] ...left[m] |
+				  	cut_start                cut_start+sublen                          mainstr.length()
+				
+				 KMP find [sub] in [left] 
+				 
+				**/
+				
+//				cout<<"substr:"<<substr<<endl;
+//				cout<<"leftstr:"<<leftstr<<endl;
+				
+				
+				ms->SetVal(leftstr);
+
+		
+
+				//find
+				loc = ms->KMPFindSubstr(substr,0);
+
+				if(loc!=-1) {
+					max = sublen;
+					find = true;
+					break;
+				}
+			}//for cut
+
+			if(find) {
+				break;
+			}
+
+		}// for sublen
+
+		cout<<max<<endl;
+		ms->~myString();
+
+	}//while t
+
+	return 0;
+}
+
