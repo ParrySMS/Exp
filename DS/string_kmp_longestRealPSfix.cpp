@@ -106,11 +106,10 @@ int myString::KMPFind(string p,int pos,int next[]) {
 
 
 int main() {
-	int cut_start,t,len,sublen,max,loc;
+	int t,m_len,len,sublen,loc;
 	string mainstr,substr,leftstr;
 	int *next;
 	bool find;
-
 
 	cin>>t;
 	while(t--) {
@@ -118,55 +117,44 @@ int main() {
 
 		cin>>mainstr;
 
-		max = -1;
-		for(sublen = mainstr.length()/2; sublen > 0; sublen--) {// long to short
-			find = false;
-			for(cut_start=0; cut_start<=mainstr.length()-2*sublen; cut_start++) {
+		m_len = mainstr.length();
+		find = false;
+		for(sublen = m_len/2; sublen > 0; sublen--) {// long to short
+			//cut
+			substr = mainstr.substr(0,sublen);
+			leftstr = mainstr.substr(sublen);//left is meaning about remain, not the left side
 
-				//cut
-				if(cut_start==0) {//start > 0  will include the right edge ,need to -1
-					substr = mainstr.substr(cut_start,cut_start+sublen);
-				} else {
-					substr = mainstr.substr(cut_start,cut_start+sublen-1);
-				}
-				
-				leftstr = mainstr.substr(cut_start+sublen);//left is meaning about remain, not the left side
-				/** how to cut and use KMP
-
-				 cut_start is from 0 to len - 2*sublen
-
-				 | x x x x | sub0 sub1 sub2 ... sub[k] | left0 left2  ... left[k] ...left[m] |
-				  	cut_start                cut_start+sublen                          mainstr.length()
-
-				 KMP find [sub] in [left]
-
-				**/
-
-//				cout<<"substr:"<<substr<<endl;
-//				cout<<"leftstr:"<<leftstr<<endl;
+			/** how to cut and use KMP
 
 
-				ms->SetVal(leftstr);
+			 to len - 2*sublen
 
+			 | sub0 sub1 sub2 ... sub[k] | x x x x |left0 left2  ... left[k] ...left[m] |
+			   [0]                           mainstr.length()-sublen
 
+			 KMP find [sub] in [left]
 
-				//find
-				loc = ms->KMPFindSubstr(substr,0);
+			**/
 
-				if(loc!=-1) {
-					max = sublen;
-					find = true;
-					break;
-				}
-			}//for cut
+			//cout<<"substr:"<<substr<<endl;
+			//cout<<"leftstr:"<<leftstr<<endl;
 
-			if(find) {
+			//find
+			ms->SetVal(leftstr);
+			loc = ms->KMPFindSubstr(substr,0);
+
+			if(loc!=-1) {
+				cout<<substr<<endl;
+				find = true;
 				break;
 			}
 
 		}// for sublen
 
-		cout<<max<<endl;
+		if(!find) {
+			cout<<"empty"<<endl;
+		}
+
 		ms->~myString();
 
 	}//while t
