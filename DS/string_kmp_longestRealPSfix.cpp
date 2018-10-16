@@ -119,25 +119,29 @@ int main() {
 
 		m_len = mainstr.length();
 		find = false;
-		for(sublen = m_len/2; sublen > 0; sublen--) {// long to short
+		
+		//allow repeat but not same
+		
+		for(sublen = m_len-1; sublen > 0; sublen--) {// long to short
 			//cut
 			substr = mainstr.substr(0,sublen);
-			leftstr = mainstr.substr(sublen);//left is meaning about remain, not the left side
+			leftstr = mainstr.substr(m_len - sublen);//left is meaning about remain, not the left side
 
 			/** how to cut and use KMP
 
 
 			 to len - 2*sublen
 
-			 | sub0 sub1 sub2 ... sub[k] | x x x x |left0 left2  ... left[k] ...left[m] |
-			   [0]                           mainstr.length()-sublen
+			 | sub0 sub1 sub2 ... sub[k] | x x 
+			              x x |left0 left2  ... left[k] ...left[m] |
+			[0]         mainstr.length()-sublen
 
 			 KMP find [sub] in [left]
 
 			**/
 
-			//cout<<"substr:"<<substr<<endl;
-			//cout<<"leftstr:"<<leftstr<<endl;
+//			cout<<"substr:"<<substr<<endl;
+//			cout<<"leftstr:"<<leftstr<<endl;
 
 			//find
 			ms->SetVal(leftstr);
