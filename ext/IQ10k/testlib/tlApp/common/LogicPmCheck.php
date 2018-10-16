@@ -41,7 +41,7 @@ class LogicPmCheck extends PmCheck
         $this->proRegionCheck($problem_info);
 
         //todo 临时关闭 题型限制逻辑检查
-//        $this->proTypeCheck($problem_info);
+        $this->proTypeCheck($problem_info);
 
         $this->problem_info = $problem_info;
 
@@ -183,55 +183,55 @@ class LogicPmCheck extends PmCheck
     {
         $pro_type = $problem_info['pro_type'];
 
-
+        $region = json_decode(PM_REGION_PROTYPE_JSON);
         switch ($pro_type) {
-            case 'exclusive choice'://单选题
+            case  $region[0]: //  'exclusive choice', 单选 0
                 //选项数量检查 不得为0
-                if (sizeof($problem_info['options'] == 0)) {
-                    throw new Exception('option array should not be 0 length', 400);
+                if (sizeof($problem_info['options']) == 0) {
+                    throw new Exception( $pro_type.': option array should not be 0 length', 400);
                 }
 
                 //单选检查 长度必为1
-                if (sizeof($problem_info['answers'] != 1)) {
-                    throw new Exception('answer array should be 1 length', 400);
+                if (sizeof($problem_info['answers']) != 1) {
+                    throw new Exception( $pro_type.': answer array should be 1 length', 400);
                 }
                 break;
 
-            case 'multiple choice'://多选题
+            case $region[1]: // 'multiple choice': 多选题01
                 //选项数量检查  不得为0
-                if (sizeof($problem_info['options'] == 0)) {
-                    throw new Exception('option array should not be 0 length', 400);
+                if (sizeof($problem_info['options']) == 0) {
+                    throw new Exception($pro_type.': ption array should not be 0 length', 400);
                 }
                 //多选检查 长度小于等于1报错
-                if (sizeof($problem_info['answers'] <= 1)) {
-                    throw new Exception('answer array should be over 1 length', 400);
+                if (sizeof($problem_info['answers']) <= 1) {
+                    throw new Exception($pro_type.': answer array should be over 1 length', 400);
                 }
                 break;
 
-            case 'short answer'://简答题
-            case 'exclusive fill'://单项填空
+
+            case $region[4]: // 'short answer': // 简答题 4
+            case $region[2]://  'exclusive fill', 单项填空 2
                 //选项数量检查  必为0
-                if (sizeof($problem_info['options'] != 0)) {
-                    throw new Exception('option array should not be 0 length', 400);
+                if (sizeof($problem_info['options']) != 0) {
+                    throw new Exception($pro_type.': option array should not be 0 length', 400);
                 }
 
                 //单选检查 长度必为1
-                if (sizeof($problem_info['answers'] != 1)) {
-                    throw new Exception('answer array should be 1 length', 400);
+                if (sizeof($problem_info['answers']) != 1) {
+                    throw new Exception($pro_type.': answer array should be 1 length', 400);
                 }
                 break;
 
-            case 'multiple fill'://多项填空
+            case $region[3] ://'multiple fill'://多项填空 3
                 //选项数量检查  必为0
-                if (sizeof($problem_info['options'] != 0)) {
-                    throw new Exception('option array should not be 0 length', 400);
+                if (sizeof($problem_info['options']) != 0) {
+                    throw new Exception($pro_type.': option array should not be 0 length', 400);
                 }
                 //多选检查 长度小于等于1报错
-                if (sizeof($problem_info['answers'] <= 1)) {
-                    throw new Exception('answer array should be over 1 length', 400);
+                if (sizeof($problem_info['answers']) <= 1) {
+                    throw new Exception($pro_type.': answer array should be over 1 length', 400);
                 }
                 break;
-
 
             default:
                 throw new Exception("pro_type $pro_type invaild", 400);
