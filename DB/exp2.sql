@@ -32,6 +32,43 @@ SELECT e.ename, e.sal, m.ename, m.sal FROM emp_1008610086 e,emp_1008610086 m WHE
 SELECT * FROM emp_1008610086 WHERE mgr IN
 	(SELECT empno FROM emp_1008610086 WHERE ename = 'BLAKE')
 	
+	/* 
+	EXERCISES	6    SUB QUERIES.
 	
+	3	List the name, job, and department of employees who have the same job as Jones or a salary greater than or equal to Ford.
+
+	4	Find all employees in department 10 that have a job that is the same as anyone in the Sales department
+
+	5	Find the employees located in Liverpool who have the same job as Allen. Return the results in alphabetical order by employee name.
+
+	 */
+	 
+	 
+SELECT e.ename, e.job, d.dname FROM emp_1008610086 e, dept_1008610086 d 
+	WHERE e.deptno = d.deptno 
+		AND ename !='JONES' 
+			AND ( e.job IN 
+				(SELECT job FROM emp_1008610086 WHERE ename = 'JONES') OR e.sal >= 
+					(SELECT sal FROM emp_1008610086 WHERE ename = 'FORD'))
+		
+		
+
+SELECT * FROM emp_1008610086 e WHERE deptno = 10 AND job IN
+	(SELECT job FROM emp_1008610086 WHERE deptno = 
+		(SELECT deptno FROM dept_1008610086 WHERE dname = 'SALES'))
+		
 	
+SELECT * FROM emp_1008610086 WHERE deptno = 
+	(SELECT deptno FROM dept_1008610086 WHERE loc = 'LIVERPOOL' ) AND job = 
+		(SELECT job FROM emp_1008610086 WHERE ename = 'ALLEN') ORDER BY ename
 	
+	 
+/* 	 
+	 EXERCISES	4
+
+	7	Show details of employee hiredates and the date of their first payday. 
+		(Paydays occur on the last Friday of each month) (plus their names)
+
+	 
+	  */
+SELECT * FROM emp_1008610086  WHERE to_char(hiredate,'W day') ！= '4 星期五'
