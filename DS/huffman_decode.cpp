@@ -4,6 +4,8 @@
 using namespace std;
 
 #define WT_ARRAY 800
+#define OK 1
+#define ERROR -1
 const int max_w = 9999;
 
 class HuffNode {
@@ -13,6 +15,7 @@ class HuffNode {
 		int parent;
 		int left;
 		int right;
+		char data;
 
 };
 
@@ -27,9 +30,9 @@ class HuffMan {
 		int leaf_num;
 		HuffNode *huffTree;
 		string *huffCode;
-		void init(int leaf,int * weight);
+		void init(int leaf,int * weight,char* ch);
 		void encode();
-		void decode();
+		int  decode(const string codestr, char* txtstr);
 		~HuffMan() {
 			node_num = 0;
 			leaf_num = 0;
@@ -40,7 +43,7 @@ class HuffMan {
 };
 
 //public
-void HuffMan::init(int leaf,int* weight) {
+void HuffMan::init(int leaf,int* weight,char* ch) {
 	int i;
 	leaf_num = leaf;
 	node_num = 2*leaf_num-1;
@@ -50,6 +53,7 @@ void HuffMan::init(int leaf,int* weight) {
 	// set leaf weight
 	for(i=1; i<=leaf_num; i++) {
 		huffTree[i].weight = weight[i-1];//tree start from 1
+		huffTree[i].data = ch[i-1];
 	}
 
 
@@ -63,6 +67,7 @@ void HuffMan::init(int leaf,int* weight) {
 		huffTree[i].parent = 0;
 		huffTree[i].left = 0;
 		huffTree[i].right = 0;
+		huffTree[i].data = '\0';
 	}
 
 	//connect left right
@@ -140,10 +145,10 @@ void HuffMan::encode() {
 		for(j = i; huffTree[j].parent != 0; start--) {
 
 			p = huffTree[j].parent;
-		//	cout<<"h"<<j;
-		//	cout<<":"<<huffTree[j].weight<<endl;
-		//	cout<<"h[j]-p:"<<p<<endl;
-		//	cout<<"huffTree[p].left("<<huffTree[p].left<<") == j("<<j<<")"<<endl;
+			//	cout<<"h"<<j;
+			//	cout<<":"<<huffTree[j].weight<<endl;
+			//	cout<<"h[j]-p:"<<p<<endl;
+			//	cout<<"huffTree[p].left("<<huffTree[p].left<<") == j("<<j<<")"<<endl;
 			cd[start] = (huffTree[p].left == j)? '0':'1';
 			j = huffTree[j].parent;
 		}
@@ -156,29 +161,85 @@ void HuffMan::encode() {
 
 }
 
+int  HuffMan::decode(const string codestr, char* txtstr) {
+	int i,k=0,c_len,node_index;
+	char ch;
+	node_index = node_num;//root
+	c_len = codestr.length();
+
+
+
+	cout<<"codestr"<<codestr<<endl;
+	for(i=0; i<c_len; i++) {
+		ch = codestr[i];
+
+		if(ch!='0'&&ch!='1') {
+			return ERROR;
+		}
+		cout<<"node_index"<<node_index<<endl;
+		node_index = (ch =='0')? huffTree[node_index].left:huffTree[node_index].right;
+		cout<<"after: node_index"<<node_index<<endl;
+		if(node_index <= leaf_num) { //leaf
+			cout<<"set txtstr [k]"<<k<<endl;
+			
+			//todo no data
+			
+			cout<<"data"<< huffTree[node_index].data <<endl;
+			cout<<"weight"<< huffTree[node_index].weight <<endl;
+			txtstr[k]=huffTree[node_index].data;
+			k++;
+		} else {
+			ch = '\0';
+		}
+
+		cout<<"txtstr"<<txtstr<<endl;
+	}
+
+	if(ch == '\0') {
+		return ERROR;
+	} else {
+		txtstr[k] = '\0';
+		return OK;
+	}
+
+}
+
 int main() {
 
-	int t,n,i,j;
+	int t,n,i,j,k,res;
 	int* wt;
-	wt = new int[WT_ARRAY];
+	char* ch;
+	string codestr;
+	char* txtstr;
 	HuffMan * huff;
 	cin>>t;
 	while(t--) {
 		cin>>n;
+
+		wt = new int[n];
+		ch = new char[n];
+
 		for(i=0; i<n; i++) {
 			cin>>wt[i];
 		}
-		huff = new HuffMan();
-		huff->init(n,wt);
-		huff->encode();
 
-		for(j=1; j<=n; j++) {
-			cout<<huff->huffTree[j].weight<<'-';
-			cout<<huff->huffCode[j]<<endl;
+		for(i=0; i<n; i++) {
+			cin>>ch[i];
 		}
 
-		huff->~HuffMan();
-
+		cin>>k;
+		while(k--) {
+			cin>>codestr;
+			txtstr = new char[codestr.length()];
+			huff = new HuffMan();
+			cout<<"ch"<<ch<<endl;
+			huff->init(n,wt,ch);
+			res = huff->decode(codestr,txtstr);
+			if(res == OK) {
+				cout<<txtstr<<endl;
+			}
+			huff->~HuffMan();
+		}
 	}
 
 
