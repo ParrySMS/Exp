@@ -119,8 +119,22 @@ void HuffMan::find2MinNode(int pos,int *node1,int *node2) {
 
 }
 
-//todo
+
 void HuffMan::encode() {
+	int i,c,f,start;
+	char *cd
+	cd = new char[leaf_num];
+
+	cd[leaf_num-1]='\0';
+	for(i=1; i<=leaf_num; i++) {
+		start = leaf_num-1;
+
+		for(j = i; huffTree[j].parent != 0; start--;) {
+
+			cd[start] = (huffTree[j].parent.left == j )? 0:1;
+			j = huffTree[j].parent;
+		}
+	}
 
 }
 
@@ -146,7 +160,7 @@ int main() {
 		}
 
 		huff->~HuffMan();
-		
+
 	}
 
 
