@@ -19,7 +19,6 @@ class BinTree {
 	private:
 		BinTreeNode* root;
 		int pos;
-
 		string strTree;
 		BinTreeNode * CreateBinTree();
 
@@ -32,10 +31,13 @@ class BinTree {
 		BinTree() {
 			leaf_num = 0;
 		};
-		~BinTree() {};
+		~BinTree() {
+			leaf_num = 0;
+		};
 		void CreateTree(string TreeAr);
 		bool isVaildCh(char ch);
 		void setRoot(BinTreeNode* node);
+
 		void CountLeaf();
 };
 
@@ -84,29 +86,18 @@ void BinTree::CountLeaf() {
 }
 //public
 void BinTree::CountLeaf(BinTreeNode *t) {
-	cout<<"check t:"<<t->data<<endl;
-	cout<<"left:"<<t->left<<endl;
-	cout<<"right:"<<t->right<<endl;
-	
-	if(t!=NULL && isVaildCh(t->data)) {
-		cout<<"in left"<<endl;
+
+	if(t == NULL) {
+		return;
+	} else if(t->left==NULL && t->right==NULL) {
+		//	cout<<"num++"<<endl;
+		leaf_num++;
+	} else if(isVaildCh(t->data)) {
 		CountLeaf(t->left);
-		
-		cout<<"in right"<<endl;
 		CountLeaf(t->right);
 	}
-
-	if(t->left == NULL && t->right == NULL) {
-		cout<<"+"<<endl;
-		leaf_num++;
-	} else if(!isVaildCh(t->left->data) && !isVaildCh(t->right->data) ) {
-		cout<<"++"<<endl;
-		leaf_num++;
-	}
-	
-	
-
 }
+
 
 
 int main() {
@@ -121,8 +112,8 @@ int main() {
 		bin = new BinTree();
 		bin->CreateTree(str);
 		bin->CountLeaf();
-		cout<<bin->leaf_num;
-
+		cout<<bin->leaf_num<<endl;
+		
 		bin->~BinTree();
 
 	}
