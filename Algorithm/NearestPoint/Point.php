@@ -55,19 +55,32 @@ class Point
     }
 
 
-    /** 求两点之间距离
+    /** 求集合内某序号两点之间距离
      * @param $index1
      * @param $index2
      * @return float
      */
-    public function distance($index1, $index2)
+    public function disInSet($index1, $index2,$set = null)
     {
+        if($set === null){
+            $set = $this->set;
+        }
 
-        $lx = $this->set[$index1][0] - $this->set[$index2][0];
-        $ly = $this->set[$index1][1] - $this->set[$index2][1];
+        $lx = $set[$index1][0] - $set[$index2][0];
+        $ly = $set[$index1][1] - $set[$index2][1];
         return sqrt($lx * $lx + $ly * $ly);
     }
 
+    /** 求两点距离
+     * @param array $p1
+     * @param array $p2
+     * @return float
+     */
+    public function distance(array $p1,array $p2)
+    {
+        return sqrt(pow($p1[0]-$p2[0],2) + pow($p1[1]-$p2[1],2));
+
+    }
 
     /**随机获取一个点
      * @return mixed
@@ -78,9 +91,75 @@ class Point
         return $this->set[$index];
     }
 
-
-    public function divide(array $set)
+    /** 基于某个唯独获取点集的排序序列数字 （由小到大）
+     * todo bug
+     * @param $var
+     * @return array|null
+     */
+    public function getSortIndex($var, array $set = null)
     {
+        switch ($var) {
+            case 'X':
+            case 'x':
+                $dim_var = 0;
+                break;
+            case 'Y':
+            case 'y':
+                $dim_var = 1;
+                break;
+            default :
+                return null;
+        }
+
+        if ($set === null) {
+            $set = $this->set;
+        }
+
+        $size = sizeof($set);
+
+        //fill ar
+        unset($indexs);
+        $indexs = [];
+        for ($i = 0; $i < $size; $i++) {
+            $indexs[] = $i;
+        }
+
+        //sort
+        for ($i = 0; $i < $size - 1; $i++) {
+            $min_index = $i; //consider i as min_index
+
+            for ($j = $i + 1; $j < $size; $j++) {//find min_index
+
+                $p_index = $indexs[$j];
+                $p_min_index = $indexs[$min_index];
+
+                if ($set[$p_index][$dim_var]
+                    <= $set[$p_min_index][$dim_var]) {
+
+                    $min_index = $j;
+
+                }
+            }
+            //check min_index and swap
+            if ($min_index != $i) {//change
+
+                $t = $indexs[$i];
+                $indexs[$i] = $indexs[$min_index];
+                $indexs[$min_index] = $t;
+            }
+
+        }
+
+        return $indexs;
+    }
+
+    public function getMinLine(array $set = null)
+    {
+
+        if($set === null){
+            $set = $this->set;
+        }
+
         $size = sizeof($set);
 
         if ($size <= 3) {//small
@@ -91,17 +170,129 @@ class Point
                         continue;
                     }
 
-                    $dis = $this->distance($i, $j);
+                    $dis = $this->disInSet($i, $j);
                     if ($dis < $min_dis) {
                         $min_dis = $dis;
-                        $line = new Line($i, $this->set[$i], $j, $this->set[$j], $dis);
+                        $line = new Line($i, $set[$i], $j, $set[$j], $dis);
                     }
                 }
             }
-        }else{//todo big >3 ,divide into
+
+            return $line;
+
+
+        } else {// big >3 ,divide into
+
+            $x_indexs = $this->getSortIndex('x',$set);
+            $x_min_point = $set[$x_indexs[0]];
+            $x_mid_point = $set[$x_indexs[intval(sizeof($x_indexs) / 2)]];
+            $x_max_point = $set[$x_indexs[sizeof($x_indexs)-1]];
+
+            $new_set = $this->divideSet('x', $x_min_point[0], $x_mid_point[0], $x_max_point[0], $set);
+            $x_leftSet = $new_set['left'];
+            $x_rightSet = $new_set['right'];
+
+            $line_l = $this->getMinLine($x_leftSet);
+            $line_r = $this->getMinLine($x_rightSet);
+
+            $small_line = $line_l->dis < $line_r->dis ? $line_l : $line_r;
+            $small_d = $small_line->dis;
+
+            //todo fix edge
+
+            $min = $x_mid_point[0] - $small_d;
+            $mid = $x_mid_point[0];
+            $max = $x_mid_point[0] + $small_d;
+
+            $fix_set = $this->divideSet('x', $min, $mid, $max, $set);
+            $left_set = $fix_set['left'];
+            $right_set = $fix_set['right'];
+
+            $left_y_indexs = $this->getSortIndex('y', $fix_set['left']);
+            $right_y_indexs = $this->getSortIndex('y', $fix_set['right']);
+
+            $fix_dis = $small_d;
+            foreach ($left_y_indexs as $l_index) {
+                foreach ($right_y_indexs as $r_index) {
+
+                    if (!$this->inRightArea($left_set[$l_index], $right_set[$r_index], $small_d)) {
+                        break;//next left point
+                    }
+
+                    //in right
+                    $fix_dis = $this->distance($left_set[$l_index],$right_set[$r_index]);
+
+                    if($fix_dis<$small_d) {
+                        $small_d = $fix_dis;
+                        $line = new Line($l_index, $left_set[$l_index], $r_index, $right_set[$r_index], $small_d);
+                    }
+
+                }
+            }
+
+            $line = (isset($line))?$line:$small_line;
+
+            return $line;
 
         }
 
+    }
+
+    /** 检查p2是否在p1的右方合理范围
+     * @param array $p1
+     * @param array $p2
+     * @param $d
+     * @return bool
+     */
+    private function inRightArea(array $p1, array $p2, $d)
+    {
+        return (($p2[0] < $p1[0] + $d) && ($p2[1] > $p1[1] - $d) && ($p2[1] < $p1[1] + $d));
+
+    }
+
+
+    /** 根据指定参数与范围划分点集 返回一个数组 left right分别是两个子点集
+     * @param $var
+     * @param $min
+     * @param $mid
+     * @param $max
+     * @param $set
+     * @return array|null
+     */
+    public function divideSet($var, $min, $mid, $max, array $set = null)
+    {
+        switch ($var) {
+            case 'X':
+            case 'x':
+                $dim_var = 0;
+                break;
+            case 'Y':
+            case 'y':
+                $dim_var = 1;
+                break;
+            default :
+                return null;
+        }
+
+        if ($set === null) {
+            $set = $this->set;
+        }
+
+        $left = [];
+        $right = [];
+        foreach ($set as $point) {
+            if ($point[$dim_var] >= $min && $point[$dim_var] < $mid) {
+                $left[] = $point;
+            } elseif ($point[$dim_var] >= $mid && $point[$dim_var] < $max) {
+                $right[] = $point;
+
+            } else {
+                return null;
+            }
+        }
+
+
+        return ['left' => $left, 'right' => $right];
     }
 
 
