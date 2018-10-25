@@ -5,11 +5,21 @@
  * Date: 2018-10-23
  * Time: 21:59
  */
+require "./Medoo/Medoo.php";
+require "./Medoo/database_info.php";
 
-class Point
+use Medoo\Medoo;
+
+date_default_timezone_set('Asia/Shanghai');
+
+class PointSet
 {
     private $num;
     public $set = [];
+    const MAX_DIS = 99999999;
+    protected $database;
+    protected $table = 'exp_sort';
+
 
     /** 默认生成一个大小为100的点集
      * Point constructor.
@@ -60,9 +70,9 @@ class Point
      * @param $index2
      * @return float
      */
-    public function disInSet($index1, $index2,$set = null)
+    public function disInSet($index1, $index2, $set = null)
     {
-        if($set === null){
+        if ($set === null) {
             $set = $this->set;
         }
 
@@ -76,9 +86,9 @@ class Point
      * @param array $p2
      * @return float
      */
-    public function distance(array $p1,array $p2)
+    public function distance(array $p1, array $p2)
     {
-        return sqrt(pow($p1[0]-$p2[0],2) + pow($p1[1]-$p2[1],2));
+        return sqrt(pow($p1[0] - $p2[0], 2) + pow($p1[1] - $p2[1], 2));
 
     }
 
@@ -92,7 +102,6 @@ class Point
     }
 
     /** 基于某个唯独获取点集的排序序列数字 （由小到大）
-     * todo bug
      * @param $var
      * @return array|null
      */
@@ -117,12 +126,13 @@ class Point
 
         $size = sizeof($set);
 
-        //fill ar
+        //fill index
         unset($indexs);
         $indexs = [];
         for ($i = 0; $i < $size; $i++) {
             $indexs[] = $i;
         }
+
 
         //sort
         for ($i = 0; $i < $size - 1; $i++) {
@@ -156,24 +166,35 @@ class Point
     public function getMinLine(array $set = null)
     {
 
-        if($set === null){
+        if ($set === null) {
             $set = $this->set;
         }
 
         $size = sizeof($set);
 
-        if ($size <= 3) {//small
-            $min_dis = 9999999;
-            for ($i = 0; $i < $size; $i++) {//get point
-                for ($j = 0; $j < $size; $j++) {//count others point
-                    if ($j == $i) {//no need to count itself
-                        continue;
-                    }
 
-                    $dis = $this->disInSet($i, $j);
-                    if ($dis < $min_dis) {
-                        $min_dis = $dis;
-                        $line = new Line($i, $set[$i], $j, $set[$j], $dis);
+        if ($size <= 3) {//small
+
+            $min_dis = null;
+
+            if ($size == 0) {
+                $line = new Line(null, [], null, [], $this::MAX_DIS);
+
+            } elseif ($size == 1) {
+                $line = new Line(null, $set[0], null, $set[0], $this::MAX_DIS);
+
+            } else {
+                foreach ($set as $p1) {
+                    foreach ($set as $p2) {
+                        if ($p2 === $p1) {
+                            continue;
+                        }
+
+                        $dis = $this->distance($p1, $p2);
+                        if ($min_dis == null || $dis < $min_dis) {
+                            $min_dis = $dis;
+                            $line = new Line(null, $p1, null, $p2, $dis);
+                        }
                     }
                 }
             }
@@ -183,14 +204,17 @@ class Point
 
         } else {// big >3 ,divide into
 
-            $x_indexs = $this->getSortIndex('x',$set);
+            $x_indexs = $this->getSortIndex('x', $set);
             $x_min_point = $set[$x_indexs[0]];
             $x_mid_point = $set[$x_indexs[intval(sizeof($x_indexs) / 2)]];
-            $x_max_point = $set[$x_indexs[sizeof($x_indexs)-1]];
+            $x_max_point = $set[$x_indexs[sizeof($x_indexs) - 1]];
+
 
             $new_set = $this->divideSet('x', $x_min_point[0], $x_mid_point[0], $x_max_point[0], $set);
             $x_leftSet = $new_set['left'];
             $x_rightSet = $new_set['right'];
+
+//            var_dump($new_set);
 
             $line_l = $this->getMinLine($x_leftSet);
             $line_r = $this->getMinLine($x_rightSet);
@@ -198,7 +222,7 @@ class Point
             $small_line = $line_l->dis < $line_r->dis ? $line_l : $line_r;
             $small_d = $small_line->dis;
 
-            //todo fix edge
+            // fix edge
 
             $min = $x_mid_point[0] - $small_d;
             $mid = $x_mid_point[0];
@@ -211,7 +235,7 @@ class Point
             $left_y_indexs = $this->getSortIndex('y', $fix_set['left']);
             $right_y_indexs = $this->getSortIndex('y', $fix_set['right']);
 
-            $fix_dis = $small_d;
+            $fix_dis = $this::MAX_DIS;
             foreach ($left_y_indexs as $l_index) {
                 foreach ($right_y_indexs as $r_index) {
 
@@ -220,17 +244,17 @@ class Point
                     }
 
                     //in right
-                    $fix_dis = $this->distance($left_set[$l_index],$right_set[$r_index]);
+                    $fix_dis = $this->distance($left_set[$l_index], $right_set[$r_index]);
 
-                    if($fix_dis<$small_d) {
+                    if ($fix_dis < $small_d) {
                         $small_d = $fix_dis;
-                        $line = new Line($l_index, $left_set[$l_index], $r_index, $right_set[$r_index], $small_d);
+                        $line = new Line($l_index, $left_set[$l_index], $r_index, $right_set[$r_index], $fix_dis);
                     }
 
                 }
             }
 
-            $line = (isset($line))?$line:$small_line;
+            $line = ($small_d == $fix_dis) ? $line : $small_line;
 
             return $line;
 
@@ -286,13 +310,43 @@ class Point
             } elseif ($point[$dim_var] >= $mid && $point[$dim_var] < $max) {
                 $right[] = $point;
 
-            } else {
-                return null;
             }
         }
 
 
         return ['left' => $left, 'right' => $right];
+    }
+
+    public function exc_log($funcname, $len, $num, $exc_time)
+    {
+
+        $this->database = new Medoo([
+            'database_type' => DATABASE_TYPE,
+            'database_name' => DATABASE_NAME,
+            'server' => SERVER,
+            'username' => USERNAME,
+            'password' => PASSWORD,
+            'charset' => CHARSET,
+            'port' => PORT,
+            'check_interval' => CHECK_INTERVAL
+        ]);
+
+
+        $pdo = $this->database->insert($this->table, [
+            'funcname' => $funcname,
+            'len' => $len,
+            'sample_num' => $num,
+            'exc_time' => $exc_time,
+            'log_time' => date('Y-m-d H:i:s'),
+            'visible' => 1
+        ]);
+
+        $id = $this->database->id();
+
+        if (!is_numeric($id) || $id < 1) {
+            throw new Exception(__CLASS__ . '->' . __FUNCTION__ . '():   error');
+        }
+
     }
 
 

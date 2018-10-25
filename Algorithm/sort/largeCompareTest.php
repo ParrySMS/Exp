@@ -11,8 +11,9 @@ set_time_limit(0);
 require "./Sort.php";
 
 try {
-    $func = ['quick', 'selection','merge','bubble','insert'];
-
+	
+   $func = ['quick', 'selection','merge','bubble','insert'];
+   // $func = ['selection','merge','bubble','insert'];
     testForGraph($func,100000,500000,10000);
 
 
@@ -20,6 +21,8 @@ try {
     echo $e->getMessage();
     echo PHP_EOL;
 }
+
+
 /** 获取长度为len的随机数字数组
  * @param $len
  * @return array
@@ -67,6 +70,7 @@ function testForAvg($func, $len, $sample_num = 20)
             echo " $exc_time s ";
             echo PHP_EOL;
             $sum_exc_time += $exc_time;
+			unset($ar);
 
         }
 
@@ -100,9 +104,10 @@ function testForGraph($func,$start,$end,$step)
 
         echo "sort function: $funcname ( )";
         echo PHP_EOL;
-
+		
+	
         for ($len = $start; $len <= $end; $len = $len + $step) {
-            excSort($funcname, $len,$sort);
+          excSort($funcname, $len,$sort);
         }
 
 
@@ -122,6 +127,7 @@ function excSort($funcname, $len, Sort $sort,$sample_num = 20){
 
     //每个规模-每次20个样本
     $sum_exc_time = 0;
+	
     for ($num = 0; $num < $sample_num; $num++) {
         unset($ar);
         $ar = getArray($len);//生成随机数数组
