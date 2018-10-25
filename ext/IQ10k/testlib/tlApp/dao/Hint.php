@@ -12,7 +12,8 @@ use \Exception;
 class Hint extends BaseDao
 {
 
-    protected $table = DB_PREFIX . "_hint_test";
+//    protected $table = DB_PREFIX . "_hint_test";
+    protected $table = DB_PREFIX . "_hint_adddigramspecial";
 
     /** 更新一条提示 可能会相同
      * @param $pid

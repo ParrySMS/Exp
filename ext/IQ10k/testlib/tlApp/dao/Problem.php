@@ -21,7 +21,8 @@ use \Exception;
 class Problem extends BaseDao
 {
 
-    protected $table = DB_PREFIX . "_problem_test";
+//    protected $table = DB_PREFIX . "_problem_test";
+    protected $table = DB_PREFIX . "_problem_adddigramspecial";
 
     /** 插入除选项往的题目信息主体 不含图片 不含option
      * @param array $problem_info

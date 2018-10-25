@@ -27,9 +27,9 @@ try {
 
     //数据库表
 //    $table_p = DB_PREFIX . '_problem';
-    $table_p = DB_PREFIX . '_problem_test';
+    $table_p = DB_PREFIX . '_problem_adddigramspecial';
 //    $table_h = DB_PREFIX . '_hint';
-    $table_h = DB_PREFIX . '_hint_test';
+    $table_h = DB_PREFIX . '_hint_adddigramspecial';
 
 } catch (Exception $e) {
     echo '错误信息<br/>' . $e->getMessage();

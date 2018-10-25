@@ -12,7 +12,8 @@ use \Exception;
 
 class Option extends BaseDao
 {
-    protected $table = DB_PREFIX . '_option_test';
+//    protected $table = DB_PREFIX . '_option_test';
+    protected $table = DB_PREFIX . '_option_adddigramspecial';
 
 
     /** 默认无图 逐条插入选项
@@ -20,6 +21,7 @@ class Option extends BaseDao
      * @param $key
      * @param $content
      * @param int $is_pic
+     * @throws Exception
      * @return int $id
      */
     public function insert($pid, $key, $content, $is_pic = 0)
