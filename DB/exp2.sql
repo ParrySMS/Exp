@@ -70,5 +70,34 @@ SELECT * FROM emp_1008610086 WHERE deptno =
 		(Paydays occur on the last Friday of each month) (plus their names)
 
 	 
-	  */
+*/
+
+-- TODO
 SELECT * FROM emp_1008610086  WHERE to_char(hiredate,'W day') ！= '4 星期五'
+
+/* 
+	9	Create a view for use by personnel in department 30 showing employee 		
+	name, number, job and hiredate
+
+	10	Use the view to show employees in department 30 having jobs which 		
+	are not salesman
+
+	11	Create a view which shows summary information for each department.
+ */
+
+
+	
+CREATE VIEW dept30_1008610086 (ename, empno, job, hiredate)
+		AS SELECT ename, empno, job, hiredate FROM emp_1008610086
+			WHERE deptno = 30;
+			
+			
+SELECT * FROM dept_1008610086 WHERE job !='SALESMAN'
+
+
+CREATE VIEW dept_summary_1008610086 (deptno,dname)
+		AS SELECT deptno,dname FROM dept_1008610086
+		
+
+
+
