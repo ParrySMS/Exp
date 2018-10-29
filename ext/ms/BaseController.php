@@ -1,6 +1,6 @@
 <?php
 
-class BaseController
+abstract class BaseController
 {
 
     /**
@@ -24,6 +24,15 @@ class BaseController
         $this->status = $status;
     }
 
+    /** 对应控制器获取数据
+     * @return mixed
+     */
+    abstract function getData();
+
+    /** 做用户行为记录
+     */
+    abstract function actionLog();
+
 
     public function error(Exception $e)
     {
@@ -32,12 +41,6 @@ class BaseController
     }
 
 
-    /** 做用户行为记录
-     */
-    public function actionLog()
-    {
-        //todo
-    }
 
     /** 返回响应
      * @param $num
