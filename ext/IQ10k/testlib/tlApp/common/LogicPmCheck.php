@@ -200,7 +200,7 @@ class LogicPmCheck extends PmCheck
             case $region[1]: // 'multiple choice': 多选题01
                 //选项数量检查  不得为0
                 if (sizeof($problem_info['options']) == 0) {
-                    throw new Exception($pro_type.': ption array should not be 0 length', 400);
+                    throw new Exception($pro_type.': option array should not be 0 length', 400);
                 }
                 //多选检查 长度小于等于1报错
                 if (sizeof($problem_info['answers']) <= 1) {
@@ -211,9 +211,10 @@ class LogicPmCheck extends PmCheck
 
             case $region[4]: // 'short answer': // 简答题 4
             case $region[2]://  'exclusive fill', 单项填空 2
+
                 //选项数量检查  必为0
-                if (sizeof($problem_info['options']) != 0) {
-                    throw new Exception($pro_type.': option array should not be 0 length', 400);
+                if ( isset($problem_info['options']) && sizeof($problem_info['options']) != 0) {
+                    throw new Exception($pro_type.': option array should be 0 length', 400);
                 }
 
                 //单选检查 长度必为1
@@ -224,8 +225,8 @@ class LogicPmCheck extends PmCheck
 
             case $region[3] ://'multiple fill'://多项填空 3
                 //选项数量检查  必为0
-                if (sizeof($problem_info['options']) != 0) {
-                    throw new Exception($pro_type.': option array should not be 0 length', 400);
+                if ( isset($problem_info['options']) && sizeof($problem_info['options']) != 0) {
+                    throw new Exception($pro_type.': option array should be 0 length', 400);
                 }
                 //多选检查 长度小于等于1报错
                 if (sizeof($problem_info['answers']) <= 1) {
