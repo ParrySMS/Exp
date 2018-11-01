@@ -13,6 +13,15 @@ class BaseDao
 {
 
     protected $database;
+
+    static $T_ACTION = DB_PREFIX.'_action';
+//    static $T_COMMENT = DB_PREFIX . "_comment_test";
+    static $T_COMMENT = DB_PREFIX . "_comment_adddiagramspecial";
+//    static $T_HINT = DB_PREFIX . "_hint_test";
+    static $T_HINT = DB_PREFIX . "_hint_adddiagramspecial";
+    static $T_OPTION = DB_PREFIX . "_option_adddiagramspecial";
+    static $T_PROBLEM = DB_PREFIX . "_problem_adddiagramspecial";
+
     /**
      * BaseDao constructor.
      */
@@ -29,4 +38,6 @@ class BaseDao
             'check_interval' => CHECK_INTERVAL
         ]);
     }
+
+
 }

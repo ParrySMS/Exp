@@ -12,8 +12,15 @@ use \Exception;
 
 class Comment extends BaseDao
 {
-    protected $table = DB_PREFIX . "_comment_test";
+//    protected $table = DB_PREFIX . "_comment_test";
+    protected $table ;
 
+    public function __construct()
+    {
+        parent::__construct();
+//        $this->table = DB_PREFIX.'_action';
+        $this->table = $this::$T_COMMENT;
+    }
 
     /** 插入数据
      * @param $pid

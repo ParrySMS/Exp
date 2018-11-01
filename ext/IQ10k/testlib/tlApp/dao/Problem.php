@@ -21,9 +21,14 @@ use \Exception;
 class Problem extends BaseDao
 {
 
+    protected $table ;
 //    protected $table = DB_PREFIX . "_problem_test";
-    protected $table = DB_PREFIX . "_problem_adddigramspecial";
-
+//    protected $table = DB_PREFIX . "_problem_adddigramspecial";
+    public function __construct()
+    {
+        parent::__construct();
+        $this->table = $this::$T_PROBLEM;
+    }
     /** 插入除选项往的题目信息主体 不含图片 不含option
      * @param array $problem_info
      * @param bool $ret_id

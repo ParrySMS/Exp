@@ -12,8 +12,19 @@ use \Exception;
 
 class Option extends BaseDao
 {
+    protected $table ;
+
+    /**
+     * Option constructor.
+     * @param string $table
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->table = $this::$T_OPTION;
+    }
 //    protected $table = DB_PREFIX . '_option_test';
-    protected $table = DB_PREFIX . '_option_adddigramspecial';
+//    protected $table = DB_PREFIX . '_option_adddigramspecial';
 
 
     /** 默认无图 逐条插入选项

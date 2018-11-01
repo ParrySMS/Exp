@@ -12,8 +12,16 @@ use \Exception;
 class Hint extends BaseDao
 {
 
+    protected $table;
 //    protected $table = DB_PREFIX . "_hint_test";
-    protected $table = DB_PREFIX . "_hint_adddigramspecial";
+//    protected $table = DB_PREFIX . "_hint_adddigramspecial";
+
+    public function __construct()
+    {
+        parent::__construct();
+//        $this->table = DB_PREFIX.'_action';
+        $this->table = $this::$T_HINT;
+    }
 
     /** 更新一条提示 可能会相同
      * @param $pid

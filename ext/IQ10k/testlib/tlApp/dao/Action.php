@@ -17,7 +17,8 @@ class Action extends BaseDao
     public function __construct()
     {
         parent::__construct();
-        $this->table = DB_PREFIX.'_action';
+//        $this->table = DB_PREFIX.'_action';
+        $this->table = $this::$T_ACTION;
     }
     /** 插入记录 并且返回id
      * @param $uid
