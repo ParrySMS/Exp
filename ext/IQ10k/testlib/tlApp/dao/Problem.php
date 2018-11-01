@@ -347,7 +347,7 @@ class Problem extends BaseDao
      */
     public function selectOne($pid)
     {
-        $table_h = DB_PREFIX . "_hint_test";
+        $table_h = $this::$T_HINT;
 
         $data = $this->database->select($this->table . '(p)', [
             "[>]" . "$table_h" . "(h)" => ['p.id' => 'pid']
@@ -498,7 +498,7 @@ class Problem extends BaseDao
      */
     public function selectPageLike($word)
     {
-        $table_h = DB_PREFIX . "_hint_test";
+        $table_h = $this::$T_HINT;
 
         $data = $this->database->select($this->table . '(p)', [
             "[>]" . "$table_h" . "(h)" => ['p.id' => 'pid'],
