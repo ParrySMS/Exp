@@ -64,7 +64,8 @@ class Problem extends BaseService
         }
 
         //插入题目选项内容
-        $options = $problem_info['options'];
+        $options = isset($problem_info['options'])?$problem_info['options']:null;
+
         if (is_array($options) && !empty($options) //如果有选项
         && $this->isChoice($problem_info['pro_type'])) { //并且是选择题
             $op = new Option();
@@ -93,7 +94,7 @@ class Problem extends BaseService
      * @return bool
      */
     private function isChoice($pro_type){
-        return ($pro_type == PM_REGION_PROTYPE_JSON[0]||$pro_type == PM_REGION_PROTYPE_JSON[1]);
+        return ($pro_type == json_decode(PM_REGION_PROTYPE_JSON)[0]||$pro_type == json_decode(PM_REGION_PROTYPE_JSON)[1]);
     }
 
 
