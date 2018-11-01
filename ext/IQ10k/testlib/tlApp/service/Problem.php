@@ -152,7 +152,7 @@ class Problem extends BaseService
             foreach ($new_options as $key => $value) {
                 $update = 0;//默认无更新
 
-                if (sizeof($db_options_data) != 0) {//找旧数据里存在的已有的
+                if (isset($db_options_data) && sizeof($db_options_data) != 0) {//找旧数据里存在的已有的
                     foreach ($db_options_data as $d) {
                         if ($key == $d['key']) { //匹配到
                             $update++;//发生了一次更新
