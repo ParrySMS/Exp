@@ -11,7 +11,7 @@ require "./PointSet.php";
 require "./Line.php";
 //require "./countAll.php";
 
-$mypoint = new PointSet();
+$mypoint = new PointSet(1500);
 
 
 $start_time = microtime(true);

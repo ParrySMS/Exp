@@ -11,7 +11,7 @@ require "./Line.php";
 
 define("BIG_DIS", 99999);
 
-countAll(new PointSet());
+countAll(new PointSet(1500));
 
 function countAll(PointSet $mypoint)
 {
