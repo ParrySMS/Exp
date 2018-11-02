@@ -317,6 +317,8 @@ class Problem extends BaseService
         //对象数组
         $pro_data['options'] = [];
 
+//        var_dump($pro_data);
+
         if (is_array($oids) && sizeof($oids) != 0) {
             $pro_data['options'] = $this->getOptions($pid, $oids);
         }

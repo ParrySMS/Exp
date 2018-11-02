@@ -5,7 +5,7 @@
  * Date: 2018-6-29
  * Time: 16:45
  */
-require './config/db.php';
+require './config/database_info.php';
 require './config/Medoo.php';
 
 use Medoo\Medoo;

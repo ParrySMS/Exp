@@ -1,5 +1,5 @@
 <?php
-require './config/db.php';
+require './config/database_info.php';
 require './config/Medoo.php';
 use Medoo\Medoo;
 
