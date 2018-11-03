@@ -57,6 +57,13 @@ $app->group('/problem', function () {
     //todo 要加多一个添加来源的接口
     //todo 要做一个获取各个来源的列表的接口 取遍source表即可
 
+    //TODO emmm 但是现在数据还没录完处理完，最后再来拆表吧，先用这个很low的方法来解决一下
+    $this->get('/source/', function ($request, $response, array $args) {
+        print_r(SOURCE_FILE_JSON);
+        return $response->withStatus(200);
+    });
+
+
 
     //获取某页的题目信息（流式分页）
     $this->get('', function ($request, $response) {
