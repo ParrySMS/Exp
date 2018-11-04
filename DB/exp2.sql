@@ -73,7 +73,13 @@ SELECT * FROM emp_1008610086 WHERE deptno =
 */
 
 -- TODO
-SELECT * FROM emp_1008610086  WHERE to_char(hiredate,'W day') ！= '4 星期五'
+SELECT ename, hiredate,
+DECODE (SIGN (NEXT_DAY (LAST_DAY (hiredate) - 7, '星期五') - hiredate),
+		    -1, NEXT_DAY (LAST_DAY (ADD_MONTHS (hiredate, 1)) - 7, '星期五'),
+ 		    NEXT_DAY (LAST_DAY (hiredate) - 7, '星期五'))
+  	       AS payday
+  FROM   emp_2015090170
+
 
 /* 
 	9	Create a view for use by personnel in department 30 showing employee 		
