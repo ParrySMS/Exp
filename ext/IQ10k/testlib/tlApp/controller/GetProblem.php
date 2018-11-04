@@ -12,6 +12,8 @@ use \Exception;
 use tlApp\common\LogicPmCheck;
 use tlApp\service\Problem;
 
+
+
 class GetProblem extends BaseController
 {
     private $pm;
@@ -31,15 +33,16 @@ class GetProblem extends BaseController
     }
 
     /** 获取单条
+     * @param bool $trans 是否带上翻译信息
      * @param $pid
      */
-    public function withPid($pid)
+    public function withPid($pid,$trans = false)
     {
         try {
             //参数逻辑检查
             $pid = $this->pm->pidCheck($pid);
 
-            $this->getProblemById($pid);
+            $this->getProblemById($pid,$trans);
 
         } catch (Exception $e) {
             $this->error($e);
@@ -47,9 +50,10 @@ class GetProblem extends BaseController
     }
 
     /** 获取页面 流式分页
+     * @param bool trans 是否需要带上翻译数据
      * @param array $query
      */
-    public function withFlow(array $query)
+    public function withFlow(array $query,$trans = false)
     {
 
         try {
@@ -58,7 +62,7 @@ class GetProblem extends BaseController
             $source = $this->pm->getSource();
             $last_id = $this->pm->getLastId();
 
-            $this->getProblemByFlow($last_id, $source);
+            $this->getProblemByFlow($last_id, $source,$trans);
 
         } catch (Exception $e) {
             $this->error($e);
@@ -138,22 +142,33 @@ class GetProblem extends BaseController
 
     /** 获取某个具体的题目详情
      * @param $pid
+     * @param bool $trans 是否带上翻译信息
      * @throws Exception
      */
-    private function getProblemById($pid)
+    private function getProblemById($pid,$trans)
     {
-        $this->echoJson($this->pro->getOne($pid));
-
+        if($trans){
+            $this->echoJson($this->pro->getTrans($pid));
+        }else {
+            $this->echoJson($this->pro->getOne($pid));
+        }
     }
 
     /** 获取流式分页的页面简略题目信息
+     * $trans 是否带上翻译数据
      * @param $last_id
      * @param $source
+     * @param bool $trans 是否带上翻译数据
      * @throws Exception
      */
-    private function getProblemByFlow($last_id, $source)
+    private function getProblemByFlow($last_id, $source,$trans)
     {
-        $this->echoJson($this->pro->getFlow($last_id, $source));
+        if($trans){
+            $this->echoJson($this->pro->getTransFlow($last_id, $source));
+
+        }else {
+            $this->echoJson($this->pro->getFlow($last_id, $source));
+        }
     }
 
 

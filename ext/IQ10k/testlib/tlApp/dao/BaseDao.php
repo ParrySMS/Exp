@@ -22,6 +22,13 @@ class BaseDao
     static $T_OPTION = DB_PREFIX . "_option_adddiagramspecial";
     static $T_PROBLEM = DB_PREFIX . "_problem_adddiagramspecial";
 
+    //trans
+    static $T_TRANS_PROBLEM = DB_PREFIX . "_problem_cetrans_not_en";
+    static $T_TRANS_OPTION = DB_PREFIX . "_option_cetrans";
+    static $T_TRANS_HINT = DB_PREFIX . "_hint_cetrans";
+
+
+
     /**
      * BaseDao constructor.
      */

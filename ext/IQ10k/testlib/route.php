@@ -133,5 +133,28 @@ $app->group('/problem', function () {
 
 });
 
+//翻译处理路由组
+$app->group('/trans',function (){
+
+    // 获取某条题目的信息
+    $this->get('/{pid}', function ($request, $response, array $args) {
+        $pid = isset($args['pid']) ? $args['pid'] : null;
+        $c_gp = new tlApp\controller\GetProblem();
+        $c_gp->withPid($pid,true);
+        return $response->withStatus($c_gp->getStatus());
+    });
+
+    //需有翻译的题目
+    $this->get('/problem/', function ($request, $response, array $args) {
+    //    xxxxxxxxxx?source={urlencode（必选来源参数pro_source)}&last_id=可选参数
+        $c_gp = new tlApp\controller\GetProblem();
+        $c_gp->withFlow($request->getQueryParams(),true);
+        return $response->withStatus($c_gp->getStatus());
+    });
+
+
+});
+
+
 $app->run();
 

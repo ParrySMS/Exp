@@ -117,10 +117,12 @@ class Problem extends BaseDao
 
     /** 获取全来源的页面 修改为不需要连表 简略信息
      * @param $last_id
+     * @param string $not_lang 选择非某类的语言 默认空
+     * @param int $limit
      * @return array|bool
      * @throws Exception
      */
-    public function selectFlowAll($last_id,$limit = PROBLEM_PAGE_LIMIT)
+    public function selectFlowAll($last_id,$not_lang='',$limit = PROBLEM_PAGE_LIMIT)
     {
         if ($last_id == null) {
             //请求最新的首页
@@ -149,6 +151,7 @@ class Problem extends BaseDao
         ], [
             'AND' => [
                 'p.id[<]' => $last_id,
+                'p.language[!]' => $not_lang,
                 'p.visible[!]' => VISIBLE_DELETE
             ],
             "ORDER" => [
@@ -290,10 +293,12 @@ class Problem extends BaseDao
     /** 获取某个来源下的页面
      * @param $last_id
      * @param $source
+     * @param string $not_lang 选择非某类的语言 默认空
+     * @param int $limit
      * @return array|bool
      * @throws Exception
      */
-    public function selectFlow($last_id, $source,$limit = PROBLEM_PAGE_LIMIT )
+    public function selectFlow($last_id, $source, $not_lang='',$limit = PROBLEM_PAGE_LIMIT)
     {
         if ($last_id == null) {
             //请求最新的首页
@@ -323,6 +328,7 @@ class Problem extends BaseDao
             'AND' => [
                 'p.id[<]' => $last_id,
                 'p.pro_source' => $source,
+                'p.language[!]' => $not_lang,
                 'p.visible[!]' => VISIBLE_DELETE
             ],
             "ORDER" => [

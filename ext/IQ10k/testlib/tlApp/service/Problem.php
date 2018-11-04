@@ -10,6 +10,7 @@ namespace tlApp\service;
 
 use tlApp\dao\Hint;
 use tlApp\dao\Option;
+use tlApp\dao\Trans;
 use tlApp\model\Json;
 use \Exception;
 use tlApp\model\Page;
@@ -221,11 +222,14 @@ class Problem extends BaseService
      */
     public function getFlow($last_id, $source = 'all', $has_comment = false)
     {
+
+
         //分类讨论
         if ($has_comment) {//筛选有评论的题目 默认全部分类
             $pro_data = $this->pro->selectFlowComment($last_id);
 
         } else if ($source === 'all') {//普通题目 获取全部分类
+            //todo 看起来这里获取全部和获取某个是可以通过参数调整来合并的，比如把'all'的情况，转为参数全部source的数组，时间有点久了不太记得为什么是两个分开的
             $pro_data = $this->pro->selectFlowAll($last_id);
         } else {//获取某个分类
             $pro_data = $this->pro->selectFlow($last_id, $source);
@@ -254,6 +258,40 @@ class Problem extends BaseService
 
         return $this->json;
 
+    }
+
+    /** 获取非英文的题目
+     * @param $last_id
+     * @param string $source
+     * @return Json
+     * @throws Exception
+     */
+    public function getTransFlow($last_id, $source = 'all')
+    {
+        $not_lang = json_decode(PM_REGION_LANG_JSON)[0]; //en
+        //todo 看起来这里获取全部和获取某个是可以通过参数调整来合并的，同上getflow
+        if ($source === 'all') {//普通题目 获取全部分类
+            $pro_data = $this->pro->selectFlowAll($last_id,$not_lang);
+        } else {//获取某个分类
+            $pro_data = $this->pro->selectFlow($last_id, $source,$not_lang);
+        }
+
+        //拿出数据 算next id
+        if (sizeof($pro_data) == 0) {
+            $next_id = null;
+        } else {//有数据
+            $end = $pro_data[sizeof($pro_data) - 1];
+            $next_id = isset($end['pid']) ? $end['pid'] : null;
+        }
+
+        $pageObj = $this->getSourcePageUri($source, $next_id);
+
+        $retdata = ['page' => $pageObj,
+            'brief_problems' => $pro_data];
+
+        $this->json->setRetdata($retdata);
+
+        return $this->json;
     }
 
     /** 获取分类全部题目
@@ -332,6 +370,46 @@ class Problem extends BaseService
         $this->json->setRetdata($retdata);
 
         return $this->json;
+    }
+
+
+    /** 获取一条带翻译数据的完整的题目数据
+     * @param $pid
+     * @return Json
+     * @throws Exception
+     */
+    public
+    function getTrans($pid)
+    {
+        $retdata = $this->getOne($pid)->getRetdata();
+
+        $trans = new Trans();
+
+        $trans_title = $trans->selectTitle($pid);
+
+        $option_datas = $trans->selectOptionsGroup($pid);
+        unset($trans_options);
+        $trans_options = [];
+
+        foreach ($option_datas as $d) {
+            $trans_options[] = (object)$d;
+        }
+
+        $trans_hint = $trans->selectHint($pid);
+
+
+        $retdata = (object)[
+            'problem' => $retdata->problem,
+            'trans'=> (object)[
+                'title'=> $trans_title,
+                'optionAr'=>$trans_options,
+                'hint'=>$trans_hint
+            ]
+        ];
+
+        $this->json->setRetdata($retdata);
+        return $this->json;
+
     }
 
     /** 软删除
