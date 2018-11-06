@@ -35,29 +35,37 @@ DATA: 	 .word32 0x10008
 	sd $t1,0($t8)           ; write *mes to DATA register
 	sd $v0,0($t9)           ; echo      
 	
-	
-	daddi $v0,$zero,2		; set for signed integer output
-
-	dsub $t1,$t1,$t1
-	daddi $t1,$t1,100
-	
-	sd $t1,0($t8)           ; write integer to DATA register
-	sd $v0,0($t9)           ; write to CONTROL register and make it happen
 
 ;finish echo mes_enter
 
 
-;todo
 ;get 2 numbers
 
+	daddi $v0,$zero,8		
+	sd $v0,0($t9)  			; get data1 a0
+	lwu $a0,0($t8)	
+	sd $v0,0($t9)  			; get data2  a1
+	lwu $a1,0($t8)		
+	
+	daddi $a2,$zero,0        ;store a0*a1 = a2
+	daddi $a3,$zero,32		 ;counter 32
+
+	
 ;multi
 
-
+FOR:
+	andi $s0,$a1,1	     ;data2 AND get low bit
+	beqz $s0,ELSE		
+	daddu $a2,$a2,$a0    ;if !0 -->  product add data1
+ELSE:
+	dsll $a0,$a0,1		;data1 left move 1 bit
+	dsrl $a1,$a1,1		;data2 right move 1 bit
+	
+	daddi $a3,$a3,-1	; counter-- (total 32)
+	bnez $a3,FOR
+	
 
 ;echo mes_res
-
-	lwu $t8,DATA($zero)		; $t8 = address of DATA register
-	lwu $t9,CONTROL($zero)	; $t9 = address of CONTROL register
 	
 	daddi $v0,$zero,4       ; set for ascii
 	
@@ -65,18 +73,17 @@ DATA: 	 .word32 0x10008
 	daddi $t1,$zero,mes_res
 	sd $t1,0($t8)           ; write *mes to DATA register
 	sd $v0,0($t9)           ; echo      
-	
-	
-	daddi $v0,$zero,2		; set for signed integer output
-
-	dsub $t1,$t1,$t1
-	daddi $t1,$t1,100
-	
-	sd $t1,0($t8)           ; write integer to DATA register
-	sd $v0,0($t9)           ; write to CONTROL register and make it happen
 
 ;finish echo mes_res
 
+;echo data
+
+	daddi $v0,$zero,1		; set for unsigned integer output
+
+	sw $a2,0($t8)		   ; write integer to DATA register
+	sd $v0,0($t9)           ; write to CONTROL register and make it happen
+
+;
 
 
 
