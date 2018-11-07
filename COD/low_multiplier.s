@@ -17,7 +17,8 @@
 .data
 int:	.word 0xF9876543987625aa	; a 64-bit integer
 mes_enter:    .asciiz "please enter two numbers:\n"		; the message
-mes_res:    .asciiz "result:\n"		
+mes_res:    .asciiz "result:\n"	
+mes_overflow: .asciiz "Fatal Error: data overflow.\n"	
 CONTROL: .word32 0x10000
 DATA: 	 .word32 0x10008
 
@@ -35,7 +36,6 @@ DATA: 	 .word32 0x10008
 	sd $t1,0($t8)           ; write *mes to DATA register
 	sd $v0,0($t9)           ; echo      
 	
-
 ;finish echo mes_enter
 
 
@@ -83,8 +83,19 @@ ELSE:
 	sw $a2,0($t8)		   ; write integer to DATA register
 	sd $v0,0($t9)           ; write to CONTROL register and make it happen
 
-;
+;check overflow right move -> 32bit
 
+	dsrl $s0,$a2,16
+	dsrl $s0,$s0,16
+	beqz $s0,END
 
+;echo overflow
 
+	daddi $v0,$zero,4       ; set for ascii
+	ld $t1,int($zero)
+	daddi $t1,$zero,mes_overflow
+	sd $t1,0($t8)           ; write *mes to DATA register
+	sd $v0,0($t9)           ; echo      
+	
+END:
 	halt
