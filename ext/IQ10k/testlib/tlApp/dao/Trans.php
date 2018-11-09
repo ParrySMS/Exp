@@ -12,6 +12,7 @@ use \Exception;
 class Trans extends BaseDao
 {
 
+    //todo 只展示有翻译的题目
 
     public function __construct()
     {
@@ -81,6 +82,21 @@ class Trans extends BaseDao
 
 
         return($data === false)? null: $data;
+    }
+
+    /** 返回回答的数组
+     * @param $pid
+     * @return array
+     */
+    public function selectAnswer($pid){
+        $data = $this->database->get($this::$T_TRANS_ANSWER, [
+            'trans_answers'
+            , [
+                'pid' => $pid
+            ]]);
+
+        return($data === false)? []:[$data];
+
     }
 
 }

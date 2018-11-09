@@ -19,6 +19,8 @@ $config = [
     ],
 ];
 
+
+
 $app = new \Slim\App($config);
 
 //自动遍历参数集
@@ -27,8 +29,6 @@ $pm = new \tlApp\common\PmCheck();
 
 //路由处理
 
-//todo 导入数据 展示题目图片 展示选项图片
-//todo 机器处理 转成英文
 
 //获取某个分类下有效的题目id数组
 $app->get('/pids', function ($request, $response) {
@@ -57,7 +57,7 @@ $app->group('/problem', function () {
     //todo 要加多一个添加来源的接口
     //todo 要做一个获取各个来源的列表的接口 取遍source表即可
 
-    //TODO emmm 但是现在数据还没录完处理完，最后再来拆表吧，先用这个很low的方法来解决一下
+    //TODO emmm 但是现在数据还没录完处理完，最后再来拆表吧，先用这个很low的方法来解决一下，把全部来源的信息写进配置文件里
     $this->get('/source/', function ($request, $response, array $args) {
         print_r(SOURCE_FILE_JSON);
         return $response->withStatus(200);

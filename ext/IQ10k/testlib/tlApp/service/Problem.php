@@ -343,6 +343,8 @@ class Problem extends BaseService
      * @param $pid
      * @return Json
      * @throws Exception
+     *
+     * 【警告：getTrans()函数中会调用此函数获取retdata对象，如果pro对象或者此函数有变动，会引起getTrans（）的副作用】
      */
     public
     function getOne($pid)
@@ -377,6 +379,7 @@ class Problem extends BaseService
      * @param $pid
      * @return Json
      * @throws Exception
+     * todo 这个函数的耦合性太强 不好
      */
     public
     function getTrans($pid)
@@ -396,6 +399,26 @@ class Problem extends BaseService
         }
 
         $trans_hint = $trans->selectHint($pid);
+        $trans_ans= $trans->selectAnswer($pid);
+
+        //文本覆盖替代 如果没翻译结果 那就用原来的信息
+
+        if(is_null($trans_title)){
+            $trans_title = $retdata->problem->title;
+        }
+
+        if(is_array($trans_options) && sizeof($trans_options)==0){
+            $trans_options = $retdata->problem->optionAr;
+        }
+
+        if(is_null($trans_hint)){
+            $trans_hint = $retdata->problem->hint;
+        }
+
+        if(is_array($trans_ans) && sizeof($trans_ans)==0){
+            $trans_ans = $retdata->problem->answers;
+        }
+
 
 
         $retdata = (object)[
@@ -403,6 +426,7 @@ class Problem extends BaseService
             'trans'=> (object)[
                 'title'=> $trans_title,
                 'optionAr'=>$trans_options,
+                'answers'=>$trans_ans,
                 'hint'=>$trans_hint
             ]
         ];
