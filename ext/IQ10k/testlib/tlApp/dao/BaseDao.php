@@ -15,8 +15,9 @@ class BaseDao
     protected $database;
 
     static $T_ACTION = DB_PREFIX.'_action';
-    static $T_COMMENT = DB_PREFIX . "_comment_test";
+//    static $T_COMMENT = DB_PREFIX . "_comment_test";
 //    static $T_COMMENT = DB_PREFIX . "_comment_adddiagramspecial";
+    static $T_COMMENT = DB_PREFIX . "_comment_adddiagramspecial_test";
 
     //  static $T_HINT = DB_PREFIX . "_hint_adddiagramspecial";
       static $T_HINT = DB_PREFIX . "_hint_adddiagramspecial_test";
