@@ -74,14 +74,14 @@ class Trans extends BaseDao
     public function selectHint($pid)
     {
 
-        $data = $this->database->get($this::$T_TRANS_HINT, [
+        $data = $this->database->get($this::$T_TRANS_HINT,
             'trans_hint'
             , [
                 'pid' => $pid
-            ]]);
+            ]);
 
 
-        return($data === false)? null: $data;
+        return ($data === false)? null: $data;
     }
 
     /** 返回回答的数组
@@ -89,11 +89,11 @@ class Trans extends BaseDao
      * @return array
      */
     public function selectAnswer($pid){
-        $data = $this->database->get($this::$T_TRANS_ANSWER, [
+        $data = $this->database->get($this::$T_TRANS_ANSWER,
             'trans_answers'
             , [
                 'pid' => $pid
-            ]]);
+            ]);
 
         return($data === false)? []:[$data];
 
