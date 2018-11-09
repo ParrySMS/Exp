@@ -12,7 +12,6 @@ use \Exception;
 class Trans extends BaseDao
 {
 
-    //todo 只展示有翻译的题目
 
     public function __construct()
     {

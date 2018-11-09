@@ -152,6 +152,7 @@ $app->group('/trans',function (){
         return $response->withStatus($c_gp->getStatus());
     });
 
+    //todo 展示每一题的时候 想办法拿到上一题和下一题
 
 });
 
