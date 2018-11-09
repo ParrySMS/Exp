@@ -12,6 +12,8 @@ require './config/params.php';
 require './config/Medoo.php';
 
 
+//todo 把选项小写洗一洗 然后还有选择题答案是字符的问题 或者答案丢失的问题
+
 set_time_limit(0);
 
 try {
