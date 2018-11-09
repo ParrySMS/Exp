@@ -1,0 +1,46 @@
+a:link, a:visited {
+    color: #333;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #333;
+    text-decoration: underline;
+}
+
+#header {
+    background-color: black;
+    color: white;
+    text-align: center;
+    padding: 5px;
+}
+
+#nav {
+    line-height: 30px;
+    background-color: #eeeeee;
+    height: 700px;
+    width: 180px;
+    float: left;
+    padding: 5px;
+    font-size: 110%
+}
+
+#section {
+    width: 650px;
+    float: left;
+    /*padding: 150px;*/
+    position: absolute;
+    /*居中布局*/
+    left: 55%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#footer {
+    background-color: black;
+    color: white;
+    clear: both;
+    text-align: center;
+    padding: 5px;
+}
+
