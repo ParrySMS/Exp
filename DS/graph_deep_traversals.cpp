@@ -67,10 +67,10 @@ void Map::DFS(int v) {
 
 	//traversals
 	for(i=0; i<node_num ; i++) {
-	    next = AdjVex[i];
-	    if(next == -1){
-	        break;
-	    }
+		next = AdjVex[i];
+		if(next == -1) {
+			break;
+		}
 		//递归深度遍历
 		if(visit[next]!=true) {
 			DFS(next);
@@ -105,14 +105,14 @@ int main() {
 
 		mx = new int* [n];//line
 		for(i=0; i<n; i++) {//col
-		    mx[i] = new int [n];
+			mx[i] = new int [n];
 		}
 
-        //fill
+		//fill
 		for(i=0; i<n; i++) {
-		    for(j=0;j<n;j++){
-                cin>>mx[i][j];
-		    }
+			for(j=0; j<n; j++) {
+				cin>>mx[i][j];
+			}
 		}
 
 		map = new Map();
@@ -123,7 +123,7 @@ int main() {
 
 	}
 
-return 0;
+	return 0;
 
 }
 
