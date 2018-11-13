@@ -9,6 +9,7 @@
 - ext 其他拓展练习
 - ICS 计算机系统概论
 - ICV 图像处理、计算机视觉与机器学习导论
+  - [MATLAB经典基础教程 https://share.weiyun.com/5ZYdJwZ](https://share.weiyun.com/5ZYdJwZ)
 - OS 操作系统
 - ProLang 编程语言
 
