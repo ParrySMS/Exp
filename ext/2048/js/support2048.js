@@ -51,11 +51,11 @@ function getBackgroundImage( number ){
         case 512:return "url(images/10.png)";break;
         case 1024:return "url(images/11.png)";break;
         case 2048:return "url(images/12.png)";break;
-        case 4096:return "url(images/14.png)";break;
-        case 8192:return "url(images/15.png)";break;
+        case 4096:return "url(images/13.png)";break;
+        case 8192:return "url(images/14.png)";break;
     }
 
-    return "url(13.png)";
+    return "url(images/15.png.png)";
 }
 
 

@@ -1,5 +1,6 @@
 var board = new Array();
 var score = 0;
+var endflag = true;
 var hasConflicted = new Array();
 $(document).ready(function () {
     newgame();
@@ -12,7 +13,7 @@ function newgame() {
     //在随机两个格子生成数字;
     generateOneNumber();
     generateOneNumber();
-
+    endflag = true;
 
 }
 
@@ -200,18 +201,20 @@ function gameover($container){
 
 function gameover() {
     var score; //score变量，用来存储用户输入的成绩值。
-    score = prompt("游戏结束。反馈 1.  2. 3. （请输入数字）");
-    if (score == 1) {
-        alert("情况1");
+    if(endflag) {
+        score = prompt("游戏结束。反馈 1.  2. 3. （请输入数字）");
+        if (score == 1) {
+            alert("情况1");
 
-    }
-    else if (score == 2) {
-        alert("情况2");
+        }
+        else if (score == 2) {
+            alert("情况2");
 
-    }
-    else if (score == 3) {
-        alert("情况3");
-        gameover();
+        }
+        else if (score == 3) {
+            alert("情况3");
+            gameover();
+        }
     }
 
 }
