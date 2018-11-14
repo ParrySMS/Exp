@@ -41,22 +41,7 @@ class Board
         $this->board = $board;
     }
 
-    /**
-     * @param $x
-     * @param $y
-     * @param $value
-     * @throws Exception
-     */
-    public function setBoardBox($x, $y, $value)
-    {
-        if (sizeof($this->board) <= $x
-            || sizeof($this->board[0]) <= $y) {
-            throw new Exception(__CLASS__ . __FUNCTION__ . ": x or y over board");
-        }
 
-        $this->board[$x][$y] = $value;
-
-    }
 
     /**
      * Board constructor.
@@ -98,12 +83,44 @@ class Board
     }
 
 
+    // todo 遍历相连的二方格组 每个方格祖找邻近边缘的六个位 遍历判断  ←↕[XX]↕→
+    public function selectTwoBoxes(array $connected_boxes)
+    {
+        //见函数 getConnectedBoxes
+        $linebox2 = $connected_boxes[2];
+        $colbox2 = $connected_boxes[3];
+
+        //遍历一次 计算优先权值
+
+        //按照优先权 遍历
+    }
+
+    /** 修改某个板块内方格的值
+     * @param $x
+     * @param $y
+     * @param $value
+     * @throws Exception
+     */
+    public function setBoardBox($x, $y, $value)
+    {
+        if (sizeof($this->board) <= $x
+            || sizeof($this->board[0]) <= $y) {
+            throw new Exception(__CLASS__ . __FUNCTION__ . ": x or y over board");
+        }
+
+        $this->board[$x][$y] = $value;
+
+    }
+    
+
     /**  实现数字下落 设置对应box为-1 对应列下坠 每次下落应该展示一次动画 然后循环进行计算消分
      * @param array $connected_boxes
      * @throws Exception
      */
     public function updateBoard(array $connected_boxes)
     {
+
+        //见函数 getConnectedBoxes
         $connected = array_merge($connected_boxes[0], $connected_boxes[1]);
 //
 //        echo json_encode($connected);
@@ -149,6 +166,7 @@ class Board
             return 0;
         }
 
+       //见函数 getConnectedBoxes
         $connected = array_merge($connected_boxes[0], $connected_boxes[1]);
 
 //        echo json_encode($connected);
