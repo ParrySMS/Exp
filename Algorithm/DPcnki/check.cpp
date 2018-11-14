@@ -8,15 +8,19 @@
 using namespace std;
 
 //var`
-#define FILE1 "B2.txt" 
+#define FILE1 "B2.txt"
 #define FILE2 "A2.txt"
 
 //#define FILE1 "test1.txt"
 //#define FILE2 "test2.txt"
 
-const int SIMIRATIO = 0.88; //the params r 
+const float SIMIRATIO = 0.70; //the params r
 const int LINES = 500;//max limited lines number
 
+const bool SHOW_LINE_COMPARE = false;
+const bool SHOW_DIJ = false;
+const bool SHOW_LCS_TABLE_OF_LINE = false;
+const bool SHOW_LCS_TABLE_OF_PART = false;
 
 class Text {
 
@@ -65,6 +69,9 @@ class Text {
 					file.push_back(trim(line));
 
 					file_lines++;
+
+				} else {
+					break;
 				}
 			}
 
@@ -158,18 +165,23 @@ float getSimi(string line_a,string line_b) {
 	}//for i
 	//end count 2 line
 
-	//echo
-//	for(i=0; i<len_a+1; i++) {
-//		for(j=0; j<len_b+1; j++) {
-//			cout<<"len["<<i<<"]";
-//			cout<<"["<<j<<"]";
-//			cout<<":"<<mx_len[i][j]<<endl;
-//
-//			cout<<"step["<<i<<"]";
-//			cout<<"["<<j<<"]";
-//			cout<<":"<<mx_step[i][j]<<endl;
-//		}
-//	}
+	//echo mx_len
+	if(SHOW_LCS_TABLE_OF_LINE) {
+
+		for(i=0; i<len_a+1; i++) {
+			for(j=0; j<len_b+1; j++) {
+				cout<<"len["<<i<<"]";
+				cout<<"["<<j<<"]";
+				cout<<":"<<mx_len[i][j]<<endl;
+
+				cout<<"step["<<i<<"]";
+				cout<<"["<<j<<"]";
+				cout<<":"<<mx_step[i][j]<<endl;
+				
+				cout<<endl;
+			}
+		}
+	}
 
 	min = len_a > len_b ? len_b : len_a;
 
@@ -240,6 +252,24 @@ int getRepeatedNum(int** mx_d,int numLine,int numCol) {
 	}//for i
 	//end count 2 line
 
+
+	//echo mx_len
+	if(SHOW_LCS_TABLE_OF_PART) {
+
+		for(i=0; i<numLine+1; i++) {
+			for(j=0; j<numCol+1; j++) {
+				cout<<"len["<<i<<"]";
+				cout<<"["<<j<<"]";
+				cout<<":"<<mx_len[i][j]<<endl;
+
+				cout<<"step["<<i<<"]";
+				cout<<"["<<j<<"]";
+				cout<<":"<<mx_step[i][j]<<endl;
+			}
+		}
+	}
+	
+	
 	return mx_len[numLine][numCol];
 }
 
@@ -266,27 +296,38 @@ int main() {
 		for(j=0; j<text2->file_lines; j++) { //Bj
 			line_b = (string)text2->file[j];
 
-//			cout<<"la:"<<line_a<<endl;
-//			cout<<"lb:"<<line_b<<endl;
 			float s;
 			s = getSimi(line_a,line_b);
-//			cout<<"["<<i<<"]";
-//			cout<<"["<<j<<"]";
-//			cout<<" s: "<<s<<endl<<endl;
 			mx_d[i][j] = getDij(s);
+
+			if(SHOW_LINE_COMPARE) {
+
+				cout<<"la:"<<line_a<<endl;
+				cout<<"lb:"<<line_b<<endl;
+
+				cout<<"["<<i<<"]";
+				cout<<"["<<j<<"]";
+				cout<<" s: "<<s<<endl<<endl;
+
+			}
 		}
 	}
 
-//	cout<<"D[][]"<<endl;
-//	for(i=0; i<text1->file_lines; i++) {  //Ai
-//		for(j=0; j<text2->file_lines; j++) { //Bj
-//			cout<<mx_d[i][j]<<"  ";
-//		}
-//		cout<<endl;
-//	}
+	if(SHOW_DIJ) {
+		cout<<"D[][]"<<endl;
+		for(i=0; i<text1->file_lines; i++) {  //Ai
+			for(j=0; j<text2->file_lines; j++) { //Bj
+				cout<<mx_d[i][j]<<"  ";
+			}
+			cout<<endl;
+		}
+	}
+
 
 	cout<<"Repeated-Line-Num:"<<getRepeatedNum(mx_d,text1->file_lines,text2->file_lines)<<endl;
 
+	text1->~Text();
+	text2->~Text();
 	delete []text1;
 	delete []text2;
 

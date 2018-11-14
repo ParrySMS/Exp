@@ -86,17 +86,21 @@ function play($xxl, $point)
 
         //获得行上相连色块start
         foreach ($sam as $x => $y) {
-            if (count($y) > 2) {
-                $key = 'R-' . $group;
+            if (count($y) > 2) {//某个相编号下的数据 超过2个 3个以上可消去
+                $key = 'R-' . $group; //y[行-列] = [行，列，值，行-列-值]
                 foreach ($y as $x2 => $y2) {
+                    //x2 = '行-列'
+                    //y2 = [行，列，值，行-列-值]
                     $y[$x2]['group']['r'] = $key;
+                    // y[行-列]['group']['r'] = 'R-' . $group;
                 }
                 $samArr += $y;
                 $group++;
             }
         }
         //获得行上相连色块end
-    }
+    }//   foreach ($xxl as $line_key => $line) {
+
     //随机填充颜色，并获得行上相连色块end
 
     //获得列上相连色块start
