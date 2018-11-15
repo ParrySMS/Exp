@@ -11,18 +11,27 @@ require "Box.php";
 $b = new Board();
 $b->updateBoard($b->getConnectedBoxes());
 
+// 0↑  1↓  2← 3→  4↕
+define('DIREC_NULL', -1);
+define('DIREC_UP', 0);
+define('DIREC_DOWM', 1);
+define('DIREC_LEFT', 2);
+define('DIREC_RIGHT', 3);
+define('DIREC_UPDOWM', 4);
+
 
 class Board
 {
     const SCORE_3_BOXES = 1;
     const SCORE_4_BOXES = 4;
+
     const SCORE_5_BOXES = 10;
 
     const ICON_NULL_ID = -1;
 
     private $board = [];
-    private $line = 6;
-    private $col = 6;
+    private $line = 10;
+    private $col = 10;
     private $icon_max = 4; //最大icon_id
 
     /**
@@ -40,7 +49,6 @@ class Board
     {
         $this->board = $board;
     }
-
 
 
     /**
@@ -83,16 +91,279 @@ class Board
     }
 
 
-    // todo 遍历相连的二方格组 每个方格祖找邻近边缘的六个位 遍历判断  ←↕[XX]↕→
-    public function selectTwoBoxes(array $connected_boxes)
+    /** 获取对应相反方向
+     * @param $direction
+     * @return int
+     * @throws Exception
+     */
+    private function reversedDict($direction)
     {
+
+        switch ($direction) {
+            case DIREC_UPDOWM:
+            case DIREC_NULL:
+                return $direction;
+            case DIREC_UP:
+                return DIREC_DOWM;
+            case DIREC_DOWM:
+                return DIREC_UP;
+            case DIREC_LEFT:
+                return DIREC_RIGHT;
+            case DIREC_RIGHT:
+                return DIREC_LEFT;
+            default:
+                throw new Exception(__CLASS__ . __FUNCTION__ . "no such direction: $direction");
+        }
+
+    }
+
+    // todo 遍历相连的二方格组 每个方格祖找邻近边缘的六个位 遍历判断  ←↕[XX]↕→
+
+    /**
+     * @param array $connected_boxes
+     * @param array $board
+     * @throws Exception
+     */
+    public function selectTwoBoxes(array $connected_boxes, array $board = [])
+    {
+        if (sizeof($board) == 0) {
+            $board = $this->board;
+        }
+
+        $line_num = sizeof($board[0]);
+        $col_num = sizeof($board);
+
         //见函数 getConnectedBoxes
-        $linebox2 = $connected_boxes[2];
-        $colbox2 = $connected_boxes[3];
+        $line_boxes2 = $connected_boxes[2];
+        $col_boxes2 = $connected_boxes[3];
 
-        //遍历一次 计算优先权值
 
-        //按照优先权 遍历
+        $mx_v = []; //value
+        $mx_d = []; // direction 0↑  1↓  2← 3→
+        for ($x = 0; $x < $col_num; $x++) {
+            for ($y = 0; $y < $line_num; $y++) {
+                $mx_v[$x][$y] = 0;
+                $mx_d[$x][$y] = DIREC_NULL;
+            }
+        }
+
+        //todo 遍历一次 计算优先权值
+
+        foreach ($line_boxes2 as $boxes) {
+            $left = $boxes[0];
+            $right = $boxes[1];
+
+            if ($left->x > 0) {//not edge
+
+                // 横块左角
+                //    ?
+                //  X O [X X]
+                //    ?
+                if ($left->x - 2 >= 0 && $board[$left->x - 2][$left->y] == $left->value) {
+
+                    if ($mx_d[$left->x - 2][$left->y] == DIREC_NULL) {   //undefine dirct
+                        //优先考虑四重
+                        $this->judgeLeftTop($left, $mx_v, $mx_d, $board);
+                        if ($mx_d[$left->x - 1][$left->y] == DIREC_UP) { //X ↑ [X X]
+                            $mx_v[$left->x - 1][$left->y] += $this::SCORE_4_BOXES;
+                        }
+
+
+                    }
+
+                }
+
+                // 横块左上角
+                //  X
+                //  O [X X]
+                $this->judgeLeftTop($left, $mx_v, $mx_d, $board);
+
+
+                // 横块左下角
+                //  O [X X]
+                //  X
+                $this->judgeLeftBtm($left, $mx_v, $mx_d, $board);
+
+            }//end left
+
+        }//end foreach line
+        //todo 按照优先权 遍历
+    }
+
+
+    /** // 横块左上角 积分方向判断
+     * //  X
+     * //  O [X X]
+     * @param $left
+     * @param array $mx_v
+     * @param array $mx_d
+     * @param array $board
+     * @throws Exception
+     */
+    private function judgeLeftTop($left, array & $mx_v, array &$mx_d, array $board)
+    {
+
+        if (sizeof($board) == 0) {
+            $board = $this->board;
+        }
+
+        $line_num = sizeof($board[0]);
+
+        // 横块左上角
+        //  X
+        //  O [X X]
+        if ($left->y + 1 < $line_num && $board[$left->x - 1][$left->y + 1] == $left->value) {
+
+
+            if ($mx_d[$left->x - 1][$left->y + 1] == DIREC_NULL //undefine dirct
+                && $mx_d[$left->x - 1][$left->y] == DIREC_NULL) { //  ↕ 0 0
+
+                $mx_d[$left->x - 1][$left->y + 1] = DIREC_DOWM;
+                $mx_d[$left->x - 1][$left->y] = DIREC_UP;
+
+                $mx_v[$left->x - 1][$left->y + 1] = 0;
+                $mx_v[$left->x - 1][$left->y] = $this::SCORE_3_BOXES;
+                return;
+
+            }
+
+            if ($mx_d[$left->x - 1][$left->y + 1] != DIREC_NULL //upper already has dirct
+                && $mx_d[$left->x - 1][$left->y] == DIREC_NULL) {   //↕ 1 0
+
+                if ($mx_d[$left->x - 1][$left->y + 1] == DIREC_DOWM) {  //  AND same swap
+
+                    $mx_d[$left->x - 1][$left->y] = DIREC_UP;
+
+                    $mx_v[$left->x - 1][$left->y] = $this::SCORE_3_BOXES; //add value
+
+                } else if ($mx_v[$left->x - 1][$left->y + 1] < $this::SCORE_3_BOXES) { //diff dirct
+                    //diff swap  change original
+                    $mx_d[$left->x - 1][$left->y + 1] = DIREC_DOWM;
+                    $mx_d[$left->x - 1][$left->y] = DIREC_UP;
+
+                    $mx_v[$left->x - 1][$left->y + 1] = 0;
+                    $mx_v[$left->x - 1][$left->y] = $this::SCORE_3_BOXES;
+                }
+
+                return;
+            }
+
+
+            if ($mx_d[$left->x - 1][$left->y + 1] == DIREC_NULL   //lower already has dirct  AND same swap
+                && $mx_d[$left->x - 1][$left->y] != DIREC_NULL) { //↕ 0 1
+
+                if ($mx_d[$left->x - 1][$left->y] == DIREC_UP) {  //  AND same swap
+                    $mx_d[$left->x - 1][$left->y + 1] = DIREC_DOWM;
+
+                    $mx_v[$left->x - 1][$left->y + 1] = $mx_v[$left->x - 1][$left->y];
+
+                } else if ($mx_v[$left->x - 1][$left->y] < $this::SCORE_3_BOXES) { //diff dirct
+                    //diff swap  change original
+                    $mx_d[$left->x - 1][$left->y + 1] = DIREC_DOWM;
+                    $mx_d[$left->x - 1][$left->y] = DIREC_UP;
+
+                    $mx_v[$left->x - 1][$left->y + 1] = 0;
+                    $mx_v[$left->x - 1][$left->y] = $this::SCORE_3_BOXES;
+                }
+                return;
+
+            }
+
+
+            if ($mx_d[$left->x - 1][$left->y + 1] != DIREC_NULL   //both already has dirct
+                && $mx_d[$left->x - 1][$left->y] != DIREC_NULL) { //↕ 1 1
+
+                if ($mx_v[$left->x - 1][$left->y] + $mx_v[$left->x - 1][$left->y + 1]
+                    < $this::SCORE_3_BOXES) { //diff dirct
+                    //diff swap  change original
+                    $mx_d[$left->x - 1][$left->y + 1] = DIREC_DOWM;
+                    $mx_d[$left->x - 1][$left->y] = DIREC_UP;
+
+                    $mx_v[$left->x - 1][$left->y + 1] = 0;
+                    $mx_v[$left->x - 1][$left->y] = $this::SCORE_3_BOXES;
+
+                }
+                return;
+
+            }
+
+
+            throw new Exception(__CLASS__ . __FUNCTION__ .
+                "  mx_dirction error: upper is" . $mx_d[$left->x - 1][$left->y + 1] .
+                ", and lower is " . $mx_d[$left->x - 1][$left->y]);
+
+        }// end
+        //  X
+        //  O [X X]
+    }
+
+
+    /** // 横块左下角
+     * //  O [X X]
+     * //  X
+     * @param $left
+     * @param array $mx_v
+     * @param array $mx_d
+     * @param array $board
+     * @throws Exception
+     */
+    private
+    function judgeLeftBtm($left, array & $mx_v, array &$mx_d, array $board)
+    {
+
+        if (sizeof($board) == 0) {
+            $board = $this->board;
+        }
+
+        $line_num = sizeof($board[0]);
+
+        // 横块左下角
+        //  O [X X]
+        //  X
+        if ($left->y - 1 >= 0 && $board[$left->x - 1][$left->y - 1] == $left->value) {
+
+
+            if ($mx_d[$left->x - 1][$left->y - 1] == DIREC_NULL //undefine dirct
+                && $mx_d[$left->x - 1][$left->y] == DIREC_NULL) { //  ↕ 0 0
+
+                $mx_d[$left->x - 1][$left->y] = DIREC_DOWM;
+                $mx_d[$left->x - 1][$left->y - 1] = DIREC_UP;
+
+                $mx_v[$left->x - 1][$left->y - 1] = $this::SCORE_3_BOXES;
+                $mx_v[$left->x - 1][$left->y] = $this::SCORE_3_BOXES;
+
+            } else if ($mx_d[$left->x - 1][$left->y] == DIREC_DOWM   //upper already has dirct  AND same swap
+                && $mx_d[$left->x - 1][$left->y - 1] == DIREC_NULL) { //↕ 1 0
+
+                $mx_d[$left->x - 1][$left->y - 1] = DIREC_UP;
+
+                $mx_v[$left->x - 1][$left->y] += $this::SCORE_3_BOXES; //add value
+                $mx_v[$left->x - 1][$left->y - 1] = $mx_v[$left->x - 1][$left->y];
+
+            } else if ($mx_d[$left->x - 1][$left->y] == DIREC_NULL   //lower already has dirct  AND same swap
+                && $mx_d[$left->x - 1][$left->y - 1] == DIREC_UP) { //↕ 0 1
+
+                $mx_d[$left->x - 1][$left->y] = DIREC_DOWM;
+
+                $mx_v[$left->x - 1][$left->y - 1] += $this::SCORE_3_BOXES; //add value
+                $mx_v[$left->x - 1][$left->y] = $mx_v[$left->x - 1][$left->y - 1];
+
+            } else if ($mx_d[$left->x - 1][$left->y] == DIREC_DOWM   //both already has swap dirct
+                && $mx_d[$left->x - 1][$left->y - 1] != DIREC_UP) { //↕ 1 1
+
+                $v = $mx_v[$left->x - 1][$left->y] + $mx_v[$left->x - 1][$left->y - 1];
+                $mx_v[$left->x - 1][$left->y] = $v;
+                $mx_v[$left->x - 1][$left->y - 1] = $v;
+
+                //diff dirct  is not matter
+            } else {
+                throw new Exception(__CLASS__ . __FUNCTION__ .
+                    "  mx_dirction error: upper is" . $mx_d[$left->x - 1][$left->y + 1] .
+                    ", and lower is " . $mx_d[$left->x - 1][$left->y]);
+            }
+        }// end
+        //  O [X X]
+        //  X
     }
 
     /** 修改某个板块内方格的值
@@ -101,7 +372,8 @@ class Board
      * @param $value
      * @throws Exception
      */
-    public function setBoardBox($x, $y, $value)
+    public
+    function setBoardBox($x, $y, $value)
     {
         if (sizeof($this->board) <= $x
             || sizeof($this->board[0]) <= $y) {
@@ -111,13 +383,14 @@ class Board
         $this->board[$x][$y] = $value;
 
     }
-    
+
 
     /**  实现数字下落 设置对应box为-1 对应列下坠 每次下落应该展示一次动画 然后循环进行计算消分
      * @param array $connected_boxes
      * @throws Exception
      */
-    public function updateBoard(array $connected_boxes)
+    public
+    function updateBoard(array $connected_boxes)
     {
 
         //见函数 getConnectedBoxes
@@ -160,13 +433,14 @@ class Board
      * @param int $score
      * @return int
      */
-    public function getScore(array $connected_boxes, $score = 0)
+    public
+    function getScore(array $connected_boxes, $score = 0)
     {
         if (sizeof($connected_boxes) == 0) {
             return 0;
         }
 
-       //见函数 getConnectedBoxes
+        //见函数 getConnectedBoxes
         $connected = array_merge($connected_boxes[0], $connected_boxes[1]);
 
 //        echo json_encode($connected);
@@ -197,7 +471,8 @@ class Board
      * @param bool $update 是否更新当前板块
      * @return array
      */
-    public function getConnectedBoxes(array $board = [], $update = false)
+    public
+    function getConnectedBoxes(array $board = [], $update = false)
     {
         if (sizeof($board) == 0) {
             $board = $this->board;
@@ -327,12 +602,13 @@ class Board
 //        echo json_encode($all_same_cols);
 //        echo "<br/>";
 //        echo "<br/>";
-//            echo json_encode($connected_boxes[0]);
-//            echo "<br/>";
-//            echo "<br/>";
-//            echo json_encode($connected_boxes[1]);
-//            echo "<br/>";
-//            echo "<br/>";
+
+            echo json_encode($connected_boxes[0]);
+            echo "<br/>";
+            echo "<br/>";
+            echo json_encode($connected_boxes[1]);
+            echo "<br/>";
+            echo "<br/>";
 
             unset($all_same_lines);
             unset($same_cols);
