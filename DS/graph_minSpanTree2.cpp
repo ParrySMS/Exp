@@ -14,7 +14,7 @@ class Mx {
 			int i;
 			for(i=0; i< this->node_num; i++) {
 
-				if( this->nodes[i].compare(name) == 0) {
+				if( this->nodes[i] == name ) {
 					return i;
 				}
 			}

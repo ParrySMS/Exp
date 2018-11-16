@@ -207,11 +207,12 @@ class Graph {
 		void kruskal() {
 			int* node_id = new int [this->node_num]();
 
-			CloseE** close = new CloseE*[this->node_num]();
+			CloseE** close = new CloseE*[this->node_num];
 
 			CloseE* e;
 			int i,j,num,set_id,min_index,node_num = this->node_num ;
 			int sum = 0,visited_num = 1;
+
 			int min = MAX;
 
 
@@ -249,7 +250,7 @@ class Graph {
 			cout<<"kruskal:"<<endl;
 			//add edge
 			int connected = 0;
-			for(i=0,set_id = 1; i<num; i++) {
+			for(i=0,set_id = 1; i< num; i++) {
 
 				if(connected >= this->node_num-1) {
 					break;
@@ -292,7 +293,7 @@ class Graph {
 				}
 			}//for i
 
-//			delete[] e;
+			//		delete[] e;
 //			delete[] node_id;
 //			delete[] close;
 		}
@@ -327,7 +328,7 @@ int main() {
 
 	g->kruskal();
 
-	g->~Graph();
+//	g->~Graph();
 //	delete[] nodes;
 //	delete[] g;
 	return 0;
