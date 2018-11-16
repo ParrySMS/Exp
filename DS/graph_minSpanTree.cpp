@@ -42,8 +42,8 @@ class Graph {
 		~Graph() {
 			node_num = 0;
 
-			delete [] nodes;
-			delete [] mx;
+//			delete [] nodes;
+//			delete [] mx;
 
 		}
 
@@ -189,8 +189,8 @@ class Graph {
 				}
 			}
 
-			delete [] visit;
-			delete [] e;
+//			delete [] visit;
+//			delete [] e;
 		}
 
 		void mergeSet(int set1,int set2,int *node_id) {
@@ -292,9 +292,9 @@ class Graph {
 				}
 			}//for i
 
-			delete[] e;
-			delete[] node_id;
-			delete[] close;
+//			delete[] e;
+//			delete[] node_id;
+//			delete[] close;
 		}
 
 
@@ -328,7 +328,7 @@ int main() {
 	g->kruskal();
 
 	g->~Graph();
-	delete[] nodes;
-	delete[] g;
+//	delete[] nodes;
+//	delete[] g;
 	return 0;
 }

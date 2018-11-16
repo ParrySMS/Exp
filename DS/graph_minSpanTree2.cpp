@@ -1,5 +1,4 @@
 #include <iostream>
-#include <string>
 
 #define MAX 9999
 #define SIZE 30
@@ -24,11 +23,11 @@ class Mx {
 		}
 
 		Mx(int n,string name1[],int m,string b[][2],int cost[]) {
-			int i;
+			int i,j;
 
-			this->node_num = n
+			this->node_num = n; 
 			for(i=0; i<this->node_num; ++i) {
-				nodes[i] = name1[i]
+				nodes[i] = name1[i];
 				for(j=0; j<this->node_num; ++j) {
 					this->mx[i][j] = MAX;
 				}
@@ -49,7 +48,7 @@ class Mx {
 
 			for(i=0; i<this->node_num-1; i++) {
 				int vi,vo;
-				getNext(flag,vi.vo);
+				getNext(flag,vi,vo);
 				sum += this->mx[vi][vo];
 			}
 			cout<<sum<<endl;
@@ -58,26 +57,27 @@ class Mx {
 
 		void prim(string name) {
 			int* flag = new int[20]();
+			int i;
 			flag[getIndex(name)] = 1;
 
 			cout<<"prim:"<<endl;
 			for(i=0; i<this->node_num-1; i++) {
 				int vi,vo;
-				getNext(flag,vi.vo);
+				getNext(flag,vi,vo);
 				cout<<this->nodes[vi]<<" ";
 				cout<<this->nodes[vo]<<" ";
 				cout<<this->mx[vi][vo]<<endl;
 			}
 		}
 
-		void getNext(int* flag,int &vi,int& vo) {
+		void getNext(int* flag,int vi,int vo) {
 			int i,j,min = MAX;
 			for(i=0; i<this->node_num; i++) {
 				if(flag[i]!=1) { //visited
 					continue;
 				}
 
-				for(j=0; j<n; j++) {
+				for(j=0; j<this->node_num; j++) {
 					if(flag[i]==1) { //not visited
 						continue;
 					}
@@ -96,9 +96,9 @@ class Mx {
 		void kruskal() {
 			cout<<"kruskal"<<endl;
 			int set[SIZE];
-			int i,j,k,m,vi.vo,min = MAX;
+			int i,j,k,m,vi,vo,min = MAX;
 
-			for(i=0; i<n; i++) {
+			for(i=0; i<this->node_num-1; i++) {
 				set[i]=i;
 			}
 
@@ -114,16 +114,44 @@ class Mx {
 				}
 				//merge
 
-                for(m=0; m<this->node_num-1; m++) {
-                    if(set [vo] == set[m]){
-                        set[m] = set[vi];
-                    }
-                }
+				for(m=0; m<this->node_num-1; m++) {
+					if(set [vo] == set[m]) {
+						set[m] = set[vi];
+					}
+				}
 
-                cout<<this->nodes[vi]<<" ";
-                cout<<this->nodes[vo]<<" ";
-                cout<<this->mx[vi][vo]<<endl;
+				cout<<this->nodes[vi]<<" ";
+				cout<<this->nodes[vo]<<" ";
+				cout<<this->mx[vi][vo]<<endl;
 			}
 		}
 };
+
+int main() {
+	int i,k,n,m,cost[SIZE];
+	string name,nodes[SIZE],b[SIZE][2];
+
+	cin>>n;
+	for(i=0; i<n; i++) {
+		cin>>nodes[i];
+	}
+
+	cin>>m;
+	for(i=0; i<m; i++) {
+		cin>>b[i][0]>>b[i][1]>>cost[i];
+	}
+
+	cin>>name;
+
+	Mx mx(n,nodes,m,b,cost);
+	mx.prim();
+	mx.prim(name);
+	mx.kruskal();
+
+	return 0;
+
+
+
+}
+
 
