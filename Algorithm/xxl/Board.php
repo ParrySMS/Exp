@@ -119,7 +119,6 @@ class Board
 
     // todo 遍历相连的二方格组 每个方格祖找邻近边缘的六个位 遍历判断  ←↕[XX]↕→
 
-
     /**
      * @param array $connected_boxes
      * @param array $board
@@ -157,6 +156,7 @@ class Board
 
 
         //todo 按照优先权 遍历
+
     }
 
 
@@ -173,7 +173,6 @@ class Board
             $board = $this->board;
         }
 
-        $line_num = sizeof($board[0]);
         $col_num = sizeof($board);
 
         foreach ($line_boxes2 as $boxes) {
@@ -203,7 +202,7 @@ class Board
     }
 
 
-    //todo colBoxesJudge
+
     private function colBoxesJudge(array $col_boxes2, array &$mx_v, array & $mx_d, array $board = [])
     {
         if (sizeof($board) == 0) {
@@ -211,7 +210,6 @@ class Board
         }
 
         $line_num = sizeof($board[0]);
-        $col_num = sizeof($board);
 
         foreach ($col_boxes2 as $boxes) {
             $up = $boxes[0];
@@ -274,6 +272,145 @@ class Board
         // end
         //  X
         //  O [X X]
+    }
+
+
+    /** 横块上左角
+    //  ? O
+    //    X
+    //    X
+     * @param $up
+     * @param array $mx_v
+     * @param array $mx_d
+     * @param array $board
+     */
+    private function judgeTopLeft($up, array & $mx_v, array &$mx_d, array &$board)
+    {
+
+        if (sizeof($board) == 0) {
+            $board = $this->board;
+        }
+
+        $line_num = sizeof($board[0]);
+        $col_num = sizeof($board);
+
+        // 横块上左角
+        //  ? O
+        //    X
+        //    X
+
+        if (!($up->x-1 >= 0 && $board[$up->x - 1][$up->y + 1] == $up->value)) {
+            return;
+        }
+
+
+        if( $mx_d[$up->x][$up->y+1]!=DIREC_LEFT
+            && $mx_v[$up->x][$up->y+1] <= $this::SCORE_3_BOXES){//overload the mx_d
+
+            $mx_d[$up->x][$up->y+1] = DIREC_LEFT;
+            $mx_v[$up->x][$up->y+1] = $this::SCORE_3_BOXES;
+        }
+
+    }
+
+    private function judgeDownLeft($down, array & $mx_v, array &$mx_d, array &$board)
+    {
+
+        if (sizeof($board) == 0) {
+            $board = $this->board;
+        }
+
+        $line_num = sizeof($board[0]);
+        $col_num = sizeof($board);
+
+        // 横块下左角
+        //    X
+        //    X
+        //  ? O
+
+        if (!($down->x-1 >= 0 && $board[$down->x - 1][$down->y - 1] == $down->value)) {
+            return;
+        }
+
+
+        if( $mx_d[$down->x][$down->y+1]!=DIREC_LEFT
+            && $mx_v[$down->x][$down->y+1] <= $this::SCORE_3_BOXES){//overload the mx_d
+
+            $mx_d[$down->x][$down->y+1] = DIREC_LEFT;
+            $mx_v[$down->x][$down->y+1] = $this::SCORE_3_BOXES;
+        }
+
+    }
+
+    /** 横块上右角
+    //    O ?
+    //    X
+    //    X
+     * @param $up
+     * @param array $mx_v
+     * @param array $mx_d
+     * @param array $board
+     */
+    private function judgeTopRight($up, array & $mx_v, array &$mx_d, array &$board)
+    {
+
+        if (sizeof($board) == 0) {
+            $board = $this->board;
+        }
+
+        $col_num = sizeof($board);
+
+        // 横块上右角
+        //    O X
+        //    X
+        //    X
+
+        if (!($up->x+1 < $col_num && $board[$up->x + 1][$up->y + 1] == $up->value)) {
+            return;
+        }
+
+
+        if( $mx_d[$up->x][$up->y+1]!=DIREC_RIGHT
+            && $mx_v[$up->x][$up->y+1] <= $this::SCORE_3_BOXES){//overload the mx_d
+
+            $mx_d[$up->x][$up->y+1] = DIREC_RIGHT;
+            $mx_v[$up->x][$up->y+1] = $this::SCORE_3_BOXES;
+        }
+
+    }
+
+    /**
+     * @param $down
+     * @param array $mx_v
+     * @param array $mx_d
+     * @param array $board
+     */
+    private function judgeDownRight($down, array & $mx_v, array &$mx_d, array &$board)
+    {
+
+        if (sizeof($board) == 0) {
+            $board = $this->board;
+        }
+
+        $col_num = sizeof($board);
+
+        // 横块下右角
+        //    X
+        //    X
+        //    O X
+
+        if (!($down->x+1 < $col_num && $board[$down->x + 1][$down->y - 1] == $down->value)) {
+            return;
+        }
+
+
+        if( $mx_d[$down->x][$down->y-1]!=DIREC_RIGHT
+            && $mx_v[$down->x][$down->y-1] <= $this::SCORE_3_BOXES){//overload the mx_d
+
+            $mx_d[$down->x][$down->y-1] = DIREC_RIGHT;
+            $mx_v[$down->x][$down->y-1] = $this::SCORE_3_BOXES;
+        }
+
     }
 
 
@@ -548,11 +685,13 @@ class Board
      */
     private function judgeRight($right, array & $mx_v, array &$mx_d, array &$board)
     {
+        $col_num = sizeof($board);
+
         // 横块右角
         //       ?
         // [X X] O X
         //       ?
-        if (!($right->x + 2 >= 0 && $board[$right->x + 2][$right->y] == $right->value)) {
+        if (!($right->x + 2 < $col_num && $board[$right->x + 2][$right->y] == $right->value)) {
             $this->judgeRightTop($right, $mx_v, $mx_d, $board);
             $this->judgeRightBtm($right, $mx_v, $mx_d, $board);
             return;
@@ -579,6 +718,116 @@ class Board
 
             $mx_d[$right->x + 1][$right->y] = DIREC_RIGHT;
             $mx_v[$right->x + 1][$right->y] = $this::SCORE_3_BOXES; // change new dirct
+
+        }
+
+
+    }
+
+
+    /**横块上角
+    //   ?
+    // ? O ?
+    //   X
+    //   X
+     * @param $up
+     * @param array $mx_v
+     * @param array $mx_d
+     * @param array $board
+     */
+    private function judgeUp($up, array & $mx_v, array &$mx_d, array &$board)
+    {
+        $line_num = sizeof($board[0]);
+        // 横块上角
+        //   X
+        // ? O ?
+        //   X
+        //   X
+        if (!($up->y + 2 <$line_num  && $board[$up->x][$up->y+2] == $up->value)) {
+            $this->judgeTopLeft($up, $mx_v, $mx_d, $board);
+            $this->judgeTopRight($up, $mx_v, $mx_d, $board);
+            return;
+        }
+
+
+        $this->judgeTopLeft($up, $mx_v, $mx_d, $board);
+        //优先考虑四重
+        if ($mx_d[$up->x][$up->y + 1] == DIREC_LEFT) {
+            //   X
+            // ? ← ?
+            //   X
+            //   X
+            $mx_v[$up->x][$up->y + 1] = $this::SCORE_4_BOXES;
+            return;
+        }
+
+        $this->judgeTopRight($up, $mx_v, $mx_d, $board);
+        if ($mx_d[$up->x][$up->y + 1] == DIREC_RIGHT) {
+            //   X
+            // ? → ?
+            //   X
+            //   X
+            $mx_v[$up->x][$up->y + 1] = $this::SCORE_4_BOXES;
+            return;
+        }
+
+        //无四重 ↔ 无收益 考虑上下
+
+        if ($mx_d[$up->x][$up->y + 1] != DIREC_DOWM
+            && $mx_v[$up->x][$up->y + 1] < $this::SCORE_3_BOXES) {
+
+            $mx_d[$up->x][$up->y + 1] = DIREC_DOWM;
+            $mx_v[$up->x][$up->y + 1] = $this::SCORE_3_BOXES; // change new dirct
+
+        }
+
+
+    }
+
+
+    private function judgeDown($up, array & $mx_v, array &$mx_d, array &$board)
+    {
+        $line_num = sizeof($board[0]);
+        // 横块下角
+        //   X
+        //   X
+        // ? O ?
+        //   X
+        if (!($up->y + 2 <$line_num  && $board[$up->x][$up->y+2] == $up->value)) {
+            $this->judgeDowmLeft($up, $mx_v, $mx_d, $board);
+            $this->judgeDownRight($up, $mx_v, $mx_d, $board);
+            return;
+        }
+
+
+        $this->judgeDownLeft($up, $mx_v, $mx_d, $board);
+        //优先考虑四重
+        if ($mx_d[$up->x][$up->y + 1] == DIREC_LEFT) {
+            //   X
+            //   X
+            // ? ← ?
+            //   X
+            $mx_v[$up->x][$up->y + 1] = $this::SCORE_4_BOXES;
+            return;
+        }
+
+        $this->judgeDownRight($up, $mx_v, $mx_d, $board);
+        if ($mx_d[$up->x][$up->y + 1] == DIREC_RIGHT) {
+            //   X
+            //   X
+            // ? → ?
+            //   X
+            $mx_v[$up->x][$up->y + 1] = $this::SCORE_4_BOXES;
+            return;
+        }
+
+        //无四重 ↔ 无收益 考虑上下
+
+        if ($mx_d[$up->x][$up->y + 1] != DIREC_DOWM
+            && $mx_v[$up->x][$up->y + 1] < $this::SCORE_3_BOXES) {
+
+            $mx_d[$up->x][$up->y + 1] = DIREC_DOWM;
+            $mx_v[$up->x][$up->y + 1] = $this::SCORE_3_BOXES; // change new dirct
 
         }
 
