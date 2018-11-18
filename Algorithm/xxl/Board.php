@@ -119,6 +119,7 @@ class Board
 
     // todo 遍历相连的二方格组 每个方格祖找邻近边缘的六个位 遍历判断  ←↕[XX]↕→
 
+
     /**
      * @param array $connected_boxes
      * @param array $board
@@ -147,11 +148,11 @@ class Board
             }
         }
 
-        //todo 遍历一次 计算优先权值
+        //遍历一次 计算优先权值
         if (sizeof($line_boxes2) > 0) {
-            lineBoxesJudge($line_boxes2, $mx_v, $mx_d, $board);
+            $this->lineBoxesJudge($line_boxes2, $mx_v, $mx_d, $board);
 
-           //todo  colBoxesJudge($col_boxes2, $mx_v, $mx_d, $board);
+            $this->colBoxesJudge($col_boxes2, $mx_v, $mx_d, $board);
         }
 
 
@@ -182,20 +183,9 @@ class Board
             if ($left->x > 0) {//not edge
                 // 横块左角
                 //    ?
-                //  X O [X X]
+                //  ? O [X X]
                 //    ?
                 $this->judgeLeft($left, $mx_v, $mx_d, $board);
-
-                // 横块左上角
-                //  X
-                //  O [X X]
-                $this->judgeLeftTop($left, $mx_v, $mx_d, $board);
-
-
-                // 横块左下角
-                //  O [X X]
-                //  X
-                $this->judgeLeftBtm($left, $mx_v, $mx_d, $board);
 
             }//end left
 
@@ -203,37 +193,92 @@ class Board
             if ($right->x < $col_num - 1) {//not edge
                 // 横块右角
                 //       ?
-                // [X X] O X
+                // [X X] O ?
                 //       ?
-                //todo $this->judgeRight($left, $mx_v, $mx_d, $board);
+                $this->judgeRight($right, $mx_v, $mx_d, $board);
 
-                // 横块右上角
-                //         X
-                //   [X X] O
-                //todo $this->judgeRightTop($left, $mx_v, $mx_d, $board);
-
-
-                // 横块右下角
-                //  [X X] O
-                //        X
-                //todo  $this->judgeRightBtm($left, $mx_v, $mx_d, $board);
 
             }//end right
-
-
         }
     }
 
-    /** // 横块左上角 积分方向判断
-     * //  X
-     * //  O [X X]
+
+    //todo colBoxesJudge
+    private function colBoxesJudge(array $col_boxes2, array &$mx_v, array & $mx_d, array $board = [])
+    {
+        if (sizeof($board) == 0) {
+            $board = $this->board;
+        }
+
+        $line_num = sizeof($board[0]);
+        $col_num = sizeof($board);
+
+        foreach ($col_boxes2 as $boxes) {
+            $up = $boxes[0];
+            $dowm = $boxes[1];
+
+            if ($up->y < $line_num -1) {//not edge
+                // 横块上角
+                //   ?
+                // ? O ?
+                //   X
+                //   X
+                $this->judgeUp($up, $mx_v, $mx_d, $board);
+            }
+
+
+            if ($dowm->y >0 ) {//not edge
+                // 横块下角
+                //   X
+                //   X
+                // ? O ?
+                //   X
+                $this->judgeDown($dowm, $mx_v, $mx_d, $board);
+            }
+        }
+    }
+
+    /**
+    // 横块左上角
+    //  X
+    //  O [X X]
      * @param $left
      * @param array $mx_v
      * @param array $mx_d
      * @param array $board
-     * @throws Exception
      */
-    private function judgeLeftTop($left, array & $mx_v, array &$mx_d, array $board)
+    private function judgeLeftTop($left, array & $mx_v, array &$mx_d, array &$board)
+    {
+
+        if (sizeof($board) == 0) {
+            $board = $this->board;
+        }
+
+        $line_num = sizeof($board[0]);
+
+        // 横块左上角
+        //  X
+        //  O [X X]
+        if (!($left->y + 1 < $line_num && $board[$left->x - 1][$left->y + 1] == $left->value)) {
+            return;
+        }
+
+
+        if( $mx_d[$left->x - 1][$left->y]!=DIREC_UP
+            && $mx_v[$left->x - 1][$left->y] <= $this::SCORE_3_BOXES){//overload the mx_d
+
+            $mx_d[$left->x - 1][$left->y] = DIREC_UP;
+            $mx_v[$left->x - 1][$left->y] = $this::SCORE_3_BOXES;
+        }
+
+        // end
+        //  X
+        //  O [X X]
+    }
+
+
+    //todo 弃用方法
+    private function OLDjudgeLeftTop($left, array & $mx_v, array &$mx_d, array $board)
     {
 
         if (sizeof($board) == 0) {
@@ -267,7 +312,6 @@ class Board
             if ($mx_d[$left->x - 1][$left->y + 1] == DIREC_DOWM) {  //  AND same swap
 
                 $mx_d[$left->x - 1][$left->y] = DIREC_UP;
-
                 $mx_v[$left->x - 1][$left->y] = $this::SCORE_3_BOXES; //add value
 
             } else if ($mx_v[$left->x - 1][$left->y + 1] < $this::SCORE_3_BOXES) { //diff dirct
@@ -333,6 +377,42 @@ class Board
     }
 
 
+    /** 横块右上角
+     * //       X
+     * // [X X] O
+     * @param $right
+     * @param array $mx_v
+     * @param array $mx_d
+     * @param array $board
+     */
+    private function judgeRightTop($right, array & $mx_v, array &$mx_d, array& $board)
+    {
+
+        if (sizeof($board) == 0) {
+            $board = $this->board;
+        }
+
+        $line_num = sizeof($board[0]);
+
+        // 横块右上角
+        //       X
+        // [X X] O
+        if (!($right->y + 1 < $line_num && $board[$right->x + 1][$right->y + 1] == $right->value)) {
+            return;
+        }
+
+        if( $mx_d[$right->x + 1][$right->y]!=DIREC_UP
+            && $mx_v[$right->x + 1][$right->y] <= $this::SCORE_3_BOXES){//overload the mx_d
+
+            $mx_d[$right->x + 1][$right->y] = DIREC_UP;
+            $mx_v[$right->x + 1][$right->y] = $this::SCORE_3_BOXES;
+        }
+        // end
+        //       X
+        // [X X] O
+    }
+
+
     /**   // 横块左下角
      * //  O [X X]
      * //  X
@@ -340,9 +420,8 @@ class Board
      * @param array $mx_v
      * @param array $mx_d
      * @param array $board
-     * @throws Exception
      */
-    private function judgeLeftBtm($left, array & $mx_v, array &$mx_d, array $board)
+    private function judgeLeftBtm($left, array & $mx_v, array &$mx_d, array &$board)
     {
 
         if (sizeof($board) == 0) {
@@ -358,89 +437,53 @@ class Board
         }
 
 
-        if ($mx_d[$left->x - 1][$left->y] == DIREC_NULL //undefine dirct
-            && $mx_d[$left->x - 1][$left->y - 1] == DIREC_NULL) { //  ↕ 0 0
+        if( $mx_d[$left->x - 1][$left->y] != DIREC_DOWM
+            && $mx_v[$left->x - 1][$left->y] <= $this::SCORE_3_BOXES){//overload the mx_d
 
             $mx_d[$left->x - 1][$left->y] = DIREC_DOWM;
-            $mx_d[$left->x - 1][$left->y - 1] = DIREC_UP;
-
             $mx_v[$left->x - 1][$left->y] = $this::SCORE_3_BOXES;
-            $mx_v[$left->x - 1][$left->y - 1] = 0;
-            return;
-
         }
-
-        if ($mx_d[$left->x - 1][$left->y] != DIREC_NULL //upper already has dirct
-            && $mx_d[$left->x - 1][$left->y - 1] == DIREC_NULL) {   //↕ 1 0
-
-            if ($mx_d[$left->x - 1][$left->y] == DIREC_DOWM) {  //  AND same swap
-
-                $mx_d[$left->x - 1][$left->y - 1] = DIREC_UP;
-
-                $mx_v[$left->x - 1][$left->y] += $this::SCORE_3_BOXES; //add value
-                $mx_v[$left->x - 1][$left->y - 1] = 0;
-
-            } else if ($mx_v[$left->x - 1][$left->y] < $this::SCORE_3_BOXES) { //diff dirct
-                //diff swap  change original
-                $mx_d[$left->x - 1][$left->y] = DIREC_DOWM;
-                $mx_d[$left->x - 1][$left->y - 1] = DIREC_UP;
-
-                $mx_v[$left->x - 1][$left->y] = $this::SCORE_3_BOXES;
-                $mx_v[$left->x - 1][$left->y - 1] = 0;
-            }
-
-
-            return;
-        }
-
-
-        if ($mx_d[$left->x - 1][$left->y] == DIREC_NULL   //lower already has dirct  AND same swap
-            && $mx_d[$left->x - 1][$left->y - 1] != DIREC_NULL) { //↕ 0 1
-
-            if ($mx_d[$left->x - 1][$left->y - 1] == DIREC_UP) {  //  AND same swap
-                $mx_d[$left->x - 1][$left->y] = DIREC_DOWM;
-
-                $mx_v[$left->x - 1][$left->y] = $this::SCORE_3_BOXES;
-
-            } else if ($mx_v[$left->x - 1][$left->y - 1] < $this::SCORE_3_BOXES) { //diff dirct
-                //diff swap  change original
-                $mx_d[$left->x - 1][$left->y] = DIREC_DOWM;
-                $mx_d[$left->x - 1][$left->y - 1] = DIREC_UP;
-
-                $mx_v[$left->x - 1][$left->y] = $this::SCORE_3_BOXES;
-                $mx_v[$left->x - 1][$left->y - 1] = 0;
-            }
-            return;
-
-        }
-
-
-        if ($mx_d[$left->x - 1][$left->y] != DIREC_NULL   //both already has dirct
-            && $mx_d[$left->x - 1][$left->y - 1] != DIREC_NULL) { //↕ 1 1
-
-            if ($mx_v[$left->x - 1][$left->y] + $mx_v[$left->x - 1][$left->y - 1]
-                < $this::SCORE_3_BOXES) { //diff dirct
-                //diff swap  change original
-                $mx_d[$left->x - 1][$left->y - 1] = DIREC_DOWM;
-                $mx_d[$left->x - 1][$left->y] = DIREC_UP;
-
-                $mx_v[$left->x - 1][$left->y] = $this::SCORE_3_BOXES;
-                $mx_v[$left->x - 1][$left->y - 1] = 0;
-
-            }
-            return;
-
-        }
-
-
-        throw new Exception(__CLASS__ . __FUNCTION__ .
-            "  mx_dirction error: upper is" . $mx_d[$left->x - 1][$left->y - 1] .
-            ", and lower is " . $mx_d[$left->x - 1][$left->y]);
-
         // end
         //  O [X X]
         //  X
     }
+
+    /**
+     * // 横块右下角
+     * //  [X X] O
+     * //        X
+     * @param $right
+     * @param array $mx_v
+     * @param array $mx_d
+     * @param array $board
+     */
+    private function judgeRightBtm($right, array & $mx_v, array &$mx_d, array &$board)
+    {
+
+        if (sizeof($board) == 0) {
+            $board = $this->board;
+        }
+
+
+        // 横块右下角
+        //  [X X] O
+        //        X
+        if (!($right->y - 1 > 0 && $board[$right->x + 1][$right->y - 1] == $right->value)) {
+            return;
+        }
+
+
+        if( $mx_d[$right->x + 1][$right->y]!=DIREC_DOWM
+            && $mx_v[$right->x + 1][$right->y] <= $this::SCORE_3_BOXES){//overload the mx_d
+
+            $mx_d[$right->x + 1][$right->y] = DIREC_DOWM;
+            $mx_v[$right->x + 1][$right->y] = $this::SCORE_3_BOXES;
+        }
+        // end
+        // [X X] O
+        //       X
+    }
+
 
     /** 横块左角
      * //    ?
@@ -450,57 +493,99 @@ class Board
      * @param array $mx_v
      * @param array $mx_d
      * @param array $board
-     * @throws Exception
      */
-    private function judgeLeft($left, array & $mx_v, array &$mx_d, array $board)
+    private function judgeLeft($left, array & $mx_v, array &$mx_d, array &$board)
     {
         // 横块左角
         //    ?
         //  X O [X X]
         //    ?
         if (!($left->x - 2 >= 0 && $board[$left->x - 2][$left->y] == $left->value)) {
-
-            return;
-        }
-
-        if ($mx_d[$left->x - 2][$left->y] == DIREC_NULL) {   //undefine dirct
-
-            //优先考虑四重
             $this->judgeLeftTop($left, $mx_v, $mx_d, $board);
-            if ($mx_d[$left->x - 1][$left->y] == DIREC_UP) { //X ↑ [X X]
-                $mx_v[$left->x - 1][$left->y] = $this::SCORE_4_BOXES;
-            } else {
-                $this->judgeLeftBtm($left, $mx_v, $mx_d, $board);
-                if ($mx_d[$left->x - 1][$left->y] == DIREC_DOWM) { //X ↓ [X X]
-                    //
-                    $mx_v[$left->x - 1][$left->y] = $this::SCORE_4_BOXES;
-                }
-            }
+            $this->judgeLeftBtm($left, $mx_v, $mx_d, $board);
             return;
         }
 
+        //($left->x - 2 >= 0 && $board[$left->x - 2][$left->y] == $left->value)
 
-        //无四重  ↕ 无收益
 
-        if ($mx_d[$left->x - 2][$left->y] == DIREC_NULL
-            ||
-            ($mx_d[$left->x - 2][$left->y] != DIREC_RIGHT
-                && $mx_v[$left->x - 2][$left->y] < $this::SCORE_3_BOXES)) {
-
-            $mx_d[$left->x - 2][$left->y] = DIREC_RIGHT;
-            $mx_v[$left->x - 2][$left->y] = $this::SCORE_3_BOXES; // new dirct
-
-        } else {
-            $mx_d[$left->x - 2][$left->y] = DIREC_RIGHT;
-            $mx_v[$left->x - 2][$left->y] += $this::SCORE_3_BOXES; //change dirct
+        //优先考虑四重
+        $this->judgeLeftTop($left, $mx_v, $mx_d, $board);
+        if ($mx_d[$left->x - 1][$left->y] == DIREC_UP) { //X ↑ [X X]
+            $mx_v[$left->x - 1][$left->y] = $this::SCORE_4_BOXES;
+            return;
         }
 
-        $mx_d[$left->x - 1][$left->y] = DIREC_LEFT;
-        $mx_v[$left->x - 1][$left->y] += $this::SCORE_3_BOXES;
+        $this->judgeLeftBtm($left, $mx_v, $mx_d, $board);
+        if ($mx_d[$left->x - 1][$left->y] == DIREC_DOWM) { //X ↓ [X X]
+            //
+            $mx_v[$left->x - 1][$left->y] = $this::SCORE_4_BOXES;
+            return;
+        }
 
-        return;
+        //无四重  ↕ 无收益 考虑左右
+
+        if ($mx_d[$left->x - 1][$left->y] != DIREC_LEFT
+            && $mx_v[$left->x - 1][$left->y] < $this::SCORE_3_BOXES) {
+
+            $mx_d[$left->x - 1][$left->y] = DIREC_LEFT;
+            $mx_v[$left->x - 1][$left->y] = $this::SCORE_3_BOXES; // change new dirct
+
+        }
+
 
     }
+
+
+    /**  横块右角
+    //       ?
+    // [X X] O X
+    //       ?
+     * @param $right
+     * @param array $mx_v
+     * @param array $mx_d
+     * @param array $board
+     */
+    private function judgeRight($right, array & $mx_v, array &$mx_d, array &$board)
+    {
+        // 横块右角
+        //       ?
+        // [X X] O X
+        //       ?
+        if (!($right->x + 2 >= 0 && $board[$right->x + 2][$right->y] == $right->value)) {
+            $this->judgeRightTop($right, $mx_v, $mx_d, $board);
+            $this->judgeRightBtm($right, $mx_v, $mx_d, $board);
+            return;
+        }
+
+
+        //优先考虑四重
+        $this->judgeRightTop($right, $mx_v, $mx_d, $board);
+        if ($mx_d[$right->x + 1][$right->y] == DIREC_UP) { // [X X] ↑ X
+            $mx_v[$right->x + 1][$right->y] = $this::SCORE_4_BOXES;
+            return;
+        }
+
+        $this->judgeRightBtm($right, $mx_v, $mx_d, $board);
+        if ($mx_d[$right->x + 1][$right->y] == DIREC_DOWM) { // [X X] ↓ X
+            $mx_v[$right->x + 1][$right->y] = $this::SCORE_4_BOXES;
+            return;
+        }
+
+        //无四重  ↕ 无收益 考虑左右
+
+        if ($mx_d[$right->x + 1][$right->y] != DIREC_RIGHT
+            && $mx_v[$right->x + 1][$right->y] < $this::SCORE_3_BOXES) {
+
+            $mx_d[$right->x + 1][$right->y] = DIREC_RIGHT;
+            $mx_v[$right->x + 1][$right->y] = $this::SCORE_3_BOXES; // change new dirct
+
+        }
+
+
+    }
+
+
 
     /** 修改某个板块内方格的值
      * @param $x
