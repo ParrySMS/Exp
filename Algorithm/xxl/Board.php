@@ -7,10 +7,6 @@
  */
 
 require "Box.php";
-
-$b = new Board();
-$b->updateBoard($b->getConnectedBoxes());
-
 // 0↑  1↓  2← 3→  4↕
 define('DIREC_NULL', -1);
 define('DIREC_UP', 0);
@@ -18,6 +14,81 @@ define('DIREC_DOWM', 1);
 define('DIREC_LEFT', 2);
 define('DIREC_RIGHT', 3);
 define('DIREC_UPDOWM', 4);
+define('BOX_MOST', 5);
+
+$score = 0;
+$b = new Board();
+foreach ($b->getBoard() as $gb) {
+    echo json_encode($gb);
+    echo "<br/>";
+}
+echo "<br/>";
+
+//init
+$t = 100;
+while($t--) {
+    $c = $b->getConnectedBoxes();
+    $score = $b->getScore($c,$score);
+    if(!$b->updateBoard($c)){
+        break;
+    }
+
+    foreach ($b->getBoard() as $gb) {
+        echo json_encode($gb);
+        echo "<br/>";
+    }
+    echo PHP_EOL;
+    echo "<br/>";
+    echo "<br/>";
+}
+echo "<br/>";
+
+
+$history = [];
+$t = 100;
+while ($t--) {
+    $c = $b->getConnectedBoxes();
+    $two = $b->selectTwoBoxes($c);
+    echo "<br/>";
+
+    if (sizeof($two) == 0) {
+        echo "no two can swap";
+        echo "<br/>";
+        foreach ($b->getBoard() as $gb) {
+            echo json_encode($gb);
+            echo "<br/>";
+        }
+        echo "<br/>";
+        break;
+    }
+
+//todo
+    $history[] = $b->getBoard();
+//    //move
+//    $box0 = $two[0];
+//    $box1 = $two[1];
+//    echo "after moving ($box0->x,$box0->y) to ($box1->x,$box1->y)";
+//    $b->setBoardBox($box0->x, $box0->y, $box1->value);
+//    $b->setBoardBox($box1->x, $box1->y, $box0->value);
+//    echo "<br/>";
+//    echo PHP_EOL;
+//    foreach ($b->getBoard() as $gb) {
+//        echo json_encode($gb);
+//        echo "<br/>";
+//    }
+//    echo "<br/>";
+//    echo "<br/>";
+//    echo PHP_EOL;
+//    while($b->updateBoard($b->getConnectedBoxes())) {
+//        foreach ($b->getBoard() as $gb) {
+//            echo json_encode($gb);
+//            echo "<br/>";
+//        }
+//        echo PHP_EOL;
+//        echo "<br/>";
+//        echo "<br/>";
+//    }
+//}//while
 
 
 class Board
@@ -27,12 +98,12 @@ class Board
 
     const SCORE_5_BOXES = 10;
 
-    const ICON_NULL_ID = -1;
+    const ICON_NULL_ID = 9;
 
     private $board = [];
     private $line = 10;
     private $col = 10;
-    private $icon_max = 4; //最大icon_id
+    private $icon_max = 2; //最大icon_id
 
     /**
      * @return array
@@ -117,6 +188,30 @@ class Board
 
     }
 
+//选择排序 大在前
+    private function boxesSort(array & $boxes)
+    {
+        $len = sizeof($boxes);
+
+        for ($i = 0; $i < $len - 1; $i++) {
+            $max = $i; //consider i as max_index
+
+            for ($j = $i + 1; $j < $len; $j++) {//find min_index
+                if ($boxes[$j]->value > $boxes[$max]->value) {
+                    $max = $j;
+                }
+            }
+
+            if ($max != $i) {//change
+                $t = $boxes[$i];
+                $boxes[$i] = $boxes[$max];
+                $boxes[$max] = $t;
+            }
+
+        }
+
+    }
+
     // todo 遍历相连的二方格组 每个方格祖找邻近边缘的六个位 遍历判断  ←↕[XX]↕→
 
     /**
@@ -155,7 +250,98 @@ class Board
         }
 
 
-        //todo 按照优先权 遍历
+        //获取有优先权的方格
+        $boxes = [];
+        for ($x = 0; $x < $col_num; $x++) {
+            for ($y = 0; $y < $line_num; $y++) {
+
+                if ($mx_v[$x][$y] == 0) {
+                    continue;
+                }
+
+                $boxes[] = new Box($x, $y, $mx_v[$x][$y], $mx_d[$x][$y]);
+
+            }
+        }
+
+        //  按照优先权由小到大排序 遍历 取前5个
+        $this->boxesSort($boxes);
+
+        $limit = sizeof($boxes) < BOX_MOST ? sizeof($boxes) : BOX_MOST;
+        for ($i = 0,$score =0,$index = -1 ; $i < $limit; $i++) {
+
+            $b = $boxes[$i];
+            unset($bd);
+            $bd = $board;
+            //try to move
+            switch ($b->direction) {
+                case DIREC_UP:
+                    $t = $bd[$b->x][$b->y];
+                    $bd[$b->x][$b->y] = $bd[$b->x][$b->y + 1];
+                    $bd[$b->x][$b->y + 1] = $t;
+                    break;
+
+                case DIREC_DOWM:
+                    $t = $bd[$b->x][$b->y];
+                    $bd[$b->x][$b->y] = $bd[$b->x][$b->y - 1];
+                    $bd[$b->x][$b->y - 1] = $t;
+                    break;
+
+                case DIREC_LEFT:
+                    $t = $bd[$b->x][$b->y];
+                    $bd[$b->x][$b->y] = $bd[$b->x - 1][$b->y];
+                    $bd[$b->x - 1][$b->y] = $t;
+                    break;
+
+                case DIREC_RIGHT:
+                    $t = $bd[$b->x][$b->y];
+                    $bd[$b->x][$b->y] = $bd[$b->x + 1][$b->y];
+                    $bd[$b->x + 1][$b->y] = $t;
+                    break;
+
+                default:
+                    throw new Exception(__CLASS__.__FUNCTION__."  ERROR,no such direction $b->direction");
+            }
+
+            // todo score 取一个的剪枝
+            if($score < $this->getScore($this->getConnectedBoxes($bd))){
+                $score =  $this->getScore($this->getConnectedBoxes($bd));
+                $index = $i;
+            }
+
+        }//end try move
+
+        if($score == 0){//score 0 no move
+            return $two_boxes = [];
+        }
+
+        //has score
+        $b = $boxes[$index];
+        $b->value = $board[$b->x][$b->y];
+
+        switch ($b->direction) {
+            case DIREC_UP:
+                $two_boxes = [$b,new Box($b->x,$b->y+1,$board[$b->x][$b->y+1])];
+                break;
+
+            case DIREC_DOWM:
+                $two_boxes = [$b,new Box($b->x,$b->y-1,$board[$b->x][$b->y-1])];
+                break;
+
+            case DIREC_LEFT:
+                $two_boxes = [$b,new Box($b->x-1,$b->y,$board[$b->x-1][$b->y])];
+                break;
+
+            case DIREC_RIGHT:
+                $two_boxes = [$b,new Box($b->x+1,$b->y,$board[$b->x+1][$b->y])];
+                break;
+
+            default:
+                throw new Exception(__CLASS__.__FUNCTION__."  ERROR,no such direction $b->direction");
+        }
+
+        return $two_boxes;
+
 
     }
 
@@ -202,7 +388,6 @@ class Board
     }
 
 
-
     private function colBoxesJudge(array $col_boxes2, array &$mx_v, array & $mx_d, array $board = [])
     {
         if (sizeof($board) == 0) {
@@ -215,7 +400,7 @@ class Board
             $up = $boxes[0];
             $dowm = $boxes[1];
 
-            if ($up->y < $line_num -1) {//not edge
+            if ($up->y < $line_num - 1) {//not edge
                 // 横块上角
                 //   ?
                 // ? O ?
@@ -225,7 +410,7 @@ class Board
             }
 
 
-            if ($dowm->y >0 ) {//not edge
+            if ($dowm->y > 0) {//not edge
                 // 横块下角
                 //   X
                 //   X
@@ -237,9 +422,9 @@ class Board
     }
 
     /**
-    // 横块左上角
-    //  X
-    //  O [X X]
+     * // 横块左上角
+     * //  X
+     * //  O [X X]
      * @param $left
      * @param array $mx_v
      * @param array $mx_d
@@ -262,8 +447,8 @@ class Board
         }
 
 
-        if( $mx_d[$left->x - 1][$left->y]!=DIREC_UP
-            && $mx_v[$left->x - 1][$left->y] <= $this::SCORE_3_BOXES){//overload the mx_d
+        if ($mx_d[$left->x - 1][$left->y] != DIREC_UP
+            && $mx_v[$left->x - 1][$left->y] <= $this::SCORE_3_BOXES) {//overload the mx_d
 
             $mx_d[$left->x - 1][$left->y] = DIREC_UP;
             $mx_v[$left->x - 1][$left->y] = $this::SCORE_3_BOXES;
@@ -276,9 +461,9 @@ class Board
 
 
     /** 横块上左角
-    //  ? O
-    //    X
-    //    X
+     * //  ? O
+     * //    X
+     * //    X
      * @param $up
      * @param array $mx_v
      * @param array $mx_d
@@ -299,16 +484,16 @@ class Board
         //    X
         //    X
 
-        if (!($up->x-1 >= 0 && $board[$up->x - 1][$up->y + 1] == $up->value)) {
+        if (!($up->x - 1 >= 0 && $board[$up->x - 1][$up->y + 1] == $up->value)) {
             return;
         }
 
 
-        if( $mx_d[$up->x][$up->y+1]!=DIREC_LEFT
-            && $mx_v[$up->x][$up->y+1] <= $this::SCORE_3_BOXES){//overload the mx_d
+        if ($mx_d[$up->x][$up->y + 1] != DIREC_LEFT
+            && $mx_v[$up->x][$up->y + 1] <= $this::SCORE_3_BOXES) {//overload the mx_d
 
-            $mx_d[$up->x][$up->y+1] = DIREC_LEFT;
-            $mx_v[$up->x][$up->y+1] = $this::SCORE_3_BOXES;
+            $mx_d[$up->x][$up->y + 1] = DIREC_LEFT;
+            $mx_v[$up->x][$up->y + 1] = $this::SCORE_3_BOXES;
         }
 
     }
@@ -328,24 +513,24 @@ class Board
         //    X
         //  ? O
 
-        if (!($down->x-1 >= 0 && $board[$down->x - 1][$down->y - 1] == $down->value)) {
+        if (!($down->x - 1 >= 0 && $board[$down->x - 1][$down->y - 1] == $down->value)) {
             return;
         }
 
 
-        if( $mx_d[$down->x][$down->y+1]!=DIREC_LEFT
-            && $mx_v[$down->x][$down->y+1] <= $this::SCORE_3_BOXES){//overload the mx_d
+        if ($mx_d[$down->x][$down->y + 1] != DIREC_LEFT
+            && $mx_v[$down->x][$down->y + 1] <= $this::SCORE_3_BOXES) {//overload the mx_d
 
-            $mx_d[$down->x][$down->y+1] = DIREC_LEFT;
-            $mx_v[$down->x][$down->y+1] = $this::SCORE_3_BOXES;
+            $mx_d[$down->x][$down->y + 1] = DIREC_LEFT;
+            $mx_v[$down->x][$down->y + 1] = $this::SCORE_3_BOXES;
         }
 
     }
 
     /** 横块上右角
-    //    O ?
-    //    X
-    //    X
+     * //    O ?
+     * //    X
+     * //    X
      * @param $up
      * @param array $mx_v
      * @param array $mx_d
@@ -365,16 +550,16 @@ class Board
         //    X
         //    X
 
-        if (!($up->x+1 < $col_num && $board[$up->x + 1][$up->y + 1] == $up->value)) {
+        if (!($up->x + 1 < $col_num && $board[$up->x + 1][$up->y + 1] == $up->value)) {
             return;
         }
 
 
-        if( $mx_d[$up->x][$up->y+1]!=DIREC_RIGHT
-            && $mx_v[$up->x][$up->y+1] <= $this::SCORE_3_BOXES){//overload the mx_d
+        if ($mx_d[$up->x][$up->y + 1] != DIREC_RIGHT
+            && $mx_v[$up->x][$up->y + 1] <= $this::SCORE_3_BOXES) {//overload the mx_d
 
-            $mx_d[$up->x][$up->y+1] = DIREC_RIGHT;
-            $mx_v[$up->x][$up->y+1] = $this::SCORE_3_BOXES;
+            $mx_d[$up->x][$up->y + 1] = DIREC_RIGHT;
+            $mx_v[$up->x][$up->y + 1] = $this::SCORE_3_BOXES;
         }
 
     }
@@ -399,16 +584,16 @@ class Board
         //    X
         //    O X
 
-        if (!($down->x+1 < $col_num && $board[$down->x + 1][$down->y - 1] == $down->value)) {
+        if (!($down->x + 1 < $col_num && $board[$down->x + 1][$down->y - 1] == $down->value)) {
             return;
         }
 
 
-        if( $mx_d[$down->x][$down->y-1]!=DIREC_RIGHT
-            && $mx_v[$down->x][$down->y-1] <= $this::SCORE_3_BOXES){//overload the mx_d
+        if ($mx_d[$down->x][$down->y - 1] != DIREC_RIGHT
+            && $mx_v[$down->x][$down->y - 1] <= $this::SCORE_3_BOXES) {//overload the mx_d
 
-            $mx_d[$down->x][$down->y-1] = DIREC_RIGHT;
-            $mx_v[$down->x][$down->y-1] = $this::SCORE_3_BOXES;
+            $mx_d[$down->x][$down->y - 1] = DIREC_RIGHT;
+            $mx_v[$down->x][$down->y - 1] = $this::SCORE_3_BOXES;
         }
 
     }
@@ -522,7 +707,7 @@ class Board
      * @param array $mx_d
      * @param array $board
      */
-    private function judgeRightTop($right, array & $mx_v, array &$mx_d, array& $board)
+    private function judgeRightTop($right, array & $mx_v, array &$mx_d, array & $board)
     {
 
         if (sizeof($board) == 0) {
@@ -538,8 +723,8 @@ class Board
             return;
         }
 
-        if( $mx_d[$right->x + 1][$right->y]!=DIREC_UP
-            && $mx_v[$right->x + 1][$right->y] <= $this::SCORE_3_BOXES){//overload the mx_d
+        if ($mx_d[$right->x + 1][$right->y] != DIREC_UP
+            && $mx_v[$right->x + 1][$right->y] <= $this::SCORE_3_BOXES) {//overload the mx_d
 
             $mx_d[$right->x + 1][$right->y] = DIREC_UP;
             $mx_v[$right->x + 1][$right->y] = $this::SCORE_3_BOXES;
@@ -574,8 +759,8 @@ class Board
         }
 
 
-        if( $mx_d[$left->x - 1][$left->y] != DIREC_DOWM
-            && $mx_v[$left->x - 1][$left->y] <= $this::SCORE_3_BOXES){//overload the mx_d
+        if ($mx_d[$left->x - 1][$left->y] != DIREC_DOWM
+            && $mx_v[$left->x - 1][$left->y] <= $this::SCORE_3_BOXES) {//overload the mx_d
 
             $mx_d[$left->x - 1][$left->y] = DIREC_DOWM;
             $mx_v[$left->x - 1][$left->y] = $this::SCORE_3_BOXES;
@@ -610,8 +795,8 @@ class Board
         }
 
 
-        if( $mx_d[$right->x + 1][$right->y]!=DIREC_DOWM
-            && $mx_v[$right->x + 1][$right->y] <= $this::SCORE_3_BOXES){//overload the mx_d
+        if ($mx_d[$right->x + 1][$right->y] != DIREC_DOWM
+            && $mx_v[$right->x + 1][$right->y] <= $this::SCORE_3_BOXES) {//overload the mx_d
 
             $mx_d[$right->x + 1][$right->y] = DIREC_DOWM;
             $mx_v[$right->x + 1][$right->y] = $this::SCORE_3_BOXES;
@@ -675,9 +860,9 @@ class Board
 
 
     /**  横块右角
-    //       ?
-    // [X X] O X
-    //       ?
+     * //       ?
+     * // [X X] O X
+     * //       ?
      * @param $right
      * @param array $mx_v
      * @param array $mx_d
@@ -726,10 +911,10 @@ class Board
 
 
     /**横块上角
-    //   ?
-    // ? O ?
-    //   X
-    //   X
+     * //   ?
+     * // ? O ?
+     * //   X
+     * //   X
      * @param $up
      * @param array $mx_v
      * @param array $mx_d
@@ -743,7 +928,7 @@ class Board
         // ? O ?
         //   X
         //   X
-        if (!($up->y + 2 <$line_num  && $board[$up->x][$up->y+2] == $up->value)) {
+        if (!($up->y + 2 < $line_num && $board[$up->x][$up->y + 2] == $up->value)) {
             $this->judgeTopLeft($up, $mx_v, $mx_d, $board);
             $this->judgeTopRight($up, $mx_v, $mx_d, $board);
             return;
@@ -785,6 +970,12 @@ class Board
     }
 
 
+    /**
+     * @param $up
+     * @param array $mx_v
+     * @param array $mx_d
+     * @param array $board
+     */
     private function judgeDown($up, array & $mx_v, array &$mx_d, array &$board)
     {
         $line_num = sizeof($board[0]);
@@ -793,8 +984,8 @@ class Board
         //   X
         // ? O ?
         //   X
-        if (!($up->y + 2 <$line_num  && $board[$up->x][$up->y+2] == $up->value)) {
-            $this->judgeDowmLeft($up, $mx_v, $mx_d, $board);
+        if (!($up->y + 2 < $line_num && $board[$up->x][$up->y + 2] == $up->value)) {
+            $this->judgeDownLeft($up, $mx_v, $mx_d, $board);
             $this->judgeDownRight($up, $mx_v, $mx_d, $board);
             return;
         }
@@ -835,7 +1026,6 @@ class Board
     }
 
 
-
     /** 修改某个板块内方格的值
      * @param $x
      * @param $y
@@ -844,11 +1034,12 @@ class Board
      */
     public
     function setBoardBox($x, $y, $value)
+
     {
-        if (sizeof($this->board) <= $x
-            || sizeof($this->board[0]) <= $y) {
-            throw new Exception(__CLASS__ . __FUNCTION__ . ": x or y over board");
-        }
+            if (sizeof($this->board) <= $x
+                || sizeof($this->board[0]) <= $y) {
+                throw new Exception(__CLASS__ . __FUNCTION__ . ": x or y over board");
+            }
 
         $this->board[$x][$y] = $value;
 
@@ -866,9 +1057,14 @@ class Board
         //见函数 getConnectedBoxes
         $connected = array_merge($connected_boxes[0], $connected_boxes[1]);
 //
+//        echo "connect:<br/>";
 //        echo json_encode($connected);
 //        echo "<br/>";
-//        echo "<br/>";
+
+        if(sizeof($connected) == 0){
+            echo "no connected<br/>";
+            return false;
+        }
 
         //set -1
         foreach ($connected as $boxs) {
@@ -885,7 +1081,7 @@ class Board
                 if ($col[$i] == $this::ICON_NULL_ID) { //mark upper box drops step
                     $drop_step++;
 
-                } elseif ($i > 1 && $col[$i - 1] == $this::ICON_NULL_ID) { //drop and swap
+                } elseif ($i >= 1 && $col[$i - 1] == $this::ICON_NULL_ID) { //drop and swap
                     $col[$i - $drop_step] = $col[$i];
                     $col[$i] = $this::ICON_NULL_ID;
                 }
@@ -896,6 +1092,7 @@ class Board
 //            echo "<br/>";
         }
 
+        return true;
     }
 
     /** 计算对应消除的分数
@@ -907,7 +1104,7 @@ class Board
     function getScore(array $connected_boxes, $score = 0)
     {
         if (sizeof($connected_boxes) == 0) {
-            return 0;
+            return $score+0;
         }
 
         //见函数 getConnectedBoxes
@@ -957,17 +1154,20 @@ class Board
 //        echo "<br/>";
 
         // $same_lines = []; ////each board ,get the sames line connected-boxes
+        unset($all_same_lines);
         $all_same_lines = []; //array of $same_lines
         for ($i = 0; $i < $line_num; $i++) {
             $all_same_lines[$i] = [];
         }
 
+        unset($same_cols);
+        unset($all_same_cols);
         $same_cols = []; //each x ,get the sames cols connected-boxes
+        $same_cols[0] = [];
         $all_same_cols = []; //array of $same_cols
 
-
-        for ($x = 0, $key_x = 0; $x < $col_num; $x++) {//one line ,need to mark y
-            for ($y = 0, $key_y = 0, $same_cols[$key_y] = []; $y < $line_num; $y++) {//one col diff line_key
+        for ($x = 0,$key_y = 0,$key_x = 0; $x < $col_num; $x++) {//one line ,need to mark y
+            for ($y = 0,$same_cols = [],$same_cols[0] = [];$y < $line_num; $y++) {//one col diff line_key
 
                 /**
                  * about  $all_same_cols[] --> $same_cols [different key] --> boxes[] --> box
@@ -976,7 +1176,8 @@ class Board
                 //it is [for] of y ,so just fill $same_cols, and add to $all_same_cols outside the loop
                 //fill  box in  $same_cols[$key]
                 if ($y != 0 && $board[$x][$y] != $board[$x][$y - 1]) {//get different icon,changes keys
-                    $key_y = sizeof($same_cols[$key_y]) >= 3 ? $key_y + 1 : $key_y; //if save over 3 boxes -> is valid data, key++ ,init
+
+                    $key_y++; //if save over 3 boxes -> is valid data, key++ ,init
                     $same_cols[$key_y] = [];
                 }
                 // y still can connect over 3  or already has parts-boxs add last 3 box
@@ -1001,8 +1202,8 @@ class Board
 
                         $key_x++; //if save over 3 boxes -> is valid data, key++ ,init
                     }
-
                     $all_same_lines[$y][$key_x] = [];//init
+
                 }
 
                 // x still can connect over 3  or already has parts-boxs add last 3 box
@@ -1019,9 +1220,15 @@ class Board
 
 
             }//end y for a col
+//            echo "all same cols :<br/>";
             $all_same_cols[] = $same_cols;
+//            echo "<br/>";
 
         }//end x for all board
+//        echo "all same lines :<br/>";
+//        echo json_encode( $all_same_lines );
+//            echo "<br/>";
+//            echo "<br/>";
 
         //clean invaild
         $line_connected = [];
@@ -1034,9 +1241,15 @@ class Board
                 continue;
             }
             foreach ($units as $boxes) {
-                if (sizeof($boxes) < 2) {
+                if (sizeof($boxes) < 2 ) {
                     continue;
-                } elseif (sizeof($boxes) == 2) { //save for count next step
+                }
+
+                if($boxes[0]->value == $this::ICON_NULL_ID){
+                    continue;
+                }
+
+                if (sizeof($boxes) == 2) { //save for count next step
                     $line_two_connected[] = $boxes;
                 } else {
                     $line_connected[] = $boxes;
@@ -1046,20 +1259,31 @@ class Board
         }
 
         foreach ($all_same_cols as $units) {
+//            echo "col boxes:<br/>";
+//            echo json_encode($units);
+//            echo sizeof($units) . "<br/>";
             if (sizeof($units) == 0) {
                 continue;
             }
+
             foreach ($units as $boxes) {
+
                 if (sizeof($boxes) < 2) {
                     continue;
-                } elseif (sizeof($boxes) == 2) { //save for count next step
+                }
+
+                if($boxes[0]->value == $this::ICON_NULL_ID){
+                    continue;
+                }
+
+                if (sizeof($boxes) == 2) { //save for count next step
                     $col_two_connected[] = $boxes;
                 } else {
                     $col_connected[] = $boxes;
                 }
 
             }
-
+        }
 
             $connected_boxes = [$line_connected, $col_connected, $line_two_connected, $col_two_connected];
 
@@ -1093,4 +1317,3 @@ class Board
 
     }
 
-}
