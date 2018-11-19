@@ -43,6 +43,9 @@ while($t--) {
 }
 echo "<br/>";
 
+echo "[score: $score ] start to selectTwoBoxes:<br/>";
+
+
 
 $history = [];
 $t = 100;
@@ -50,45 +53,55 @@ while ($t--) {
     $c = $b->getConnectedBoxes();
     $two = $b->selectTwoBoxes($c);
     echo "<br/>";
+    echo "<br/>";
+
+    foreach ($b->getBoard() as $gb) {
+        echo json_encode($gb);
+        echo "<br/>";
+    }
+    echo "<br/>";
+    echo "<br/>";
 
     if (sizeof($two) == 0) {
-        echo "no two can swap";
+        echo "no two can swap<br/>";
+        echo json_encode($two);
+
+        break;
+    }
+
+    $history[] = $b->getBoard();
+    //move
+    $box0 = $two[0];
+    $box1 = $two[1];
+    echo "after moving ($box0->x,$box0->y) to ($box1->x,$box1->y)";
+    $b->setBoardBox($box0->x, $box0->y, $box1->value);
+    $b->setBoardBox($box1->x, $box1->y, $box0->value);
+    echo "<br/>";
+    foreach ($b->getBoard() as $gb) {
+        echo json_encode($gb);
         echo "<br/>";
+    }
+    echo "<br/>";
+    echo "<br/>";
+    $score = $b->getScore($c,$score);
+    echo "[score: $score ]<br/>";
+    echo "<br/>";
+    echo "<br/>";
+
+
+    while($t--){
+    $c = $b->getConnectedBoxes();
+    $b->updateBoard($c);
+    $score = $b->getScore($c,$score);
         foreach ($b->getBoard() as $gb) {
             echo json_encode($gb);
             echo "<br/>";
         }
+        echo "[score: $score ]<br/>";
         echo "<br/>";
-        break;
+        echo "<br/>";
     }
-
-//todo
-    $history[] = $b->getBoard();
-//    //move
-//    $box0 = $two[0];
-//    $box1 = $two[1];
-//    echo "after moving ($box0->x,$box0->y) to ($box1->x,$box1->y)";
-//    $b->setBoardBox($box0->x, $box0->y, $box1->value);
-//    $b->setBoardBox($box1->x, $box1->y, $box0->value);
-//    echo "<br/>";
-//    echo PHP_EOL;
-//    foreach ($b->getBoard() as $gb) {
-//        echo json_encode($gb);
-//        echo "<br/>";
-//    }
-//    echo "<br/>";
-//    echo "<br/>";
-//    echo PHP_EOL;
-//    while($b->updateBoard($b->getConnectedBoxes())) {
-//        foreach ($b->getBoard() as $gb) {
-//            echo json_encode($gb);
-//            echo "<br/>";
-//        }
-//        echo PHP_EOL;
-//        echo "<br/>";
-//        echo "<br/>";
-//    }
-//}//while
+}//while
 
 
 class Board
@@ -103,7 +116,7 @@ class Board
     private $board = [];
     private $line = 10;
     private $col = 10;
-    private $icon_max = 2; //最大icon_id
+    private $icon_max = 3; //最大icon_id
 
     /**
      * @return array
@@ -237,7 +250,7 @@ class Board
         $mx_d = []; // direction 0↑  1↓  2← 3→
         for ($x = 0; $x < $col_num; $x++) {
             for ($y = 0; $y < $line_num; $y++) {
-                $mx_v[$x][$y] = 0;
+                $mx_v[$x][$y] = -1;
                 $mx_d[$x][$y] = DIREC_NULL;
             }
         }
@@ -245,7 +258,9 @@ class Board
         //遍历一次 计算优先权值
         if (sizeof($line_boxes2) > 0) {
             $this->lineBoxesJudge($line_boxes2, $mx_v, $mx_d, $board);
+        }
 
+        if(sizeof($col_boxes2) > 0){
             $this->colBoxesJudge($col_boxes2, $mx_v, $mx_d, $board);
         }
 
@@ -255,7 +270,7 @@ class Board
         for ($x = 0; $x < $col_num; $x++) {
             for ($y = 0; $y < $line_num; $y++) {
 
-                if ($mx_v[$x][$y] == 0) {
+                if ($mx_v[$x][$y] < 0) {
                     continue;
                 }
 
@@ -264,8 +279,14 @@ class Board
             }
         }
 
+
         //  按照优先权由小到大排序 遍历 取前5个
         $this->boxesSort($boxes);
+
+        echo "after sorted boxes<br/>";
+        echo json_encode($boxes);
+        echo "<br/>";
+        echo "<br/>";
 
         $limit = sizeof($boxes) < BOX_MOST ? sizeof($boxes) : BOX_MOST;
         for ($i = 0,$score =0,$index = -1 ; $i < $limit; $i++) {
@@ -311,9 +332,15 @@ class Board
 
         }//end try move
 
+        //todo score==0 but has sorted boxes ??? fixing this bug
         if($score == 0){//score 0 no move
             return $two_boxes = [];
         }
+
+        echo "choose index:$index,score is $score,";
+        echo json_encode($boxes[$index]);
+        echo "<br/>";
+        echo "<br/>";
 
         //has score
         $b = $boxes[$index];
@@ -1297,12 +1324,12 @@ class Board
 //        echo "<br/>";
 //        echo "<br/>";
 
-            echo json_encode($connected_boxes[0]);
-            echo "<br/>";
-            echo "<br/>";
-            echo json_encode($connected_boxes[1]);
-            echo "<br/>";
-            echo "<br/>";
+//            echo json_encode($connected_boxes[2]);
+//            echo "<br/>";
+//            echo "<br/>";
+//            echo json_encode($connected_boxes[3]);
+//            echo "<br/>";
+//            echo "<br/>";
 
             unset($all_same_lines);
             unset($same_cols);
