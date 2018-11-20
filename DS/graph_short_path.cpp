@@ -28,7 +28,7 @@ mxInit(int node_num,int mx[MaxLen][MaxLen]) {
 
 	for(i=0; i<node_num; i++) {
 		for(j=0; j<node_num; j++) {
-			if(mx[i][j]!=0&&mx[i][j]!=MaxDist) {
+			if(mx[i][j]!=0) {
 				this->mx[i][j] = mx[i][j];
 			}
 		}
@@ -42,16 +42,20 @@ void Graph::
 shortestDij(int v0) { //迪克拉杰斯算法
 	int i,j,v,w,min;
 	int *dist = new int[node_num];
+	// d[i]  dist about from v0 to other node-i
+
 	bool *final = new bool[node_num];
+	//f[i]  node i is visited as final?
 
-	int path[MaxLen][MaxLen];//v0--->other short path
-	int len[MaxLen];//path node len
+	int path[MaxLen][MaxLen];
+	//p[i][j]  v0--->vi ,j is id
+	// the nodes on shortest path
 
+	//init
 	for(i=0; i<node_num; i++) {
 		final[i] = false;
 		dist[i] = mx[v0][i];
 	}
-
 	for(i=0; i<MaxLen; i++) {
 		for(j=0; j<MaxLen; j++) {
 			path[i][j] = -1;
@@ -59,15 +63,8 @@ shortestDij(int v0) { //迪克拉杰斯算法
 	}
 
 	for(i=0; i<node_num; i++) {
-
-		if(i==v0) {
-			len[i] = 0;
-			continue;
-		}
-
-		if(mx[v0][i] != MaxDist) {//can go
-			path[i][0] = i;
-		//	len[i] = 2;
+		if(mx[v0][i] != MaxDist && mx[v0][i] != 0) {//can go
+			path[i][0] = i;//one step
 		}
 
 	}
@@ -77,38 +74,46 @@ shortestDij(int v0) { //迪克拉杰斯算法
 	final[v0] = true;
 
 	for(i=0; i<node_num; i++) {
-		cout<<"i:"<<i<<endl;
-		cout<<"D: ";
-		for(w=0; w<node_num; w++) {
-			cout<<dist[w]<<" ";
-		}
-		cout<<endl;
+//		cout<<"i:"<<i<<endl;
+//		cout<<"D: ";
+//		for(w=0; w<node_num; w++) {
+//			cout<<dist[w]<<" ";
+//		}
+//		cout<<endl;
 
 		min = MaxDist;
 		//find near min node
-		for(w=0; w<node_num; w++) {
+		for(w=0,v=v0; w<node_num; w++) {
 			if(!final[w] && dist[w]>0 && dist[w]<min) { //find min and not add one
 				v = w;
 				min = dist[w]; //consider to min, ready to add it
 			}
 		}
 
+		if(v==v0) {//not found v
+//			cout<<"v=v0, conti "<<endl;
+			continue;
+		}
+
 		final[v] = true;//add
-		cout<<"choose node "<<v<<endl;
+//		cout<<"choose node "<<v<<endl;
 
 		for(w=0; w<node_num; w++) {//update data
-			if(!final[w] && min + mx[v][w] < dist[w]) {
+			if(!final[w] && mx[v][w]!=0 && min + mx[v][w] < dist[w] ) {
 				dist[w] = min + mx[v][w];
-				cout<<"update:D["<<w<<"]"<<	dist[w]<<endl;
+//				cout<<"update:D["<<w<<"]"<<	dist[w]<<endl;
 				//copy path
-				for(j=0; j<MaxLen; j++) {
-					if( path[v][j] == -1) {
-						path[w][j] = w ; //add last node
-						break;
-					}
+				for(j=0; j<node_num; j++) {
 					path[w][j] = path[v][j];
 				}
-
+				
+				//add last node 
+				for(j=0; j<node_num; j++) {
+					if( path[v][j] == -1) {
+						path[w][j] = w ; 
+						break;
+					}
+				}
 
 			}
 		}
@@ -121,7 +126,7 @@ shortestDij(int v0) { //迪克拉杰斯算法
 		if(dist[i]>0 && dist[i]<MaxDist) {
 
 			cout<<v0<<"-"<<i<<"-"<<dist[i];
-			cout<<"----["<<v0;
+			cout<<"----["<<v0<<" ";
 
 			for(j=0; j<node_num; j++) {
 				if(path[i][j]==-1) {
@@ -133,6 +138,9 @@ shortestDij(int v0) { //迪克拉杰斯算法
 			cout<<"]"<<endl;
 		}
 	}
+
+	delete [] dist;
+	delete [] final;
 }
 
 
