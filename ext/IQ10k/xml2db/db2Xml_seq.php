@@ -194,7 +194,7 @@ function addsign()
             'p.pro_source' => 'seq',
             'p.visible[!]' => VISIBLE_DELETE,
             'p.pro_type[~]' => 'choice',
-            'p.language' => 'en',
+//            'p.language' => 'en',
             'OR' => [
                 'p.title[!~]' => '，',
                 'p.title[!~]' => ',',
@@ -205,7 +205,25 @@ function addsign()
     ]);
 
     foreach ($datas as &$p){
-        //todo p.title clean dirty thing
+        $p['title'] = trim($p['title']);
+
+        if($p['title'][0] == '?'
+            || $p['title'][0] == '？'
+            || ($p['title'][0] == '-' &&is_numeric($p['title'][1]))
+            || ($p['title'][0] == '√'  &&is_numeric($p['title'][1]))
+            ||is_numeric($p['title'][0] )){
+
+            $t = str_replace("，",", ", $p['title']);
+            $t =strtr($t,"，",", ");
+
+            echo $p['id'].":  ".$t.'<br/>';
+//            $database->update($dao::$T_PROBLEM, [
+//                'title'=>$t
+//                ],[
+//                    'id'=>$p['id']
+//            ]);
+
+        }
     }
 }
 
