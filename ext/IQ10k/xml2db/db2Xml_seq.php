@@ -18,7 +18,7 @@ set_time_limit(0);
 
 try {
 //    $datas = getDatas();
-    addsign();
+    addSeqProComma();
 //    var_dump($datas);
 //    print_r(json_encode($datas));
 
@@ -167,7 +167,8 @@ function selectGroup(array $option_ids, \Medoo\Medoo & $database, $table)
 }
 
 
-function addsign()
+
+function addSeqProComma()
 {
     $dao = new BaseDao();
     $database = $dao->getDatabase();
@@ -204,29 +205,42 @@ function addsign()
 //        "LIMIT" => 10
     ]);
 
-    foreach ($datas as &$p){
+    foreach ($datas as &$p) {
         $p['title'] = trim($p['title']);
+        $t = str_replace("？", "?", $p['title']);//全角空格 半角空格
+        $t = str_replace("，", ",", $t);
 
-        if($p['title'][0] == '?'
+        if ($p['title'][0] == '?' //add sign
             || $p['title'][0] == '？'
-            || ($p['title'][0] == '-' &&is_numeric($p['title'][1]))
-            || ($p['title'][0] == '√'  &&is_numeric($p['title'][1]))
-            ||is_numeric($p['title'][0] )){
+            || ($p['title'][0] == '-' && is_numeric($p['title'][1]))
+            || ($p['title'][0] == '√' && is_numeric($p['title'][1]))
+            || is_numeric($p['title'][0])) {
 
-            $t = str_replace("，",", ", $p['title']);
-            $t =strtr($t,"，",", ");
+            if (strpos($t, ',') == false) {
+                echo '<br/>【】' . $p['id'] . ":  " . $t . '<br/>';
+                $t = str_replace(" ", ",", $t);
 
-            echo $p['id'].":  ".$t.'<br/>';
-//            $database->update($dao::$T_PROBLEM, [
-//                'title'=>$t
-//                ],[
-//                    'id'=>$p['id']
-//            ]);
+
+            }
 
         }
+
+//       todo 临时关闭
+//        $database->update($dao::$T_PROBLEM, [
+//            'title' => $t,
+//            'edit_time'=>date('Y-m-d H:i:s')
+//        ], [
+//            'id' => $p['id']
+//        ]);
     }
 }
 
+
+
+function addSeqOpComma()
+{
+
+}
 class BaseDao
 {
 
