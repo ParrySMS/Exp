@@ -13,11 +13,12 @@ define('DIREC_UP', 0);
 define('DIREC_DOWM', 1);
 define('DIREC_LEFT', 2);
 define('DIREC_RIGHT', 3);
-define('DIREC_UPDOWM', 4);
+define('STEP_LIMIT', 5);
 define('BOX_MOST', 5);
 
 $score = 0;
 $b = new Board();
+echo "new game!! <br/>";
 foreach ($b->getBoard() as $gb) {
     echo json_encode($gb);
     echo "<br/>";
@@ -43,54 +44,53 @@ while ($t--) {
 }
 echo "<br/>";
 
-echo "[score: $score ] start to selectTwoBoxes:<br/>";
-
+echo "[score: $score ] <br/>start to selectTwoBoxes:<br/>";
 
 $history = [];
 $t = 100;
+$step = 0;
 while ($t--) {
-    $c = $b->getConnectedBoxes();
-    $two = $b->OLDselectTwoBoxes($c);
-    echo "two:<br/>";
-    echo json_encode($two);
-    echo "<br/>";
 
-    foreach ($b->getBoard() as $gb) {
-        echo json_encode($gb);
-        echo "<br/>";
-    }
-    echo "<br/>";
-    echo "<br/>";
-
-    if (sizeof($two) == 0) {
-        $two = $b->selectTwoBoxes();
-//        break;
-    }
-
-    if (sizeof($two) == 0) {
-        echo "no two can swap<br/>";
-        echo json_encode($two);
+    if($step>=STEP_LIMIT){
         break;
     }
 
+    $c = $b->getConnectedBoxes();
+    $two = $b->OLDselectTwoBoxes($c);
+
+    if (sizeof($two) == 0) {//换穷举
+        $two = $b->selectTwoBoxes();
+//        break;
+    }
+//    echo "two:<br/>";
+//    echo json_encode($two);
+//    echo "<br/>";
+
+    if (sizeof($two) == 0) {
+        echo "game over, get [ $score ] by $step step<br/>";
+        break;
+    }
+
+    $step++;
     $history[] = $b->getBoard();
     //move
     $box0 = $two[0];
     $box1 = $two[1];
-    echo "after moving ($box0->x,$box0->y) to ($box1->x,$box1->y)";
+    echo "step $step, after moving ($box0->x,$box0->y) to ($box1->x,$box1->y)";
     $b->setBoardBox($box0->x, $box0->y, $box1->value);
     $b->setBoardBox($box1->x, $box1->y, $box0->value);
+    echo "<br/>";
     echo "<br/>";
     foreach ($b->getBoard() as $gb) {
         echo json_encode($gb);
         echo "<br/>";
     }
     echo "<br/>";
-    echo "<br/>";
-    $score = $b->getScore($c, $score);
-    echo "[score: $score ]<br/>";
-    echo "<br/>";
-    echo "<br/>";
+//    $score = $b->getScore($c, $score);
+//    echo "<br/>";
+//    echo "[score: $score ]<br/>";
+//    echo "<br/>";
+//    echo "<br/>";
 
 
     while ($t--) {
@@ -99,12 +99,13 @@ while ($t--) {
             break;
         }
         $score = $b->getScore($c, $score);
+
         foreach ($b->getBoard() as $gb) {
             echo json_encode($gb);
             echo "<br/>";
         }
-        echo "[score: $score ]<br/>";
         echo "<br/>";
+        echo "[score: $score ]<br/>";
         echo "<br/>";
     }
 }//while
@@ -117,12 +118,12 @@ class Board
 
     const SCORE_5_BOXES = 10;
 
-    const ICON_NULL_ID = -1;
+    const ICON_NULL_ID = 0;
 
     private $board = [];
-    private $line = 5;
-    private $col = 5;
-    private $icon_max = 3; //最大icon_id
+    private $line = 12;
+    private $col = 12 ;
+    private $icon_max = 4; //最大icon_id
 
     /**
      * @return array
@@ -174,7 +175,7 @@ class Board
         for ($x = 0; $x < $this->col; $x++) {
             $col = [];
             for ($y = 0; $y < $this->line; $y++) {
-                $col[] = (int)rand(0, $this->icon_max);
+                $col[] = (int)rand(1, $this->icon_max);
             }
             $this->board[] = $col;
         }
@@ -247,14 +248,14 @@ class Board
         $col_num = sizeof($board);
 
         unset($maxbox);
-        unset($move_box2);
         //交换只考虑上和左 因为是对等的 边界加约束 穷举
         for ($x = 0,$max_score = 0; $x < $col_num; $x++) {
             for ($y = 0; $y < $line_num; $y++) {
                 if ($board[$x][$y] == $this::ICON_NULL_ID) {
                     continue;
                 }
-                $score_up = $score_right = 0;
+                $score_up =0 ;
+                $score_right = 0;
 
                 //  DIREC_UP
                 unset($bd);
@@ -379,43 +380,51 @@ class Board
         //  按照优先权由小到大排序 遍历 取前5个
         $this->boxesSort($boxes);
 
-        echo "after sorted boxes<br/>";
-        echo json_encode($boxes);
-        echo "<br/>";
-        echo "<br/>";
+//        echo "after sorted boxes<br/>";
+//        echo json_encode($boxes);
+//        echo "<br/>";
+//        echo "<br/>";
 
         $limit = sizeof($boxes) < BOX_MOST ? sizeof($boxes) : BOX_MOST;
         for ($i = 0, $score = 0, $index = -1; $i < $limit; $i++) {
 
             $b = $boxes[$i];
-            echo "for--sorted:";
-            echo "($b->x,$b->y,$b->direction)<br/>";
+//            echo "for--sorted:";
+//            echo "($b->x,$b->y,$b->direction)<br/>";
             unset($bd);
             $bd = $board;
             //try to move
             switch ($b->direction) {
                 case DIREC_UP:
-                    $t = $bd[$b->x][$b->y];
-                    $bd[$b->x][$b->y] = $bd[$b->x][$b->y + 1];
-                    $bd[$b->x][$b->y + 1] = $t;
+                    if($y+1<$line_num) {
+                        $t = $bd[$b->x][$b->y];
+                        $bd[$b->x][$b->y] = $bd[$b->x][$b->y + 1];
+                        $bd[$b->x][$b->y + 1] = $t;
+                    }
                     break;
 
                 case DIREC_DOWM:
-                    $t = $bd[$b->x][$b->y];
-                    $bd[$b->x][$b->y] = $bd[$b->x][$b->y - 1];
-                    $bd[$b->x][$b->y - 1] = $t;
+                    if($y-1>=0) {
+                        $t = $bd[$b->x][$b->y];
+                        $bd[$b->x][$b->y] = $bd[$b->x][$b->y - 1];
+                        $bd[$b->x][$b->y - 1] = $t;
+                    }
                     break;
 
                 case DIREC_LEFT:
-                    $t = $bd[$b->x][$b->y];
-                    $bd[$b->x][$b->y] = $bd[$b->x - 1][$b->y];
-                    $bd[$b->x - 1][$b->y] = $t;
+                    if($x-1>=0) {
+                        $t = $bd[$b->x][$b->y];
+                        $bd[$b->x][$b->y] = $bd[$b->x - 1][$b->y];
+                        $bd[$b->x - 1][$b->y] = $t;
+                    }
                     break;
 
                 case DIREC_RIGHT:
-                    $t = $bd[$b->x][$b->y];
-                    $bd[$b->x][$b->y] = $bd[$b->x + 1][$b->y];
-                    $bd[$b->x + 1][$b->y] = $t;
+                    if($x+1<$col_num) {
+                        $t = $bd[$b->x][$b->y];
+                        $bd[$b->x][$b->y] = $bd[$b->x + 1][$b->y];
+                        $bd[$b->x + 1][$b->y] = $t;
+                    }
                     break;
 
                 default:
@@ -424,7 +433,7 @@ class Board
 
             // todo score 取一个的剪枝
             $add = $this->getScore($this->getConnectedBoxes($bd));
-            echo "add score:$add <br/>";
+//            echo "add score:$add <br/>";
             if ($score < $add) {
                 $score = $add;
                 $index = $i;
@@ -437,10 +446,10 @@ class Board
             return $two_boxes = [];
         }
 
-        echo "choose index:$index,score is $score,";
-        echo json_encode($boxes[$index]);
-        echo "<br/>";
-        echo "<br/>";
+//        echo "choose index:$index,score is $score,";
+//        echo json_encode($boxes[$index]);
+//        echo "<br/>";
+//        echo "<br/>";
 
         //has score
         $b = $boxes[$index];
@@ -492,17 +501,21 @@ class Board
             $left = $boxes[0];
             $right = $boxes[1];
 
-            if ($left->x > 0) {//not edge
+            if ($left->x > 0
+                && $board[$left->x-1][$left->y] == $this::ICON_NULL_ID) {//not edge
                 // 横块左角
                 //    ?
                 //  ? O [X X]
                 //    ?
+
+
                 $this->judgeLeft($left, $mx_v, $mx_d, $board);
 
             }//end left
 
 
-            if ($right->x < $col_num - 1) {//not edge
+            if ($right->x < $col_num - 1
+                && $board[$right->x+1][$right->y] == $this::ICON_NULL_ID) {//not edge
                 // 横块右角
                 //       ?
                 // [X X] O ?
@@ -527,7 +540,8 @@ class Board
             $up = $boxes[0];
             $down = $boxes[1];
 
-            if ($up->y < $line_num - 1) {//not edge
+            if ($up->y < $line_num - 1
+                && $board[$up->x][$up->y+1] == $this::ICON_NULL_ID) {//
                 // 横块上角
                 //   ?
                 // ? O ?
@@ -537,8 +551,8 @@ class Board
             }
 
 
-            if ($down->y > 0) {//not edge
-                // 横块下角
+            if ($down->y > 0
+                && $board[$down->x][$down->y-1] == $this::ICON_NULL_ID) {//                // 横块下角
                 //   X
                 //   X
                 // ? O ?
@@ -1199,7 +1213,7 @@ class Board
 //        echo "<br/>";
 
         if (sizeof($connected) == 0) {
-            echo "no connected<br/>";
+//            echo "no connected<br/>";
             return false;
         }
 
