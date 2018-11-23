@@ -17,17 +17,14 @@ require './config/Medoo.php';
 set_time_limit(0);
 
 try {
-    $datas = getDatas();
-
+//    $datas = getDatas();
+    addsign();
 //    var_dump($datas);
-    print_r(json_encode($datas));
+//    print_r(json_encode($datas));
 
 } catch (Exception $e) {
     echo $e->getMessage();
 }
-
-
-
 
 
 /** 获取db里的seq数据
@@ -37,9 +34,9 @@ try {
 function getDatas()
 {
     $dao = new BaseDao();
-    $database= $dao->getDatabase();
+    $database = $dao->getDatabase();
 
-    $datas =$database->select($dao::$T_PROBLEM . '(p)', [
+    $datas = $database->select($dao::$T_PROBLEM . '(p)', [
         "[>]" . $dao::$T_HINT . "(h)" => ['p.id' => 'pid']
     ], [
         'p.id',
@@ -77,7 +74,7 @@ function getDatas()
 //        var_dump($pro_data);
 
         if (is_array($oids) && sizeof($oids) != 0) {
-            $pro_data['options'] = getOptions($oids,$database,$dao::$T_OPTION);
+            $pro_data['options'] = getOptions($oids, $database, $dao::$T_OPTION);
         }
 
         //clear
@@ -96,9 +93,10 @@ function getDatas()
  * @return string
  * @throws Exception
  */
-function getTitleContent($title){
+function getTitleContent($title)
+{
 
-    if(!is_string($title)|| empty($title)){
+    if (!is_string($title) || empty($title)) {
         throw new Exception("title not string");
     }
 
@@ -112,22 +110,22 @@ function getTitleContent($title){
 //    }
 
 
-    $title_content = trim(str_replace("\n","",preg_replace('/([A-Za-z\x80-\xff]*)/i','',$title)));
+    $title_content = trim(str_replace("\n", "", preg_replace('/([A-Za-z\x80-\xff]*)/i', '', $title)));
 
     return $title_content;
 
 
-
 }
+
 /** 包装选项数组
  * @param $oids
  * @return array
  * @throws Exception
  */
-function getOptions($oids,& $database,$table)
+function getOptions($oids, & $database, $table)
 {
 
-    $datas = selectGroup($oids,$database,$table);
+    $datas = selectGroup($oids, $database, $table);
 
     unset($options);
     $options = [];
@@ -145,7 +143,7 @@ function getOptions($oids,& $database,$table)
  * @return mixed
  * @throws Exception
  */
-function selectGroup(array $option_ids,\Medoo\Medoo & $database,$table)
+function selectGroup(array $option_ids, \Medoo\Medoo & $database, $table)
 {
     $data = $database->select($table, [
 //        'id',
@@ -168,6 +166,48 @@ function selectGroup(array $option_ids,\Medoo\Medoo & $database,$table)
 
 }
 
+
+function addsign()
+{
+    $dao = new BaseDao();
+    $database = $dao->getDatabase();
+    $datas = $database->select($dao::$T_PROBLEM . '(p)', [
+        "[>]" . $dao::$T_HINT . "(h)" => ['p.id' => 'pid']
+    ], [
+        'p.id',
+        'p.title',
+//        'p.title_pic',
+        'p.option_ids',
+        'p.answers',//这个是json
+//        'p.language',
+        'p.classification(subtype)',
+        'p.pro_type',
+        'p.pro_source(type)',
+//        'p.time',
+//        'p.edit_time',
+//        'p.total_edit',
+//            'p.comment_num',
+        'h.hint',
+    ], [
+        'AND' => [
+//            'p.id'=>[4572,4665,4734,4006,3197,3198,3199], //for test
+            'p.pro_source' => 'seq',
+            'p.visible[!]' => VISIBLE_DELETE,
+            'p.pro_type[~]' => 'choice',
+            'p.language' => 'en',
+            'OR' => [
+                'p.title[!~]' => '，',
+                'p.title[!~]' => ',',
+            ]
+
+        ],
+//        "LIMIT" => 10
+    ]);
+
+    foreach ($datas as &$p){
+        //todo p.title clean dirty thing
+    }
+}
 
 class BaseDao
 {
