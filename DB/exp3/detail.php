@@ -7,6 +7,8 @@ use Medoo\Medoo;
 
 $DB = new DB();
 $database = $DB->database;
+$name = $_GET['name'];
+$id = $_GET['id'];
 
 ?>
 
@@ -24,24 +26,13 @@ $database = $DB->database;
 
 <!--大标题-->
 <div id="header">
+    <a href="./3.php" style="color: #eeeeee"> <h1> 返回 </h1></a>
     <h1>实验3-数据库</h1>
 </div>
 
-<!--十个菜单-->
-<div id="nav">
-    <br>
-    <a href="./1.php">1 显示日期 </a> <br>
-    <a href="./2.php">2 最长匹配字符</a><br>
-    <a href="./3.php">3 数据库管理页面 </a><br>
-</div>
+<h1>数据库-表-[ <?php echo $name?> ]</h1>
 
-<!--菜单内容-->
-
-<div id="section">
-
-    <h2>3 数据库内的表：</h2><br>
-    <?php showTable($database); ?>
-</div>
+   <?php showDetail($database,$name); ?>
 
 
 </body>
