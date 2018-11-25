@@ -9,14 +9,25 @@
 class Http
 {
 
+    public $ch;
+
+    /**
+     * Http constructor.
+     */
+    public function __construct()
+    {
+        $this->ch = curl_init();
+    }
+
+
     /**
      * 模拟get进行url请求
      * @param string $url
      * @param array $post_data
      */
-    public function get($url, array $data = [])
+    public function get($url, array $data = [],$close = true)
     {
-        $ch = curl_init();
+        $ch =$this->ch;
         /* 设置验证方式 */
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             'Accept:text/plain;charset=utf-8',
@@ -36,7 +47,11 @@ class Http
         curl_setopt($ch, CURLOPT_URL, $url);
         $result = curl_exec($ch);
         $error = curl_error($ch);
-        curl_close($ch);
+
+        if($close){
+            curl_close($ch);
+        }
+
         if ($result === false) {
             throw new Exception('Curl error: ' . $error, 501);
 //            echo 'Curl error: ' . $error;
@@ -51,9 +66,10 @@ class Http
      * @param string $url
      * @param array $post_data
      */
-    public function post($url, array $data = [])
+    public function post($url, array $data = [],$close = true)
     {
-        $ch = curl_init();
+        $ch =$this->ch;
+//        $ch = curl_init();
         /* 设置验证方式 */
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             'Accept:text/plain;charset=utf-8',
@@ -74,7 +90,10 @@ class Http
         }
         $result = curl_exec($ch);
         $error = curl_error($ch);
-        curl_close($ch);
+
+        if($close){
+            curl_close($ch);
+        }
         if ($result === false) {
             throw new Exception('Curl error: ' . $error, 501);
 //            return null;
