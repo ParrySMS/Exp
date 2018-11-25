@@ -37,6 +37,14 @@ class Option extends BaseDao
      */
     public function insert($pid, $key, $content, $is_pic = 0)
     {
+        $url_pattern = '/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i';
+        $img_pattern = '/.*(\.png|\.jpg|\.jpeg|\.gif)$/';
+
+        if (preg_match($url_pattern,$content)
+            && preg_match($img_pattern, $content)) {
+            $is_pic = 1;
+        }
+
         $pdo = $this->database->insert($this->table, [
             'pid' => $pid,
             'key' => $key,
