@@ -12,12 +12,11 @@ require './config/params.php';
 require './config/Medoo.php';
 
 
-
 set_time_limit(0);
 
 try {
 //    $datas = getDatas();
-    newSeq();
+    newSeq3();
 //    var_dump($datas);
 //    print_r(json_encode($datas));
 
@@ -167,7 +166,6 @@ function selectGroup(array $option_ids, \Medoo\Medoo & $database, $table)
 }
 
 
-
 function addSeqProComma()
 {
     $dao = new BaseDao();
@@ -239,34 +237,35 @@ function addSeqProComma()
 //todo 根据公式生成 seq题
 
 //An = Rn+B
-function newSeq1(){
+function newSeq1()
+{
     $hp = new Http();
 
-    define("TNUM",400);
+    define("TNUM", 199);
 
-    for($t_num =0;$t_num<TNUM;$t_num++) {
+    for ($t_num = 0; $t_num < TNUM; $t_num++) {
 
 
         $r = intval(rand(-80, 80));
-        while ($r==0){
+        while ($r == 0) {
             $r = intval(rand(-80, 80));
         }
 
         $b = intval(rand(-80, 80));
-        $m = intval(rand(1,5));
+        $m = intval(rand(1, 5));
         $title = '';
         for ($i = 0; $i < 7; $i++) {
             //An = Rn+B, 填中间
-            if($i == $m){
+            if ($i == $m) {
                 $title = $title . ",?";
                 continue;
             }
 
             $data = $r * $i + $b;
 
-            if($i == 0) {
+            if ($i == 0) {
                 $title = $title . "$data";
-            }else{
+            } else {
                 $title = $title . ",$data";
             }
         }
@@ -275,45 +274,46 @@ function newSeq1(){
 //        $title = $title . ",?";
 //        $res = $r*7 + $b;
         //An = Rn+B, 填中间
-        $res = $r*$m + $b;
+        $res = $r * $m + $b;
 
-        $ar = [$res,$res+intval(rand(-5,-3)),$res+intval(rand(-2,-1)),$res+intval(rand(1,4))];
+        $ar = [$res, $res + intval(rand(-5, -3)), $res + intval(rand(-2, -1)), $res + intval(rand(1, 4))];
         shuffle($ar);
         $optionAr = [
-            'a'=>$ar[0],
-            'b'=>$ar[1],
-            'c'=>$ar[2],
-            'd'=>$ar[3],
+            'a' => $ar[0],
+            'b' => $ar[1],
+            'c' => $ar[2],
+            'd' => $ar[3],
         ];
         //find correct answer
         for ($i = 0; $i < 4; $i++) {
-            if($ar[$i] == $res){
+            if ($ar[$i] == $res) {
                 break;
             }
         }
 
-        $ks = ['a','b','c','d'];
-        $answers =[$ks[$i]];
+        $ks = ['a', 'b', 'c', 'd'];
+        $answers = [$ks[$i]];
         $language = 'en';
         $classification = 'sequence';
         $pro_type = 'exclusive choice';
         $pro_source = 'new_seq';
-        if($b==0) {
+        if ($b == 0) {
             $hint = "A[n]=$r*n";
-        }else if($b>0){
+        } else if ($b > 0) {
             $hint = "A[n]=$r*n+$b";
-        }else{
+        } else {
             $hint = "A[n]=$r*n$b";
 
         }
-        $problem_info = compact('title', 'optionAr' ,'answers', 'language', 'classification', 'pro_type', 'pro_source', 'hint');
+        $problem_info = compact('title', 'optionAr', 'answers', 'language', 'classification', 'pro_type', 'pro_source', 'hint');
 
         echo $t_num;
         echo PHP_EOL;
         echo json_encode($problem_info);//insert
         echo PHP_EOL;
 
-        $hp->post('http://exp.szer.me/parry/testlib/problem',$problem_info,false);
+        echo "no post";
+//        $hp->post('http://exp.szer.me/parry/testlib/problem',$problem_info,false);
     }
 
     curl_close($hp->ch);
@@ -321,57 +321,289 @@ function newSeq1(){
 
 }
 
-function newSeq2(){
+
+//An = Rn^p + B,
+function newSeq2()
+{
+    $hp = new Http();
+
+    define("TNUM", 200);
+
+    for ($t_num = 0; $t_num < TNUM; $t_num++) {
+        $r = intval(rand(-80, 80));
+        while ($r == 0) {
+            $r = intval(rand(-80, 80));
+        }
+        $b = intval(rand(-80, 80));
+        $p = intval(rand(1, 4));
+
+        $m = intval(rand(1, 5));
+
+        $title = '';
+        for ($i = 0; $i < 7; $i++) {
+            //An = Rn^p + B, 填中间
+//            if($i == $m){
+//                $title = $title . ",?";
+//                continue;
+//            }
+
+            $data = $r * pow($i, $p) + $b;
+            if ($i == 0) {
+                $title = $title . "$data";
+            } else {
+                $title = $title . ",$data";
+            }
+        }
+
+//        An = Rn^p + B, 填末尾
+        $title = $title . ",?";
+        $res = $r * pow($m, $p) + $b;
+        //An = Rn^p + B, 填中间
+//        $res = $r* pow($m,$p) + $b;
+
+        $ar = [$res, $res + intval(rand(-5, -3)), $res + intval(rand(-2, -1)), $res + intval(rand(1, 4))];
+        shuffle($ar);
+        $optionAr = [
+            'a' => $ar[0],
+            'b' => $ar[1],
+            'c' => $ar[2],
+            'd' => $ar[3],
+        ];
+        //find correct answer
+        for ($i = 0; $i < 4; $i++) {
+            if ($ar[$i] == $res) {
+                break;
+            }
+        }
+
+        $ks = ['a', 'b', 'c', 'd'];
+        $answers = [$ks[$i]];
+        $language = 'en';
+        $classification = 'sequence';
+        $pro_type = 'exclusive choice';
+        $pro_source = 'new_seq';
+        if ($b == 0) {
+            $hint = "A[n]=$r*n^$p";
+        } else if ($b > 0) {
+            $hint = "A[n]=$r*n^$p+$b";
+        } else {
+            $hint = "A[n]=$r*n^$p$b";
+
+        }
+        $problem_info = compact('title', 'optionAr', 'answers', 'language', 'classification', 'pro_type', 'pro_source', 'hint');
+
+        echo $t_num;
+        echo PHP_EOL;
+        echo json_encode($problem_info);//insert
+        echo PHP_EOL;
+
+        echo "no post";
+//        $hp->post('http://exp.szer.me/parry/testlib/problem',$problem_info,false);
+    }
+
+    curl_close($hp->ch);
+
 
 }
 
+//An = Rn^p + Bn +C,
+function newSeq3()
+{
+    $hp = new Http();
+
+    define("TNUM", 200);
+
+    for ($t_num = 0; $t_num < TNUM; $t_num++) {
 
 
-//function insertPro(array $problem_info){
-//    $dao = new BaseDao();
-//    $database = $dao->getDatabase();
-////
-////        problem_info 加多了  $problem_info['answers_json'],
-//    //插入 问题主体
-//    $pdo = $database->insert($dao::$T_PROBLEM, [
-//        'title' => $problem_info['title'],
-//        'answers' => $problem_info['answers_json'],
-//        'language' => $problem_info['language'],
-//        'classification' => $problem_info['classification'],
-//        'pro_type' => $problem_info['pro_type'],
-//        'pro_source' => $problem_info['pro_source'],
-//        'time' => date(DB_TIME_FORMAT),
-//        'edit_time' => date(DB_TIME_FORMAT),
-//        'total_edit' => 0,
-//        'visible' => VISIBLE_NORMAL,
-//        'comment_num' => 0
-//
-//    ]);
-//
-//    $pid = $database->id();
-//    if (!is_numeric($pid) || $pid < 1) {
-//        throw new Exception(__CLASS__ . '->' . __FUNCTION__ . '():  pid error', 500);
-//
-//    }
-//
-//    //插入 问题提示
-//        if (!empty($problem_info['hint'])) {
-//
-//            $pdo = $this->database->insert($dao::$T_HINT, [
-//                'pid' => $pid,
-//                'hint' => $problem_info['hint'],
-//                'time' => date(DB_TIME_FORMAT),
-//                'visible' => VISIBLE_NORMAL
-//
-//            ]);
-//
-//            $hid = $database->id();
-//            if (!is_numeric($hid) || $hid < 1) {
-//                throw new Exception(__CLASS__ . '->' . __FUNCTION__ . '():  hid error', 500);
+        $r = intval(rand(-80, 80));
+        while ($r == 0) {
+            $r = intval(rand(-80, 80));
+        }
+
+        $b = intval(rand(-80, 80));
+        while ($b == 0) {
+            $b = intval(rand(-80, 80));
+        }
+
+        $c = intval(rand(-80, 80));
+        $p = intval(rand(1, 4));
+        $m = intval(rand(1, 5));
+        $title = '';
+        for ($i = 0; $i < 7; $i++) {
+            //An = Rn^p + Bn +C,, 填中间
+//            if ($i == $m) {
+//                $title = $title . ",?";
+//                continue;
 //            }
-//        }
-//
-//}
+
+            $data = $r * pow($i, $p) + $b * $i + $c;
+
+            if ($i == 0) {
+                $title = $title . "$data";
+            } else {
+                $title = $title . ",$data";
+            }
+        }
+
+        //An = Rn^p + Bn +C,, 填末尾
+        $title = $title . ",?";
+        $res = $r * pow(7,$p) + $b*7 +$c;
+        //An = Rn^p + Bn +C,, 填中间
+//        $res = $r * pow($m, $p) + $b * $m + $c;
+
+        $ar = [$res, $res + intval(rand(-5, -3)), $res + intval(rand(-2, -1)), $res + intval(rand(1, 4))];
+        shuffle($ar);
+        $optionAr = [
+            'a' => $ar[0],
+            'b' => $ar[1],
+            'c' => $ar[2],
+            'd' => $ar[3],
+        ];
+        //find correct answer
+        for ($i = 0; $i < 4; $i++) {
+            if ($ar[$i] == $res) {
+                break;
+            }
+        }
+
+        $ks = ['a', 'b', 'c', 'd'];
+        $answers = [$ks[$i]];
+        $language = 'en';
+        $classification = 'sequence';
+        $pro_type = 'exclusive choice';
+        $pro_source = 'new_seq';
+
+        $hint = "A[n]=$r*n^$p";
+
+        if ($b > 0) {
+            $hint = $hint . "+$b*n";
+        }else {
+            $hint = $hint . "$b*n";
+        }
+
+
+        if ($c > 0) {
+            $hint = $hint . "+$c";
+        } else {
+            $hint = $hint . "$c";
+        }
+
+        $problem_info = compact('title', 'optionAr', 'answers', 'language', 'classification', 'pro_type', 'pro_source', 'hint');
+
+        echo $t_num;
+        echo PHP_EOL;
+        echo json_encode($problem_info);//insert
+        echo PHP_EOL;
+
+        echo "no post";
+//        $hp->post('http://exp.szer.me/parry/testlib/problem', $problem_info, false);
+    }
+
+    curl_close($hp->ch);
+
+
+}
+
+//An = (An-2 +,An-2) *R
+function newSeq4()
+{
+    $hp = new Http();
+
+    define("TNUM", 100);
+
+    for ($t_num = 0; $t_num < TNUM; $t_num++) {
+
+
+        $r = intval(rand(-80, 80));
+        while ($r == 0) {
+            $r = intval(rand(-80, 80));
+        }
+
+        $b = intval(rand(-80, 80));
+        while ($b == 0) {
+            $b = intval(rand(-80, 80));
+        }
+
+        $c = intval(rand(-80, 80));
+        $p = intval(rand(1, 4));
+        $m = intval(rand(1, 5));
+        $title = '';
+        for ($i = 0; $i < 7; $i++) {
+            //An = Rn^p + Bn +C,, 填中间
+//            if ($i == $m) {
+//                $title = $title . ",?";
+//                continue;
+//            }
+
+            $data = $r * pow($i, $p) + $b * $i + $c;
+
+            if ($i == 0) {
+                $title = $title . "$data";
+            } else {
+                $title = $title . ",$data";
+            }
+        }
+
+        //An = Rn^p + Bn +C,, 填末尾
+        $title = $title . ",?";
+        $res = $r * pow(7,$p) + $b*7 +$c;
+        //An = Rn^p + Bn +C,, 填中间
+//        $res = $r * pow($m, $p) + $b * $m + $c;
+
+        $ar = [$res, $res + intval(rand(-5, -3)), $res + intval(rand(-2, -1)), $res + intval(rand(1, 4))];
+        shuffle($ar);
+        $optionAr = [
+            'a' => $ar[0],
+            'b' => $ar[1],
+            'c' => $ar[2],
+            'd' => $ar[3],
+        ];
+        //find correct answer
+        for ($i = 0; $i < 4; $i++) {
+            if ($ar[$i] == $res) {
+                break;
+            }
+        }
+
+        $ks = ['a', 'b', 'c', 'd'];
+        $answers = [$ks[$i]];
+        $language = 'en';
+        $classification = 'sequence';
+        $pro_type = 'exclusive choice';
+        $pro_source = 'new_seq';
+
+        $hint = "A[n]=$r*n^$p";
+
+        if ($b > 0) {
+            $hint = $hint . "+$b*n";
+        }else {
+            $hint = $hint . "$b*n";
+        }
+
+
+        if ($c > 0) {
+            $hint = $hint . "+$c";
+        } else {
+            $hint = $hint . "$c";
+        }
+
+        $problem_info = compact('title', 'optionAr', 'answers', 'language', 'classification', 'pro_type', 'pro_source', 'hint');
+
+        echo $t_num;
+        echo PHP_EOL;
+        echo json_encode($problem_info);//insert
+        echo PHP_EOL;
+
+//        echo "no post";
+        $hp->post('http://exp.szer.me/parry/testlib/problem', $problem_info, false);
+    }
+
+    curl_close($hp->ch);
+
+
+}
+
 
 
 class BaseDao
