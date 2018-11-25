@@ -16,7 +16,7 @@ set_time_limit(0);
 
 try {
 //    $datas = getDatas();
-    newSeq3();
+    newSeq4();
 //    var_dump($datas);
 //    print_r(json_encode($datas));
 
@@ -448,7 +448,7 @@ function newSeq3()
 
         //An = Rn^p + Bn +C,, 填末尾
         $title = $title . ",?";
-        $res = $r * pow(7,$p) + $b*7 +$c;
+        $res = $r * pow(7, $p) + $b * 7 + $c;
         //An = Rn^p + Bn +C,, 填中间
 //        $res = $r * pow($m, $p) + $b * $m + $c;
 
@@ -478,7 +478,7 @@ function newSeq3()
 
         if ($b > 0) {
             $hint = $hint . "+$b*n";
-        }else {
+        } else {
             $hint = $hint . "$b*n";
         }
 
@@ -505,7 +505,7 @@ function newSeq3()
 
 }
 
-//An = (An-2 +,An-2) *R
+//An = (An-1 +,An-2) *R
 function newSeq4()
 {
     $hp = new Http();
@@ -515,41 +515,50 @@ function newSeq4()
     for ($t_num = 0; $t_num < TNUM; $t_num++) {
 
 
+        $a0 = intval(rand(-80, 80));
+        while ($a0 == 0) {
+            $a0 = intval(rand(-80, 80));
+        }
+
+        $a1 = intval(rand(-80, 80));
+        while ($a1 == 0) {
+            $a1 = intval(rand(-80, 80));
+        }
+
         $r = intval(rand(-80, 80));
         while ($r == 0) {
             $r = intval(rand(-80, 80));
         }
 
-        $b = intval(rand(-80, 80));
-        while ($b == 0) {
-            $b = intval(rand(-80, 80));
+        $m = intval(rand(2, 5));
+        $a = [$a0, $a1];
+        //An = (An-1 + An-2) *R
+        for ($i = 2; $i <= 7; $i++) {
+            $a[] = $r*($a[$i - 2] + $a[$i - 1]);
         }
 
-        $c = intval(rand(-80, 80));
-        $p = intval(rand(1, 4));
-        $m = intval(rand(1, 5));
         $title = '';
-        for ($i = 0; $i < 7; $i++) {
-            //An = Rn^p + Bn +C,, 填中间
-//            if ($i == $m) {
-//                $title = $title . ",?";
-//                continue;
-//            }
-
-            $data = $r * pow($i, $p) + $b * $i + $c;
-
+        //An = (An-1 + An-2) *R
+        for ($i = 0; $i < 7; $i++) {//miss 7
             if ($i == 0) {
-                $title = $title . "$data";
-            } else {
-                $title = $title . ",$data";
+                $title = "$a[$i]";
+                continue;
             }
+            // 填中间
+            if ($i == $m) {
+                $title = $title . ",?";
+                continue;
+            }
+
+            $title = $title . ",$a[$i]";
+
         }
 
-        //An = Rn^p + Bn +C,, 填末尾
-        $title = $title . ",?";
-        $res = $r * pow(7,$p) + $b*7 +$c;
-        //An = Rn^p + Bn +C,, 填中间
-//        $res = $r * pow($m, $p) + $b * $m + $c;
+        //填末尾
+//        $title = $title . ",?";
+//        $res = $a[7];
+        //An = (An-1 + An-2) *R, 填中间
+        $res = $a[$m];
 
         $ar = [$res, $res + intval(rand(-5, -3)), $res + intval(rand(-2, -1)), $res + intval(rand(1, 4))];
         shuffle($ar);
@@ -573,11 +582,12 @@ function newSeq4()
         $pro_type = 'exclusive choice';
         $pro_source = 'new_seq';
 
+        //todo hint An = (An-1 + An-2) *R
         $hint = "A[n]=$r*n^$p";
 
         if ($b > 0) {
             $hint = $hint . "+$b*n";
-        }else {
+        } else {
             $hint = $hint . "$b*n";
         }
 
@@ -603,7 +613,6 @@ function newSeq4()
 
 
 }
-
 
 
 class BaseDao
