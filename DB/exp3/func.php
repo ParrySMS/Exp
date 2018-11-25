@@ -20,6 +20,10 @@ function showTable(&$database)
 }
 
 
+/** 展示表全部数据
+ * @param $database
+ * @param $table
+ */
 function showData(&$database, $table)
 {
 
@@ -67,25 +71,119 @@ function showData(&$database, $table)
 }
 
 
+/** 展示列
+ * @param $database
+ * @param $table
+ */
+function showAddTable(&$database, $table)
+{
+
+    $columns = $database->query("SHOW COLUMNS FROM $table")->fetchAll();
+//$columns里有全部的数据信息
+
+    unset($field_list);
+    $field_list = [];
+
+    foreach ($columns as $col) {
+        $field_list[] = $col['Field'];
+    }
+
+    echo '<form action="./insert.php?name='.$table.'" method="post">';
+
+    echo '<table border="1">';
+    echo '<tr>';
+    foreach ($field_list as $fie) {
+        if($fie == 'id' || $fie == 'visible' || $fie == 'time'){
+            continue;
+        }
+        echo "<th>$fie</th>";
+    }
+    echo '</tr>';
+
+    foreach ($field_list as  $fie) {
+        if($fie == 'id' ||$fie == 'visible'|| $fie == 'time'){
+            continue;
+        }
+        echo "<td>";
+        echo ' <input type="text" name="' .$fie.'" /> </td>';
+    }
+
+    echo '</table>';
+    echo '<input type="submit" value="确认添加" />';
+    echo '</form>';
+}
+
+
+/** 展示修改的表格
+ * @param $database
+ * @param $table
+ */
+function showEditTable(&$database, $table,$id)
+{
+    $datas =  $database->query("SELECT *  FROM $table WHERE id = $id")->fetchAll();
+    $columns = $database->query("SHOW COLUMNS FROM $table")->fetchAll();
+//$columns里有全部的数据信息
+
+    unset($field_list);
+    unset($data_list);
+    $field_list = [];
+
+    foreach ($columns as $col) {
+        $field_list[] = $col['Field'];
+    }
+
+
+
+    echo '<form action="./update.php?name='.$table.'&id='.$id.'" method="post">';
+
+    echo '<table border="1">';
+    echo '<tr>';
+    foreach ($field_list as $fie) {
+//        if($fie == 'id' || $fie == 'visible' || $fie == 'time'){
+//            continue;
+//        }
+        echo "<th>$fie</th>";
+    }
+    echo '</tr>';
+
+    $len = sizeof($field_list);
+    for($i=0;$i<$len;$i++){
+
+        echo "<td>";
+        echo ' <input type="text" name="' .$field_list[$i].'" placeholder = "'.$datas[0][$i].'"/>'
+            .'</td>';
+    }
+
+    echo '</table>';
+    echo '<input type="submit" value="确认修改" />';
+    echo '</form>';
+}
+
+
+
+/** 获取数据
+ * @param $database
+ * @param $table
+ */
 function getData(&$database, $table)
 {
-    $row = $database->query("SELECT * FROM $table WHERE visible > 0 LIMIT 50")->fetchAll();
+    $row = $database->query("SELECT * FROM $table WHERE visible > 0")->fetchAll();
 
 
     foreach ($row as $r) {
         $len = sizeof($r) / 2;
         echo '<tr>';
         for ($i = 0; $i < $len; $i++) {
-                echo "<td>";
-            echo '<a href="./detail.php?name='.$table.'&id=' .$r[0].'" >';
+            echo "<td>";
+            echo '<a href="./detail.php?name=' . $table . '&id=' . $r[0] . '" >';
             echo "{$r[$i]}</a></td>";
         }
         echo "<td>";
-        echo '<a href="./edit.php?name='.$table.'&id=' .$r[0].'" >';
+        echo '<a href="./edit.php?name=' . $table . '&id=' . $r[0] . '" >';
         echo "修改</td>";
 
         echo "<td>";
-        echo '<a href="./delete.php?name='.$table.'&id=' .$r[0].'" >';
+        echo '<a href="./delete.php?name=' . $table . '&id=' . $r[0] . '" >';
         echo "删除</td>";
 
         echo '</tr>';
@@ -93,4 +191,9 @@ function getData(&$database, $table)
 
 }
 
-
+function jump2UrlInTime($url,$time=0){
+    print <<< to
+    <head><meta http-equiv="refresh" content=$time;url="$url"></head>
+to
+    ;
+}
