@@ -15,10 +15,27 @@ require './config/Medoo.php';
 set_time_limit(0);
 
 try {
-    $datas = getDatas();
-//    newSeq10();
+//    $datas = getDatas();
+//    newSeq1(400,true);
+//    newSeq2(400,true);
+//    newSeq3(400,true);
+//    newSeq4(300,true);
+//    newSeq5(300,true);
+//    newSeq6(300,true);
+//    newSeq7(200,true);
+//    newSeq8(200,true);
+//    newSeq9(250,true);
+//    newSeq10(250,true);
+    editSeq2(0,true);
 //    var_dump($datas);
-    $json = json_encode($datas);
+//    $json = json_encode($datas);
+
+//    $myfile = fopen("./trainsSeq3k.json", "w") or die("Unable to open file!");
+//    $myfile = fopen("./trainsSeq3k.json", "w") or die("Unable to open file!");
+
+//    fwrite($myfile, $json);
+//    fclose($myfile);
+//    echo "done";
 
 } catch (Exception $e) {
     echo $e->getMessage();
@@ -54,7 +71,7 @@ function getDatas()
     ], [
         'AND' => [
 //            'p.id'=>[4572,4665,4734,4006,3197,3198,3199], //for test
-            'p.pro_source' => 'new-seq',
+            'p.pro_source' => 'new-test-seq',
             'p.visible[!]' => VISIBLE_DELETE
         ],
 //        "LIMIT" => 10
@@ -237,29 +254,32 @@ function addSeqProComma()
 // 根据公式生成 seq题
 
 //An = Rn+B
-function newSeq1()
+function newSeq1($num,$post = false)
 {
     $hp = new Http();
 
-    define("TNUM", 199);
-
-    for ($t_num = 0; $t_num < TNUM; $t_num++) {
+    for ($t_num = 0; $t_num < $num; $t_num++) {
 
 
-        $r = intval(rand(-80, 80));
+        $r = intval(rand(-100, 100));
         while ($r == 0) {
-            $r = intval(rand(-80, 80));
+            $r = intval(rand(-100, 100));
         }
 
-        $b = intval(rand(-80, 80));
+        $b = $r<0?
+            intval(rand(80, 150))
+            :intval(rand(-150, -80));
+
+
         $m = intval(rand(1, 5));
+
         $title = '';
         for ($i = 0; $i < 7; $i++) {
             //An = Rn+B, 填中间
-            if ($i == $m) {
-                $title = $title . ",?";
-                continue;
-            }
+//            if ($i == $m) {
+//                $title = $title . ",?";
+//                continue;
+//            }
 
             $data = $r * $i + $b;
 
@@ -271,10 +291,10 @@ function newSeq1()
         }
 
         //An = Rn+B, 填末尾
-//        $title = $title . ",?";
-//        $res = $r*7 + $b;
+        $title = $title . ",?";
+        $res = $r*7 + $b;
         //An = Rn+B, 填中间
-        $res = $r * $m + $b;
+//        $res = $r * $m + $b;
 
         $ar = [$res, $res + intval(rand(-5, -3)), $res + intval(rand(-2, -1)), $res + intval(rand(1, 4))];
         shuffle($ar);
@@ -296,7 +316,7 @@ function newSeq1()
         $language = 'en';
         $classification = 'sequence';
         $pro_type = 'exclusive choice';
-        $pro_source = 'new-seq';
+        $pro_source = 'new-test-seq';
         if ($b == 0) {
             $hint = "A[n]=$r*n";
         } else if ($b > 0) {
@@ -312,8 +332,12 @@ function newSeq1()
         echo json_encode($problem_info);//insert
         echo PHP_EOL;
 
-        echo "no post";
-//        $hp->post('http://exp.szer.me/parry/testlib/problem',$problem_info,false);
+        if($post) {
+            $hp->post('http://exp.szer.me/parry/testlib/problem', $problem_info, false);
+        }else {
+            echo "no post";
+            echo PHP_EOL;
+        }
     }
 
     curl_close($hp->ch);
@@ -321,15 +345,105 @@ function newSeq1()
 
 }
 
-
 //An = Rn^p + B,
-function newSeq2()
+function newSeq2($num,$post = false)
 {
     $hp = new Http();
 
-    define("TNUM", 200);
 
-    for ($t_num = 0; $t_num < TNUM; $t_num++) {
+    for ($t_num = 0; $t_num < $num; $t_num++) {
+        $r = intval(rand(-80, 80));
+        while ($r == 0) {
+            $r = intval(rand(-80, 80));
+        }
+
+        $b = $r<0?
+            intval(rand(80, 150))
+            :intval(rand(-150, -80));
+
+        $p = intval(rand(1, 3));
+
+        $m = intval(rand(1, 5));
+
+        $title = '';
+        for ($i = 0; $i < 7; $i++) {
+            //An = Rn^p + B, 填中间
+//            if($i == $m){
+//                $title = $title . ",?";
+//                continue;
+//            }
+
+            $data = $r * pow($i, $p) + $b;
+            if ($i == 0) {
+                $title = $title . "$data";
+            } else {
+                $title = $title . ",$data";
+            }
+        }
+
+//        An = Rn^p + B, 填末尾
+        $title = $title . ",?";
+        $res = $r * pow(7, $p) + $b;
+        //An = Rn^p + B, 填中间
+//        $res = $r* pow($m,$p) + $b;
+
+        $ar = [$res, $res + intval(rand(-5, -3)), $res + intval(rand(-2, -1)), $res + intval(rand(1, 4))];
+        shuffle($ar);
+        $optionAr = [
+            'a' => $ar[0],
+            'b' => $ar[1],
+            'c' => $ar[2],
+            'd' => $ar[3],
+        ];
+        //find correct answer
+        for ($i = 0; $i < 4; $i++) {
+            if ($ar[$i] == $res) {
+                break;
+            }
+        }
+
+        $ks = ['a', 'b', 'c', 'd'];
+        $answers = [$ks[$i]];
+        $language = 'en';
+        $classification = 'sequence';
+        $pro_type = 'exclusive choice';
+        $pro_source = 'new-test-seq';
+        if ($b == 0) {
+            $hint = "A[n]=$r*n^$p";
+        } else if ($b > 0) {
+            $hint = "A[n]=$r*n^$p+$b";
+        } else {
+            $hint = "A[n]=$r*n^$p$b";
+
+        }
+        $problem_info = compact('title', 'optionAr', 'answers', 'language', 'classification', 'pro_type', 'pro_source', 'hint');
+
+        echo $t_num;
+        echo PHP_EOL;
+        echo json_encode($problem_info);//insert
+        echo PHP_EOL;
+
+        if($post) {
+            $hp->post('http://exp.szer.me/parry/testlib/problem', $problem_info, false);
+        }else {
+            echo "no post";
+            echo PHP_EOL;
+        }
+    }
+
+    curl_close($hp->ch);
+
+
+}
+
+//An = Rn^p + B,
+function editSeq2($num,$post = false)
+{
+    $hp = new Http();
+
+
+    for ($id = 10417 ; $id <= 10616; $id++) {
+
         $r = intval(rand(-80, 80));
         while ($r == 0) {
             $r = intval(rand(-80, 80));
@@ -357,7 +471,7 @@ function newSeq2()
 
 //        An = Rn^p + B, 填末尾
         $title = $title . ",?";
-        $res = $r * pow($m, $p) + $b;
+        $res = $r * pow(7, $p) + $b;
         //An = Rn^p + B, 填中间
 //        $res = $r* pow($m,$p) + $b;
 
@@ -381,7 +495,7 @@ function newSeq2()
         $language = 'en';
         $classification = 'sequence';
         $pro_type = 'exclusive choice';
-        $pro_source = 'new-seq';
+        $pro_source = 'new-train-seq';
         if ($b == 0) {
             $hint = "A[n]=$r*n^$p";
         } else if ($b > 0) {
@@ -392,13 +506,17 @@ function newSeq2()
         }
         $problem_info = compact('title', 'optionAr', 'answers', 'language', 'classification', 'pro_type', 'pro_source', 'hint');
 
-        echo $t_num;
+        echo 'id'.$id;
         echo PHP_EOL;
         echo json_encode($problem_info);//insert
         echo PHP_EOL;
 
-        echo "no post";
-//        $hp->post('http://exp.szer.me/parry/testlib/problem',$problem_info,false);
+        if($post) {
+            $hp->post('http://exp.szer.me/parry/testlib/problem/'.$id, $problem_info, false);
+        }else {
+            echo "no post";
+            echo PHP_EOL;
+        }
     }
 
     curl_close($hp->ch);
@@ -406,14 +524,14 @@ function newSeq2()
 
 }
 
+
 //An = Rn^p + Bn +C,
-function newSeq3()
+function newSeq3($num,$post = false)
 {
     $hp = new Http();
 
-    define("TNUM", 200);
 
-    for ($t_num = 0; $t_num < TNUM; $t_num++) {
+    for ($t_num = 0; $t_num < $num; $t_num++) {
 
 
         $r = intval(rand(-80, 80));
@@ -426,16 +544,20 @@ function newSeq3()
             $b = intval(rand(-80, 80));
         }
 
-        $c = intval(rand(-80, 80));
-        $p = intval(rand(1, 4));
+
+        $c = $r<0?
+            intval(rand(80, 150))
+            :intval(rand(-150, -80));
+
+        $p = intval(rand(1, 3));
         $m = intval(rand(1, 5));
         $title = '';
-        for ($i = 0; $i < 7; $i++) {
+        for ($i = 0; $i <= 7; $i++) {
             //An = Rn^p + Bn +C,, 填中间
-//            if ($i == $m) {
-//                $title = $title . ",?";
-//                continue;
-//            }
+            if ($i == $m) {
+                $title = $title . ",?";
+                continue;
+            }
 
             $data = $r * pow($i, $p) + $b * $i + $c;
 
@@ -447,10 +569,10 @@ function newSeq3()
         }
 
         //An = Rn^p + Bn +C,, 填末尾
-        $title = $title . ",?";
-        $res = $r * pow(7, $p) + $b * 7 + $c;
+//        $title = $title . ",?";
+//        $res = $r * pow(7, $p) + $b * 7 + $c;
         //An = Rn^p + Bn +C,, 填中间
-//        $res = $r * pow($m, $p) + $b * $m + $c;
+        $res = $r * pow($m, $p) + $b * $m + $c;
 
         $ar = [$res, $res + intval(rand(-5, -3)), $res + intval(rand(-2, -1)), $res + intval(rand(1, 4))];
         shuffle($ar);
@@ -472,7 +594,7 @@ function newSeq3()
         $language = 'en';
         $classification = 'sequence';
         $pro_type = 'exclusive choice';
-        $pro_source = 'new-seq';
+        $pro_source = 'new-test-seq';
 
         $hint = "A[n]=$r*n^$p";
 
@@ -496,8 +618,12 @@ function newSeq3()
         echo json_encode($problem_info);//insert
         echo PHP_EOL;
 
-        echo "no post";
-//        $hp->post('http://exp.szer.me/parry/testlib/problem', $problem_info, false);
+        if($post) {
+            $hp->post('http://exp.szer.me/parry/testlib/problem', $problem_info, false);
+        }else {
+            echo "no post";
+            echo PHP_EOL;
+        }
     }
 
     curl_close($hp->ch);
@@ -505,29 +631,29 @@ function newSeq3()
 
 }
 
-//An = (An-1 +,An-2) *R
-function newSeq4()
+//An = (An-1 + An-2) *R
+function newSeq4($num,$post = false)
 {
     $hp = new Http();
 
-    define("TNUM", 90);
 
-    for ($t_num = 0; $t_num < TNUM; $t_num++) {
+    for ($t_num = 0; $t_num < $num; $t_num++) {
 
 
-        $a0 = intval(rand(-50, 50));
+        $a0 = intval(rand(50, 150));
         while ($a0 == 0) {
-            $a0 = intval(rand(-50, 50));
+            $a0 = intval(rand(50, 150));
         }
 
-        $a1 = intval(rand(-50, 50));
+        $a1 = intval(rand(-150, -50));
         while ($a1 == 0) {
-            $a1 = intval(rand(-50, 50));
+            $a1 = intval(rand(-150, -50));
         }
 
-        $r = intval(rand(-10, 10));
+        $r = intval(rand(-6, 6));
+
         while ($r == 0) {
-            $r = intval(rand(-10, 10));
+            $r = intval(rand(-6, 6));
         }
 
         $m = intval(rand(2, 4));
@@ -539,26 +665,26 @@ function newSeq4()
 
         $title = '';
         //An = (An-1 + An-2) *R
-        for ($i = 0; $i < 6; $i++) {//miss 7
+        for ($i = 0; $i <= 6; $i++) {//miss 7
             if ($i == 0) {
                 $title = "$a[$i]";
                 continue;
             }
             // 填中间
-//            if ($i == $m) {
-//                $title = $title . ",?";
-//                continue;
-//            }
+            if ($i == $m) {
+                $title = $title . ",?";
+                continue;
+            }
 
             $title = $title . ",$a[$i]";
 
         }
 
 //        填末尾
-        $title = $title . ",?";
-        $res = $a[6];
+//        $title = $title . ",?";
+//        $res = $a[6];
         //An = (An-1 + An-2) *R, 填中间
-//        $res = $a[$m];
+        $res = $a[$m];
 
         $ar = [$res, $res + intval(rand(-5, -3)), $res + intval(rand(-2, -1)), $res + intval(rand(1, 4))];
         shuffle($ar);
@@ -580,7 +706,7 @@ function newSeq4()
         $language = 'en';
         $classification = 'sequence';
         $pro_type = 'exclusive choice';
-        $pro_source = 'new-seq';
+        $pro_source = 'new-test-seq';
 
         // hint An = R*(An-1 + An-2)
 
@@ -597,10 +723,12 @@ function newSeq4()
         echo PHP_EOL;
         echo json_encode($problem_info);//insert
         echo PHP_EOL;
-
-        echo "no post";
-        echo PHP_EOL;
-//        $hp->post('http://exp.szer.me/parry/testlib/problem', $problem_info, false);
+        if($post) {
+            $hp->post('http://exp.szer.me/parry/testlib/problem', $problem_info, false);
+        }else {
+            echo "no post";
+            echo PHP_EOL;
+        }
     }
     unset($a);
     curl_close($hp->ch);
@@ -609,28 +737,27 @@ function newSeq4()
 }
 
 //An = (An-1 + An-2 +An-3) *R
-function newSeq5()
+function newSeq5($num,$post = false)
 {
     $hp = new Http();
 
-    define("TNUM", 100);
 
-    for ($t_num = 0; $t_num < TNUM; $t_num++) {
+    for ($t_num = 0; $t_num < $num; $t_num++) {
 
 
-        $a0 = intval(rand(-20, 20));
+        $a0 = intval(rand(-30, -20));
         while ($a0 == 0) {
-            $a0 = intval(rand(-20, 20));
+            $a0 = intval(rand(-30, -20));
         }
 
-        $a1 = intval(rand(-20, 20));
+        $a1 = intval(rand(20,30));
         while ($a1 == 0) {
-            $a1 = intval(rand(-20, 20));
+            $a1 = intval(rand(20, 30));
         }
 
-        $a2 = intval(rand(-20, 20));
-        while ($a1 == 0) {
-            $a1 = intval(rand(-20, 20));
+        $a2 = intval(rand(-30, 30));
+        while ($a2 == 0) {
+            $a2 = intval(rand(-30, 30));
         }
 
         $r = intval(rand(-5, 5));
@@ -688,7 +815,7 @@ function newSeq5()
         $language = 'en';
         $classification = 'sequence';
         $pro_type = 'exclusive choice';
-        $pro_source = 'new-seq';
+        $pro_source = 'new-test-seq';
 
 
         if ($r > 0) {
@@ -705,9 +832,12 @@ function newSeq5()
         echo json_encode($problem_info);//insert
         echo PHP_EOL;
 
-        echo "no post";
-        echo PHP_EOL;
-//        $hp->post('http://exp.szer.me/parry/testlib/problem', $problem_info, false);
+        if($post) {
+            $hp->post('http://exp.szer.me/parry/testlib/problem', $problem_info, false);
+        }else {
+            echo "no post";
+            echo PHP_EOL;
+        }
     }
     unset($a);
     curl_close($hp->ch);
@@ -716,34 +846,34 @@ function newSeq5()
 }
 
 //An = (An-1 +,An-2) *R + B
-function newSeq6()
+function newSeq6($num,$post = false)
 {
     $hp = new Http();
 
-    define("TNUM", 10);
 
-    for ($t_num = 0; $t_num < TNUM; $t_num++) {
+    for ($t_num = 0; $t_num < $num; $t_num++) {
 
 
-        $a0 = intval(rand(-50, 50));
+        $a0 = intval(rand(-30, -20));
         while ($a0 == 0) {
-            $a0 = intval(rand(-50, 50));
+            $a0 = intval(rand(-30, -20));
         }
 
-        $a1 = intval(rand(-50, 50));
+        $a1 = intval(rand(20,30));
         while ($a1 == 0) {
-            $a1 = intval(rand(-50, 50));
+            $a1 = intval(rand(20, 30));
         }
 
-        $r = intval(rand(-10, 10));
+
+        $r = intval(rand(-5, 5));
         while ($r == 0) {
-            $r = intval(rand(-10, 10));
+            $r = intval(rand(-5, 5));
         }
 
-        $b = intval(rand(-20, 20));
-        while ($b == 0) {
-            $b = intval(rand(-20, 20));
-        }
+        $b = $r>0?
+            intval(rand(-40, -20))
+            :intval(rand(20, 40));
+
 
         $m = intval(rand(2, 4));
         $a = [$a0, $a1];
@@ -795,7 +925,7 @@ function newSeq6()
         $language = 'en';
         $classification = 'sequence';
         $pro_type = 'exclusive choice';
-        $pro_source = 'new-seq';
+        $pro_source = 'new-test-seq';
 
         // hint An = R*(An-1 + An-2)
 
@@ -819,9 +949,12 @@ function newSeq6()
         echo json_encode($problem_info);//insert
         echo PHP_EOL;
 
-        echo "no post";
-        echo PHP_EOL;
-//        $hp->post('http://exp.szer.me/parry/testlib/problem', $problem_info, false);
+        if($post) {
+            $hp->post('http://exp.szer.me/parry/testlib/problem', $problem_info, false);
+        }else {
+            echo "no post";
+            echo PHP_EOL;
+        }
     }
     unset($a);
     curl_close($hp->ch);
@@ -830,24 +963,24 @@ function newSeq6()
 }
 
 //An = (An-1)^p  + B
-function newSeq7()
+function newSeq7($num,$post = false)
 {
 
     $hp = new Http();
 
-    define("TNUM", 100);
 
-    for ($t_num = 0; $t_num < TNUM; $t_num++) {
+    for ($t_num = 0; $t_num < $num; $t_num++) {
         $a0 = intval(rand(-8, 8));
         while ($a0 == 0) {
             $a0 = intval(rand(-8, 8));
         }
 
-        $b = intval(rand(-30, -10));
-        while ($b == 0) {
-            $b = intval(rand(-30, -10));
-        }
+        $b = $a0>0? intval(rand(-50, -30))
+            :intval(rand(1, 60));
+
+
         $p = intval(rand(1, 2));
+
         $m = intval(rand(1, 2));
 
         $a = [$a0];
@@ -899,7 +1032,7 @@ function newSeq7()
         $language = 'en';
         $classification = 'sequence';
         $pro_type = 'exclusive choice';
-        $pro_source = 'new-seq';
+        $pro_source = 'new-test-seq';
 
         //An = (An-1)^p  + B
 
@@ -919,9 +1052,12 @@ function newSeq7()
         echo json_encode($problem_info);//insert
         echo PHP_EOL;
 
-        echo "no post";
-        echo PHP_EOL;
-//        $hp->post('http://exp.szer.me/parry/testlib/problem', $problem_info, false);
+        if($post) {
+            $hp->post('http://exp.szer.me/parry/testlib/problem', $problem_info, false);
+        }else {
+            echo "no post";
+            echo PHP_EOL;
+        }
     }
     unset($a);
     curl_close($hp->ch);
@@ -929,14 +1065,13 @@ function newSeq7()
 
 }
 //An = (An-2)^p  + B
-function newSeq8()
+function newSeq8($num,$post = false)
 {
 
     $hp = new Http();
 
-    define("TNUM", 10);
 
-    for ($t_num = 0; $t_num < TNUM; $t_num++) {
+    for ($t_num = 0; $t_num < $num; $t_num++) {
         $a0 = intval(rand(-9, 9));
         while ($a0 == 0) {
             $a0 = intval(rand(-9, 9));
@@ -947,11 +1082,11 @@ function newSeq8()
             $a1 = intval(rand(-9, 9));
         }
 
-        $b = intval(rand(-50, 50));
-        while ($b == 0) {
-            $b = intval(rand(-50, 50));
-        }
+        $b = $a1>0?intval(rand(-150, -50)):intval(rand(50, 150));
+
+
         $p = intval(rand(1,2));
+
         $m = intval(rand(2, 4));
 
         $a = [$a0,$a1];
@@ -968,20 +1103,20 @@ function newSeq8()
                 continue;
             }
 //             填中间
-//            if ($i == $m) {
-//                $title = $title . ",?";
-//                continue;
-//            }
+            if ($i == $m) {
+                $title = $title . ",?";
+                continue;
+            }
 
             $title = $title . ",$a[$i]";
 
         }
 
 //        填末尾
-        $title = $title . ",?";
-        $res = $a[5];
+//        $title = $title . ",?";
+//        $res = $a[5];
 //  An = (An-1)^p  + B 填中间
-//        $res = $a[$m];
+        $res = $a[$m];
 
         $ar = [$res, $res + intval(rand(-5, -3)), $res + intval(rand(-2, -1)), $res + intval(rand(1, 4))];
         shuffle($ar);
@@ -1003,7 +1138,7 @@ function newSeq8()
         $language = 'en';
         $classification = 'sequence';
         $pro_type = 'exclusive choice';
-        $pro_source = 'new-seq';
+        $pro_source = 'new-test-seq';
 
         //An = (An-1)^p  + B
 
@@ -1023,9 +1158,12 @@ function newSeq8()
         echo json_encode($problem_info);//insert
         echo PHP_EOL;
 
-        echo "no post";
-        echo PHP_EOL;
-//        $hp->post('http://exp.szer.me/parry/testlib/problem', $problem_info, false);
+        if($post) {
+            $hp->post('http://exp.szer.me/parry/testlib/problem', $problem_info, false);
+        }else {
+            echo "no post";
+            echo PHP_EOL;
+        }
     }
     unset($a);
     curl_close($hp->ch);
@@ -1034,21 +1172,20 @@ function newSeq8()
 }
 
 //A2n-1 + A2n = A0
-function newSeq9(){
+function newSeq9($num,$post = false){
 
     $hp = new Http();
 
-    define("TNUM", 100);
 
-    for ($t_num = 0; $t_num < TNUM; $t_num++) {
-        $a0 = intval(rand(-50, 50));
+    for ($t_num = 0; $t_num < $num; $t_num++) {
+        $a0 = intval(rand(-150, -50));
         while ($a0 == 0) {
-            $a0 = intval(rand(-50, 50));
+            $a0 = intval(rand(-150, -50));
         }
 
-        $a1 = intval(rand(-25, 25));
+        $a1 = intval(rand(25, 125));
         while ($a1 == 0) {
-            $a1 = intval(rand(-25, 25));
+            $a1 = intval(rand(25, 125));
         }
 
 
@@ -1058,7 +1195,7 @@ function newSeq9(){
 
         for ($i = 2; $i <= 8; $i++) {
             if($i%2 == 1){
-                $a[] =  intval(rand(-25, 25));
+                $a[] =  intval(rand(-55, 55));
             }else {
                 $a[] = $a0 - $a[$i - 1];
             }
@@ -1107,7 +1244,7 @@ function newSeq9(){
         $language = 'en';
         $classification = 'sequence';
         $pro_type = 'exclusive choice';
-        $pro_source = 'new-seq';
+        $pro_source = 'new-test-seq';
 
         //A2n-1 + A2n = A0
 
@@ -1121,9 +1258,12 @@ function newSeq9(){
         echo json_encode($problem_info);//insert
         echo PHP_EOL;
 
-//        echo "no post";
-//        echo PHP_EOL;
-        $hp->post('http://exp.szer.me/parry/testlib/problem', $problem_info, false);
+        if($post) {
+            $hp->post('http://exp.szer.me/parry/testlib/problem', $problem_info, false);
+        }else {
+            echo "no post";
+            echo PHP_EOL;
+        }
     }
     unset($a);
     curl_close($hp->ch);
@@ -1131,26 +1271,25 @@ function newSeq9(){
 }
 
 //A2n-1 + A2n + A2n+1 = A0
-function newSeq10(){
+function newSeq10($num,$post = false){
 
     $hp = new Http();
 
-    define("TNUM", 150);
 
-    for ($t_num = 0; $t_num < TNUM; $t_num++) {
-        $a0 = intval(rand(-50, 50));
+    for ($t_num = 0; $t_num < $num; $t_num++) {
+        $a0 = intval(rand(-150, -50));
         while ($a0 == 0) {
-            $a0 = intval(rand(-50, 50));
+            $a0 = intval(rand(-150, -50));
         }
 
-        $a1 = intval(rand(-25, 25));
+        $a1 = intval(rand(25, 125));
         while ($a1 == 0) {
-            $a1 = intval(rand(-25, 25));
+            $a1 = intval(rand(25, 125));
         }
 
-        $a2 = intval(rand(-25, 25));
+        $a2 = intval(rand(-45, 45));
         while ($a2 == 0) {
-            $a2 = intval(rand(-25, 25));
+            $a2 = intval(rand(-45, 45));
         }
 
 
@@ -1162,7 +1301,7 @@ function newSeq10(){
             if($i%2 == 1){
                 $a[] =  $a[0] - $a[$i-1] - $a[$i-2];
             }else {
-                $a[] = intval(rand(-25, 25));
+                $a[] = intval(rand(-55, 55));
             }
         }
 
@@ -1174,20 +1313,20 @@ function newSeq10(){
                 continue;
             }
 //             填中间
-//            if ($i == $m) {
-//                $title = $title . ",?";
-//                continue;
-//            }
+            if ($i == $m) {
+                $title = $title . ",?";
+                continue;
+            }
 
             $title = $title . ",$a[$i]";
 
         }
 
 //        填末尾
-        $title = $title . ",?";
-        $res = $a[12];
+//        $title = $title . ",?";
+//        $res = $a[12];
         //A2n-1 + A2n = A0 填中间
-//        $res = $a[$m];
+        $res = $a[$m];
 
         $ar = [$res, $res + intval(rand(-5, -3)), $res + intval(rand(-2, -1)), $res + intval(rand(1, 4))];
         shuffle($ar);
@@ -1209,7 +1348,7 @@ function newSeq10(){
         $language = 'en';
         $classification = 'sequence';
         $pro_type = 'exclusive choice';
-        $pro_source = 'new-seq';
+        $pro_source = 'new-test-seq';
 
         //A2n-1 + A2n + A2n+1 = A0
 
@@ -1223,14 +1362,19 @@ function newSeq10(){
         echo json_encode($problem_info);//insert
         echo PHP_EOL;
 
-//        echo "no post";
-//        echo PHP_EOL;
-        $hp->post('http://exp.szer.me/parry/testlib/problem', $problem_info, false);
+        if($post) {
+            $hp->post('http://exp.szer.me/parry/testlib/problem', $problem_info, false);
+        }else {
+            echo "no post";
+            echo PHP_EOL;
+        }
     }
     unset($a);
     curl_close($hp->ch);
 
 }
+
+
 class BaseDao
 {
 
