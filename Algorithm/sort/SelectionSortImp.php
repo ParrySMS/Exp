@@ -18,7 +18,7 @@ echo "result: <br/>";
 print_r(json_encode($ar));
 echo "<br/>";
 
-/** 选择排序
+/** 优化的选择排序
  * @param array $ar
  * @param null $len
  */
@@ -28,24 +28,40 @@ function selection(array & $ar, $len = null)
         $len = sizeof($ar);
     }
 
-    for ($i = 0; $i < $len - 1; $i++) {
-        $min = $i; //consider i as min_index
 
-        for ($j = $i + 1; $j < $len; $j++) {//find min_index
-            if($ar[$j]<=$ar[$min]){
+    for ($left = 0, $right = $len - 1; $left < $right; $left++, $right--) {
+        $min = $left; //consider left as min_index and max_index
+        $max = $right;
+
+        for ($j = $left + 1; $j <= $right; $j++) {//find min_index max_index
+
+            if ($ar[$j] <= $ar[$min]) {
                 $min = $j;
             }
+
+            if ($ar[$j] >= $ar[$max]) {
+                $max = $j;
+            }
+
         }
         //check min_index and swap
-        if($min!=$i){//changeSelectionSort.php
-            $t = $ar[$i];
-            $ar[$i]=$ar[$min];
+        if ($min != $left) {
+            $t = $ar[$left];
+            $ar[$left] = $ar[$min];
             $ar[$min] = $t;
         }
+
+        if ($max != $right) {
+            $t = $ar[$right];
+            $ar[$right] = $ar[$max];
+            $ar[$max] = $t;
+        }
+
 
         echo "after 1 times: <br/>";
         print_r(json_encode($ar));
         echo "<br/>";
     }
+
 }
 
