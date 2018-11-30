@@ -13,7 +13,6 @@ require './config/Medoo.php';
 require './Seq.php';
 
 
-$key = isset($_GET['secret_key']) ? $_GET['secret_key'] : null;
 $uid = isset($_GET['uid']) ? $_GET['uid'] : null;
 
 $http = new Http();
@@ -21,13 +20,6 @@ $seq = new Seq();
 
 try {
 
-    if (empty($key)) {
-        throw new Exception("secret_key null", 400);
-    }
-
-    if ($key !== SECRET_KEY) {
-        throw new Exception("secret_key error", 400);
-    }
 
     if (empty($uid)) {
         throw new Exception("uid null", 400);
@@ -38,17 +30,31 @@ try {
         throw new Exception("uid error", 400);
     }
 
+    //todo 每个uid 只能调用5次
+
     $seq->insertAction($uid,$http->getIP(),$http->getAgent(),null);
-    $ids = $seq->getVaildId();
-    shuffle($ids);
 
-    $part_ids = array_slice($ids,0,200);
+    if($uid == 'testuid'){//调试
+        //某道训练集题目
+        $datas = $seq->getDatasInSet([10407],'new-train-seq');
 
-    $datas = $seq->getDatasInSet($part_ids);
-    shuffle($datas);
+        for($i=1;$i<200;$i++){
+            $datas[$i] =  $datas[0];
+        }
 
-    echo json_encode($datas);
+        echo json_encode($datas);
 
+    }else {//正式申请考试
+        $ids = $seq->getVaildId();
+        shuffle($ids);
+
+        $part_ids = array_slice($ids, 0, 200);
+
+        $datas = $seq->getDatasInSet($part_ids);
+        shuffle($datas);
+
+        echo json_encode($datas);
+    }
 
 } catch (Exception $e) {
     $seq->insertAction($uid,$http->getIP(),$http->getAgent(),$e->getCode());

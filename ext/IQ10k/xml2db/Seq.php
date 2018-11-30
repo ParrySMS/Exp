@@ -109,11 +109,12 @@ class Seq
     }
 
     /** 获取db里的某些固定id的seq数据
-     * @param array $ids 选取这个id集合里面的数据
+     * @param array $ids
+     * @param string $pro_source
      * @return array|bool
      * @throws Exception
      */
-    public function getDatasInSet(array $ids)
+    public function getDatasInSet(array $ids,$pro_source = 'new-test-seq')
     {
 
         $datas = $this->database->select($this::$T_PROBLEM . '(p)', [
@@ -136,7 +137,7 @@ class Seq
         ], [
             'AND' => [
                 'p.id' => $ids, //for test
-                'p.pro_source' => 'new-test-seq',
+                'p.pro_source' => $pro_source,
                 'p.visible[!]' => VISIBLE_DELETE
             ],
 //        "LIMIT" => 10
