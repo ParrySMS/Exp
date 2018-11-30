@@ -51,12 +51,65 @@ class Seq
     }
 
 
-    //todo 获取有效的id集合 用于抽取固定的题目数量
-    public function getVaildId(){
+    /** 记录用户的请求 开始正常执行会记录一次 报错会再记录一次
+     * @param $uid
+     * @param $ip
+     * @param $agent
+     * @param $error_code
+     * @param null $time
+     * @return int|mixed|string
+     */
+    public function insertAction($uid,$ip,$agent,$error_code,$time = null)
+    {
+        $uri = $_SERVER['REQUEST_URI'];
+        $method = $_SERVER['REQUEST_METHOD'];
+        //秒级时间
+        if ($time === null) {
+            $time = date(DB_TIME_FORMAT);
+        }
+        $pdo = $this->database->insert($this::$T_ACTION,[
+            'uid'=>$uid,
+            'agent'=>$agent,
+            'ip'=>$ip,
+            'uri'=>$uri,
+            'method'=>$method,
+            'error_code'=>$error_code,
+            'time'=>$time,
+            'visible'=>VISIBLE_NORMAL
+        ]);
+        $id = $this->database->id();
+        //因为可能是在catch块里的记录 所以不适用throw报错
+        if (!is_numeric($id) || $id < 1) {
+//          var_dump($this->database->error());
+            echo '<br/>'.__CLASS__ . '->' . __FUNCTION__ . '(): error';
+//            throw new Exception(__CLASS__ . '->' . __FUNCTION__ . '(): error', 500);
+        }
+        return $id;
+    }
+
+    /** 获取有效的id集合 用于抽取固定的题目数量
+     * @return array|bool
+     * @throws Exception
+     */
+    public function getVaildId()
+    {
+        $ids = $this->database->select($this::$T_PROBLEM, 'id', [
+            'AND' => [
+                'pro_source' => 'new-test-seq',
+                'visible[!]' => VISIBLE_DELETE
+            ]
+        ]);
+
+        if (!is_array($ids) && sizeof($ids) == 0) {
+            throw new Exception(__CLASS__ . '->' . __FUNCTION__ . '(): error', 500);
+        }
+
+        return $ids;
 
     }
+
     /** 获取db里的某些固定id的seq数据
-     * @param array $ids  选取这个id集合里面的数据
+     * @param array $ids 选取这个id集合里面的数据
      * @return array|bool
      * @throws Exception
      */
@@ -82,7 +135,7 @@ class Seq
 //            'h.hint',
         ], [
             'AND' => [
-                'p.id'=>$ids, //for test
+                'p.id' => $ids, //for test
                 'p.pro_source' => 'new-test-seq',
                 'p.visible[!]' => VISIBLE_DELETE
             ],
@@ -101,17 +154,43 @@ class Seq
 //        var_dump($pro_data);
 
             if (is_array($oids) && sizeof($oids) != 0) {
-                $pro_data['options'] = getOptions($oids, $this->database, $this::$T_OPTION);
+                $pro_data['options'] = $this->getOptions($oids, $this->database, $this::$T_OPTION);
             }
 
             //clear
             unset($pro_data['option_ids']);
 
-            $pro_data['title_content'] = getTitleContent($pro_data['title']);
+            $pro_data['title_content'] = $this->getTitleContent($pro_data['title']);
 
         }
 
         return $datas;
+    }
+
+    /** 清洗题目数据
+     * @param $title
+     * @return string
+     * @throws Exception
+     */
+    function getTitleContent($title)
+    {
+
+        if (!is_string($title) || empty($title)) {
+            throw new Exception(__CLASS__ . '->' . __FUNCTION__." title not string",500);
+        }
+
+        //get string after digit
+//    for ($i = 0; $i < strlen($title); $i++) {
+//        $char = substr($title, $i, 1);
+//        if (ctype_digit($char)) {
+//            $title_content = trim(substr($title,$i));
+//        }
+//    }
+
+        $title_content = trim(str_replace("\n", "", preg_replace('/([A-Za-z\x80-\xff]*)/i', '', $title)));
+
+        return $title_content;
+
     }
 
 
@@ -122,11 +201,11 @@ class Seq
      * @return array
      * @throws Exception
      */
-    public function getOptions($oids,\Medoo\Medoo & $database, $table)
+    public function getOptions($oids, \Medoo\Medoo & $database, $table)
     {
 
 
-        $datas = selectGroup($oids, $database, $table);
+        $datas = $this->selectGroup($oids, $database, $table);
 
         unset($options);
         $options = [];
