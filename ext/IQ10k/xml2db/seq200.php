@@ -14,9 +14,10 @@ require './Seq.php';
 
 
 $key = isset($_GET['secret_key']) ? $_GET['secret_key'] : null;
-$uid = isset($_GET['secret_key']) ? $_GET['secret_key'] : null;
+$uid = isset($_GET['uid']) ? $_GET['uid'] : null;
 
 $http = new Http();
+$seq = new Seq();
 
 try {
 
@@ -37,7 +38,6 @@ try {
         throw new Exception("uid error", 400);
     }
 
-    $seq = new Seq();
     $seq->insertAction($uid,$http->getIP(),$http->getAgent(),null);
     $ids = $seq->getVaildId();
     shuffle($ids);
