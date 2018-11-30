@@ -8,7 +8,7 @@ class CloseE {
 	public:
 		int vi;
 		int vo;
-		int lowcost;
+		int cost;
 
 		CloseE() {
 			vi = -1;
@@ -20,7 +20,7 @@ class CloseE {
 		void set(int vi,int vo ,int c) {
 			this->vi = vi;
 			this->vo = vo;
-			lowcost = c;
+			cost = c;
 		}
 };
 
