@@ -30,13 +30,12 @@ try {
         throw new Exception("uid error", 400);
     }
 
-    //todo 每个uid 只能调用5次 testuid 除外
-
-    $seq->insertAction($uid,$http->getIP(),$http->getAgent(),null);
-
+    //每个uid 只能调用5次 testuid 除外
     if($seq->isLimited($uid)){
         throw new Exception("Access has been restricted",403);
     }
+    
+    $seq->insertAction($uid,$http->getIP(),$http->getAgent(),null);
 
     if($uid == SEQ200_TESTUID){//调试
         //某道训练集题目
