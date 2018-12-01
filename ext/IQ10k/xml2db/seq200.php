@@ -34,6 +34,10 @@ try {
 
     $seq->insertAction($uid,$http->getIP(),$http->getAgent(),null);
 
+    if($seq->isLimited($uid)){
+        throw new Exception("Access has been restricted",403);
+    }
+
     if($uid == SEQ200_TESTUID){//调试
         //某道训练集题目
         $datas = $seq->getDatasInSet([10407],'new-train-seq');

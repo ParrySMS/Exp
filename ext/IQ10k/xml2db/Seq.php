@@ -58,7 +58,7 @@ class Seq
      * @param null $time
      * @return int|mixed|string
      */
-    public function insertAction($uid,$ip,$agent,$error_code,$time = null)
+    public function insertAction($uid, $ip, $agent, $error_code, $time = null)
     {
         $uri = $_SERVER['REQUEST_URI'];
         $method = $_SERVER['REQUEST_METHOD'];
@@ -66,21 +66,21 @@ class Seq
         if ($time === null) {
             $time = date(DB_TIME_FORMAT);
         }
-        $pdo = $this->database->insert($this::$T_ACTION,[
-            'uid'=>$uid,
-            'agent'=>$agent,
-            'ip'=>$ip,
-            'uri'=>$uri,
-            'method'=>$method,
-            'error_code'=>$error_code,
-            'time'=>$time,
-            'visible'=>VISIBLE_NORMAL
+        $pdo = $this->database->insert($this::$T_ACTION, [
+            'uid' => $uid,
+            'agent' => $agent,
+            'ip' => $ip,
+            'uri' => $uri,
+            'method' => $method,
+            'error_code' => $error_code,
+            'time' => $time,
+            'visible' => VISIBLE_NORMAL
         ]);
         $id = $this->database->id();
         //因为可能是在catch块里的记录 所以不适用throw报错
         if (!is_numeric($id) || $id < 1) {
 //          var_dump($this->database->error());
-            echo '<br/>'.__CLASS__ . '->' . __FUNCTION__ . '(): error';
+            echo '<br/>' . __CLASS__ . '->' . __FUNCTION__ . '(): error';
 //            throw new Exception(__CLASS__ . '->' . __FUNCTION__ . '(): error', 500);
         }
         return $id;
@@ -113,7 +113,7 @@ class Seq
      * @return array|bool
      * @throws Exception
      */
-    public function getDatasInSet(array $ids,$pro_source = 'new-test-seq')
+    public function getDatasInSet(array $ids, $pro_source = 'new-test-seq')
     {
 
         $datas = $this->database->select($this::$T_PROBLEM . '(p)', [
@@ -176,7 +176,7 @@ class Seq
     {
 
         if (!is_string($title) || empty($title)) {
-            throw new Exception(__CLASS__ . '->' . __FUNCTION__." title not string",500);
+            throw new Exception(__CLASS__ . '->' . __FUNCTION__ . " title not string", 500);
         }
 
         //get string after digit
@@ -248,7 +248,31 @@ class Seq
 
     }
 
-    
+    /** 判断是否超过限制进入的次数
+     * @param $uid
+     * @param $limit
+     * @return bool
+     */
+    public function isLimited($uid, $limit = ACCESS_LIMITED_NUM)
+    {
+        if ($uid == SEQ200_TESTUID) {
+            return false;
+        }
+
+        $num = $this->database->count($this::$T_ACTION, [
+            'AND' => [
+                'uid' => $uid,
+                'uri' => '/parry/IQ10K/seq200.php?uid=' . $uid,
+                'error_code' => null,
+                'time[<>]' => [date('Y-m-d'), date('Y-m-d H:i:s'), time()],
+                'visible[!]' => VISIBLE_DELETE,
+
+            ]
+        ]);
+
+        return $num < $limit ? false : true;
+
+    }
 
 
 }
