@@ -32,7 +32,6 @@ class Seq
         return $this->database;
     }
 
-
     /**
      * BaseDao constructor.
      */
@@ -173,7 +172,7 @@ class Seq
      * @return string
      * @throws Exception
      */
-    function getTitleContent($title)
+    private function getTitleContent($title)
     {
 
         if (!is_string($title) || empty($title)) {
@@ -202,7 +201,7 @@ class Seq
      * @return array
      * @throws Exception
      */
-    public function getOptions($oids, \Medoo\Medoo & $database, $table)
+    private function getOptions($oids, \Medoo\Medoo & $database, $table)
     {
 
 
@@ -226,7 +225,7 @@ class Seq
      * @return array|bool
      * @throws Exception
      */
-    public function selectGroup(array $option_ids, \Medoo\Medoo & $database, $table)
+    private function selectGroup(array $option_ids, \Medoo\Medoo & $database, $table)
     {
         $data = $database->select($table, [
 //        'id',
@@ -248,6 +247,8 @@ class Seq
         return $data;
 
     }
+
+    
 
 
 }

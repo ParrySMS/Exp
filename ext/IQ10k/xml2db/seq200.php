@@ -30,11 +30,11 @@ try {
         throw new Exception("uid error", 400);
     }
 
-    //todo 每个uid 只能调用5次
+    //todo 每个uid 只能调用5次 testuid 除外
 
     $seq->insertAction($uid,$http->getIP(),$http->getAgent(),null);
 
-    if($uid == 'testuid'){//调试
+    if($uid == SEQ200_TESTUID){//调试
         //某道训练集题目
         $datas = $seq->getDatasInSet([10407],'new-train-seq');
 
