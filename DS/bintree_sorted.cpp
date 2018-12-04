@@ -4,7 +4,7 @@ using namespace std;
 
 class BinTreeNode {
 	public:
-		char data;
+		int data;
 		BinTreeNode *left;
 		BinTreeNode *right;
 		BinTreeNode () {
@@ -27,8 +27,9 @@ class BinTree {
 		int *treeAr;
 		BinTree() {};
 		~BinTree() {};
-		void CreateTree();
+		void CreateTree(int len);
 		void InOrder();//ÖÐÐò
+		void insert(int data);
 
 };
 
@@ -42,6 +43,8 @@ void BinTree::InOrder() {
 //private ÖÐÐò
 void BinTree::InOrder(BinTreeNode *t) {
 
+//	cout<<"inOrder t:"<<t<<endl;
+
 	if(t!=NULL) {
 		InOrder(t->left);
 		cout<<t->data<<" ";
@@ -50,60 +53,58 @@ void BinTree::InOrder(BinTreeNode *t) {
 }
 
 
-void BinTree::CreateTree() {
+void BinTree::CreateTree(int len) {
 	pos = 0;
-	len = sizeof(treeAr);
+	this->len = len;
 	root = NULL;
 	CreateBinTree();
 }
 
+void BinTree::insert(int data) {
+	BinTreeNode*t = root;
+	int num = 100;
+	while(num--) {//advoid dead loop
+		//insert right
+		if(data>t->data && t->right == NULL) {
+//				cout<<"insert right:"<<data<<endl;
+			t->right = new BinTreeNode();
+			t->right->data = data;
+//				cout<<"new t right:"<<t->right<<endl;
+			break;
+		}
+
+		//insert left
+		if(data<t->data && t->left == NULL) {
+//				cout<<"insert left:"<<data<<endl;
+			t->left = new BinTreeNode();
+			t->left->data = data;
+//				cout<<"new t left:"<<t->left<<endl;
+			break;
+		}
+
+		//no insert
+		t = (data>t->data)?t->right:t->left;
+
+	}
+
+	if(num==0) {
+		cout<<"ERROR: while dead"<<endl;
+	}
+}
+
 void BinTree::CreateBinTree() {
 	int i,data;
-	BinTreeNode* t;
 
 	data = treeAr[0];
 	if(root==NULL) {
-		cout<<"new root,data ="<<data<<endl;
+//		cout<<"new root,data ="<<data<<endl;
 		root = new BinTreeNode();
 		root->data = data;
 	}
-
+//	cout<<"len:"<<len<<endl;
 	for(i=1; i<len; i++) {
-		t = root;
 		data = treeAr[i];
-		cout<<"while--i:"<<i<<endl;
-		while(1) {
-			cout<<"root:"<<root<<endl;
-			cout<<"t:"<<t<<endl;
-
-			if(t==NULL) {
-				
-				//todo need to linked to upper
-				
-				t = new BinTreeNode();
-				t->data = data;
-				cout<<"t:"<<t<<endl;
-				cout<<"new t,data ="<<data<<endl;
-				break;
-
-			}
-
-			if(data == t->data) {
-				cout<<"same data"<<endl;
-				break;
-			}
-
-			if(data>t->data) {
-				t=t->right;
-				cout<<"t->right"<<endl;
-				cout<<"t:"<<t<<endl;
-			} else {
-				t=t->left;
-				cout<<"t->left"<<endl;
-				cout<<"t:"<<t<<endl;
-			}
-		}
-
+		insert(data);
 	}
 
 }
@@ -111,7 +112,7 @@ void BinTree::CreateBinTree() {
 
 int main() {
 	BinTree * bin;
-	int i,j,t,n,m;
+	int i,j,t,n,m,data;
 	cin>>t;
 	while(t--) {
 		bin = new BinTree();
@@ -121,8 +122,16 @@ int main() {
 			cin>>bin->treeAr[i];
 		}
 		//bulid tree
-		bin->CreateTree();
+		bin->CreateTree(n);
 		bin->InOrder();
+
+		cin>>m;//insert
+		while(m--) {
+			cin>>data;
+			bin->insert(data);
+			bin->InOrder();
+		}
+
 	}
 
 	delete [] bin;
