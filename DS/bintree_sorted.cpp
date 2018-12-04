@@ -28,19 +28,19 @@ class BinTree {
 		BinTree() {};
 		~BinTree() {};
 		void CreateTree(int len);
-		void InOrder();//ÖÐÐò
+		void InOrder();
 		void insert(int data);
 
 };
 
 
-//public ÖÐÐò
+//public 
 void BinTree::InOrder() {
 	InOrder(root);
 	cout<<endl;
 }
 
-//private ÖÐÐò
+//private 
 void BinTree::InOrder(BinTreeNode *t) {
 
 //	cout<<"inOrder t:"<<t<<endl;
@@ -134,7 +134,7 @@ int main() {
 
 	}
 
-	delete [] bin;
+//	delete [] bin;
 	return 0;
 }
 
