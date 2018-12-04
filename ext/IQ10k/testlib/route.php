@@ -137,10 +137,11 @@ $app->group('/problem', function () {
 $app->group('/trans',function (){
 
     // 获取某条题目的信息
+    //todo 展示每一题的时候 想办法拿到上一题和下一题
     $this->get('/{pid}', function ($request, $response, array $args) {
         $pid = isset($args['pid']) ? $args['pid'] : null;
         $c_gp = new tlApp\controller\GetProblem();
-        $c_gp->withPid($pid,true);
+        $c_gp->withPidNear($pid,true);
         return $response->withStatus($c_gp->getStatus());
     });
 
@@ -152,7 +153,7 @@ $app->group('/trans',function (){
         return $response->withStatus($c_gp->getStatus());
     });
 
-    //todo 展示每一题的时候 想办法拿到上一题和下一题
+
 
 });
 

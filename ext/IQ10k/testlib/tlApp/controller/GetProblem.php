@@ -49,6 +49,23 @@ class GetProblem extends BaseController
         }
     }
 
+    /** todo 获取以及相邻id 还没开始改 底下的函数还是旧的 出去一下
+     * @param bool $trans 是否带上翻译信息
+     * @param $pid
+     */
+    public function withPidNear($pid,$trans = false)
+    {
+        try {
+            //参数逻辑检查
+            $pid = $this->pm->pidCheck($pid);
+
+            $this->getProblemById($pid,$trans);
+
+        } catch (Exception $e) {
+            $this->error($e);
+        }
+    }
+
     /** 获取页面 流式分页
      * @param bool trans 是否需要带上翻译数据
      * @param array $query
