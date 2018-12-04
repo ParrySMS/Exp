@@ -32,7 +32,7 @@ class BinTree {
 		void CreateTree(int len);
 		void InOrder();
 		void insert(int data);
-		void search(int data);
+		bool search(int data);
 		void cut(int data);
 
 
@@ -72,6 +72,7 @@ void BinTree::cut(int data) {
 
 	if(data == t->data) { //cut root
 		cut();
+		return;
 	}
 
 	while(t!= NULL) {//search
@@ -125,11 +126,11 @@ void BinTree::cut() {
 			t = son;
 			son = son->left;
 		}
-		//cut the origin one
+		int data = son->data;
+		//todo cut the origin one
 		cut(son,t);
 		//cover
-		root->data = son->data;
-		cout<<"cover:"<<son->data<<endl;
+		root->data = data;
 	}
 
 
@@ -137,9 +138,7 @@ void BinTree::cut() {
 
 //for *
 void BinTree::cut(BinTreeNode* node,BinTreeNode* parent) {
-	if(parent == NULL) { //root
-		cut();
-	}
+
 	//leaf node ,cut directly
 	if(node->left == NULL && node->right == NULL) {
 		(parent->left == node)?
@@ -187,14 +186,15 @@ void BinTree::cut(BinTreeNode* node,BinTreeNode* parent) {
 }
 
 
-void BinTree::search(int data) {
+bool BinTree::search(int data) {
 	BinTreeNode*t = root;
 	int step;
 
 	for(step = 1; t!= NULL; step++) {
 		if(t->data == data) {
-			cout<<step<<endl;
-			break;
+			return true;
+//			cout<<step<<endl;
+//			break;
 		}
 
 		//not ==
@@ -202,7 +202,8 @@ void BinTree::search(int data) {
 	}
 
 	if(t == NULL) { //not found
-		cout<<"-1"<<endl;
+//		cout<<"-1"<<endl;
+		return false;
 	}
 }
 
@@ -275,7 +276,11 @@ int main() {
 		cin>>m;//search
 		while(m--) {
 			cin>>data;
-			bin->cut(data);
+			
+			if(bin->search(data)) {
+				bin->cut(data);
+			}
+			
 			bin->InOrder();
 		}
 
