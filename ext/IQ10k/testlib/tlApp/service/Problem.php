@@ -386,12 +386,14 @@ class Problem extends BaseService
     function getTrans($pid,$get_next = true)
     {
         $page = null;
-        // 获取翻译下一个id
+        // 获取翻译上一个下一个id
         if($get_next) {
+            $pre = $this->pro->getTransPre($pid);
+            $pre = is_numeric($pre) ? $pre : null;
             $next = $this->pro->getTransNext($pid);
             $next = is_numeric($next) ? $next : null;
             $page = (object)[
-                'pre' => null,
+                'pre' => GET_TRANS_API . "/$pre",
                 'self' => GET_TRANS_API . "/$pid",
                 'next' => GET_TRANS_API . "/$next"
             ];

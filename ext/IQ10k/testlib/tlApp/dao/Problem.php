@@ -563,21 +563,24 @@ class Problem extends BaseDao
         
     }
 
-    //todo get pre
+    /** 获取上一题 倒序所以是更大
+     * @param $pid
+     * @return array|bool|mixed
+     */
     public function getTransPre($pid)
     {
         $t = $this::$T_TRANS_PROBLEM;
 
-        $next = $this->database->get($t,'pid',[
+        $pre = $this->database->get($t,'pid',[
             'AND'=>[
                 'pid[>]'=>$pid
             ],
             'ORDER'=>[
-                'pid'=>''
+                'pid'=>'ASC'
             ]
         ]);
 
-        return $next;
+        return $pre;
 
     }
 
