@@ -28,6 +28,7 @@ class File
 
     public function __destruct()
     {
+        unset($this->rows);
         fclose($this->io);
     }
 
@@ -114,7 +115,7 @@ class File
 
         $min_len = $len1 > $len2 ? $len2 : $len1;
 
-        if ($min_len>0) { //计算LCS的相似度
+        if ($min_len>1) { //计算LCS的相似度 超过一个字符才有比例的意义
             return ((float)$mx_num[$len1][$len2]) / $min_len;
         } else {//分母0
             return 0;
