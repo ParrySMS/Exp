@@ -388,14 +388,16 @@ class Problem extends BaseService
         $page = null;
         // 获取翻译上一个下一个id
         if($get_next) {
-            $pre = $this->pro->getTransPre($pid);
-            $pre = is_numeric($pre) ? $pre : null;
-            $next = $this->pro->getTransNext($pid);
-            $next = is_numeric($next) ? $next : null;
+            $pre_id = $this->pro->getTransPre($pid);
+            $pre = is_numeric($pre_id) ? GET_TRANS_API . "/$pre_id" : null;
+
+            $next_id = $this->pro->getTransNext($pid);
+            $next = is_numeric($pre_id) ? GET_TRANS_API . "/$next_id" : null;
+            
             $page = (object)[
-                'pre' => GET_TRANS_API . "/$pre",
+                'pre' => $pre,
                 'self' => GET_TRANS_API . "/$pid",
-                'next' => GET_TRANS_API . "/$next"
+                'next' => $next,
             ];
         }
 
