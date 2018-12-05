@@ -78,7 +78,7 @@ class Text {
 			in.close();
 		}
 
-		//È¥µô×Ö·û´®ÖĞµÄÈ«²¿¿Õ¸ñ
+		//å»æ‰å­—ç¬¦ä¸²ä¸­çš„å…¨éƒ¨ç©ºæ ¼
 		string& trim(string &str) {
 			int index = 0;
 			if( !str.empty()) {
@@ -112,7 +112,7 @@ float getSimi(string line_a,string line_b) {
 	int** mx_len; //matrix of len
 	int** mx_step; //matrix of step dirction to subproblem
 	//mx_step[][] null:-1  left&&up:0 ,left:1 ,up:2, left||up:3
-	//                 \ 00    ¡û01    ¡ü10    ¡û¡ü11
+	//                 \ 00    â†01    â†‘10    â†â†‘11
 
 	len_a = line_a.length();
 	len_b = line_b.length();
@@ -140,7 +140,7 @@ float getSimi(string line_a,string line_b) {
 			//not edge
 			if(line_a[i-1] == line_b[j-1]) { // match,  subproblem len add 1
 				mx_len[i][j] = mx_len[i-1][j-1] + 1;
-				mx_step[i][j] = 0; // ¨I
+				mx_step[i][j] = 0; // â†–
 				continue;
 			}
 
@@ -149,16 +149,16 @@ float getSimi(string line_a,string line_b) {
 
 			if(mx_len[i-1][j] == mx_len[i][j-1]) {	//cut line_a  OR  cut line_b  both ok
 				mx_len[i][j] = mx_len[i-1][j];
-				mx_step[i][j] = 3; // ¡û¡ü
+				mx_step[i][j] = 3; // â†â†‘
 
 			} else if(mx_len[i-1][j] > mx_len[i][j-1]) { //cut line_a
 				mx_len[i][j] = mx_len[i-1][j];
-				mx_step[i][j] = 1; // ¡û
+				mx_step[i][j] = 1; // â†
 
 			} else { //mx_len[i-1,j] < mx_len[i,j-1]
 				//cut line_b
 				mx_len[i][j] = mx_len[i][j-1];
-				mx_step[i][j] = 2; // ¡ü
+				mx_step[i][j] = 2; // â†‘
 			}
 
 		}//for j
@@ -201,7 +201,7 @@ int getRepeatedNum(int** mx_d,int numLine,int numCol) {
 	int** mx_len; //matrix of len
 	int** mx_step; //matrix of step dirction to subproblem
 	//mx_step[][] null:-1  left&&up:0 ,left:1 ,up:2, left||up:3
-	//                 \ 00    ¡û01    ¡ü10    ¡û¡ü11
+	//                 \ 00    â†01    â†‘10    â†â†‘11
 
 	//init mx
 	mx_len = new int* [numLine+1];//line
@@ -227,7 +227,7 @@ int getRepeatedNum(int** mx_d,int numLine,int numCol) {
 			//the only differnt is match cond change,others is same to LCS
 			if( mx_d[i-1][j-1] == 1) { // match,  subproblem len add 1
 				mx_len[i][j] = mx_len[i-1][j-1] + 1;
-				mx_step[i][j] = 0; // ¨I
+				mx_step[i][j] = 0; // â†–
 				continue;
 			}
 
@@ -236,16 +236,16 @@ int getRepeatedNum(int** mx_d,int numLine,int numCol) {
 
 			if(mx_len[i-1][j] == mx_len[i][j-1]) {	//cut line_a  OR  cut line_b  both ok
 				mx_len[i][j] = mx_len[i-1][j];
-				mx_step[i][j] = 3; // ¡û¡ü
+				mx_step[i][j] = 3; // â†â†‘
 
 			} else if(mx_len[i-1][j] > mx_len[i][j-1]) { //cut line_a
 				mx_len[i][j] = mx_len[i-1][j];
-				mx_step[i][j] = 1; // ¡û
+				mx_step[i][j] = 1; // â†
 
 			} else { //mx_len[i-1,j] < mx_len[i,j-1]
 				//cut line_b
 				mx_len[i][j] = mx_len[i][j-1];
-				mx_step[i][j] = 2; // ¡ü
+				mx_step[i][j] = 2; // â†‘
 			}
 
 		}//for j
