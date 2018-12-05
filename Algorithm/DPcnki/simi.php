@@ -15,16 +15,30 @@ $file1 = new File($path1);
 $file2 = new File($path2);
 
 $mx_d = [];//Dij的二维数组
-$line_num1 = 0; //标记的行数
-$line_num2 = 0;
-while (!feof($file1->io)) { //文件1和文件2的逐行比较
-    $row1 = fgets($file1->io);
+$line_num1 = sizeof($file1->rows); //标记的行数
+$line_num2 = sizeof($file2->rows);
 
-    while (!feof($file2->io)) {
-        $row2 = fgets($file2->io);
+//LCS 拿到Dij
+for ($i = 0; $i < $line_num1; $i++) {
+    for ($j = 0; $j < $line_num2; $j++) {
 
+        $row1 = $file1->rows[$i];
+        $row2 = $file2->rows[$j];
         $simi = $file1->checkSimi($row1, $row2);
-        $mx_d[$line_num1][$line_num2] = $simi > SIMILARITY ? 1 : 0;
-        //TODO ECHO AND Repeated-Line-Num
+        //拿到Dij矩阵
+        $mx_d[$i][$j] = $simi > SIMILARITY ? 1 : 0;
+
     }
 }
+
+if (ECHO_DIJ) {
+    echo 'Dij:' . PHP_EOL;
+    for ($i = 0; $i < $line_num1; $i++) {
+        for ($j = 0; $j < $line_num2; $j++) {
+            echo "$mx_d[$i][$j]  ";
+        }
+        echo PHP_EOL;
+    }
+}
+
+//TODO Repeated-Line-Num

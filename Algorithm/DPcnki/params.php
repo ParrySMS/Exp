@@ -8,3 +8,4 @@
 
 //相似度
 define('SIMILARITY',0.75);
+define('ECHO_DIJ',true);

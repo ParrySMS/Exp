@@ -11,6 +11,7 @@ class File
 
     public $path;
     public $io;
+    public $rows = [];//用行的形式保存文件
 
     /**
      * File constructor.
@@ -20,6 +21,7 @@ class File
     {
         $this->path = $path;
         $this->io = fopen($path, 'r');
+        $this->readFileInRows();
 
     }
 
@@ -28,6 +30,18 @@ class File
     {
         fclose($this->io);
     }
+
+
+    /**
+     * 将文件内容逐行读入变量里
+     */
+    private function readFileInRows()
+    {
+        while (!feof($this->io)) { //文件1和文件2的逐行比较
+            $this->rows[] = fgets($this->io);
+        }
+    }
+
 
     /** 计算两个行的相似度
      * 使用LCS算法
