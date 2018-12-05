@@ -542,5 +542,44 @@ class Problem extends BaseDao
         return $data;
     }
 
+    /**  获取翻译的下一题id 倒序所以是更小
+     * @param $pid
+     * @return array|bool|mixed
+     */
+    public function getTransNext($pid)
+    {
+        $t = $this::$T_TRANS_PROBLEM;
+
+        $next = $this->database->get($t,'pid',[
+            'AND'=>[
+                'pid[<]'=>$pid
+            ],
+            'ORDER'=>[
+                'pid'=>'DESC'
+            ]
+        ]);
+
+        return $next;
+        
+    }
+
+    //todo get pre
+    public function getTransPre($pid)
+    {
+        $t = $this::$T_TRANS_PROBLEM;
+
+        $next = $this->database->get($t,'pid',[
+            'AND'=>[
+                'pid[>]'=>$pid
+            ],
+            'ORDER'=>[
+                'pid'=>''
+            ]
+        ]);
+
+        return $next;
+
+    }
+
 
 }

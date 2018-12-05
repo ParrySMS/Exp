@@ -376,14 +376,27 @@ class Problem extends BaseService
 
 
     /** 获取一条带翻译数据的完整的题目数据
-     * @param $pid
+     * @param $pid int
+     * @param $get_next bool 是否获取相邻的下一题数据
      * @return Json
      * @throws Exception
      * todo 这个函数的耦合性太强 不好
      */
     public
-    function getTrans($pid)
+    function getTrans($pid,$get_next = true)
     {
+        $page = null;
+        // 获取翻译下一个id
+        if($get_next) {
+            $next = $this->pro->getTransNext($pid);
+            $next = is_numeric($next) ? $next : null;
+            $page = (object)[
+                'pre' => null,
+                'self' => GET_TRANS_API . "/$pid",
+                'next' => GET_TRANS_API . "/$next"
+            ];
+        }
+
         $retdata = $this->getOne($pid)->getRetdata();
 
         $trans = new Trans();
@@ -423,6 +436,7 @@ class Problem extends BaseService
 
         $retdata = (object)[
             'problem' => $retdata->problem,
+            'page'=>$page,
             'trans'=> (object)[
                 'title'=> $trans_title,
                 'optionAr'=>$trans_options,

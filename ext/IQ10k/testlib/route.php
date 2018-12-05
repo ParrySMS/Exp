@@ -141,7 +141,7 @@ $app->group('/trans',function (){
     $this->get('/{pid}', function ($request, $response, array $args) {
         $pid = isset($args['pid']) ? $args['pid'] : null;
         $c_gp = new tlApp\controller\GetProblem();
-        $c_gp->withPidNear($pid,true);
+        $c_gp->withPid($pid,true);
         return $response->withStatus($c_gp->getStatus());
     });
 
