@@ -7,16 +7,25 @@
  */
 require_once 'File.php';
 
-$path1 = './test3.md';
-$path2 = './check.cpp';
+$path1 = 'D:\Dev\Exp\Algorithm\DPcnki\test1.md';
+//$path1 = 'D:\Dev\Exp\Algorithm\DPcnki\test3.md';
+//$path1 = './test3.md';
+$path2 = 'D:\Dev\Exp\Algorithm\DPcnki\test2.md';
+//$path2 = 'D:\Dev\Exp\Algorithm\DPcnki\check.cpp';
+//$path2 = './check.cpp';
 //相似度
-define('SIMILARITY', 0.85);
-define('ECHO_MXD', false);
+define('SIMILARITY', 0.95);
+define('ECHO_MXD', true);
+define('ECHO_MX_STEP', true);
+define('ECHO_MX_NUM', true);
 define('ECHO_REPEATED_LINE', true);
 
 
 $file1 = new File($path1);
 $file2 = new File($path2);
+
+//$file1->var_tran();
+//$file2->var_tran();
 
 $mx_d = [];//Dij的二维数组
 $line_num1 = sizeof($file1->rows); //标记的行数
@@ -54,8 +63,10 @@ echo PHP_EOL . 'Repeated:' . $repeated . PHP_EOL;
 
 $min_line_num = $line_num1 > $line_num2 ? $line_num2 : $line_num1;
 
-if ($min_line_num> 1) { //计算LCS的相似度 超过一个才有比例的意义
-    echo ((float)$repeated / $min_line_num);
+echo 'MIN LINE:'.$min_line_num.PHP_EOL;
+
+if ($min_line_num > 1) { //计算LCS的相似度 超过一个才有比例的意义
+    echo((float)$repeated / $min_line_num);
 } else {//分母0
     echo 0;
 }
@@ -81,15 +92,20 @@ function repeatedLine(array $d, File $f1, File $f2)
     $len1 = sizeof($file_rows1);
     $len2 = sizeof($file_rows2);
     for ($i = 0; $i < $len1 + 1; $i++) {
-        $mx_num = [];
-        $mx_step = [];
+        $mx_num[$i] = [];
+        $mx_step[$i] = [];
+        for ($j = 0; $j < $len2 + 1; $j++) {
+            $mx_num[$i][$j] = 0;
+            $mx_step[$i][$j] = -1;
+
+        }
     }
 
     //计算两个文件里的逐个行
     for ($i = 0; $i < $len1 + 1; $i++) {
         for ($j = 0; $j < $len2 + 1; $j++) {
 
-            if (!$i || !$j) { //i j其中一个是0 边界
+            if ($i==0 || $j==0) { //i j其中一个是0 边界
                 $mx_num[$i][$j] = 0;
                 $mx_step[$i][$j] = -1;
 
@@ -110,12 +126,12 @@ function repeatedLine(array $d, File $f1, File $f2)
                 } else if ($mx_num[$i - 1][$j] > $mx_num[$i][$j - 1]) {
                     //切row1
                     $mx_num[$i][$j] = $mx_num[$i - 1][$j];
-                    $mx_step[$i][$j] = 1; // 左
+                    $mx_step[$i][$j] = 2; // 上
 
                 } else { //$mx_num[$i-1,$j] < $mx_num[$i,$j-1]
                     //切row2
                     $mx_num[$i][$j] = $mx_num[$i][$j - 1];
-                    $mx_step[$i][$j] = 2; // 上
+                    $mx_step[$i][$j] = 1; // 左
                 }
 
             }//行不相等
@@ -134,8 +150,31 @@ function repeatedLine(array $d, File $f1, File $f2)
                 }
             }
         }
-
     }
+
+    if (ECHO_MX_STEP) {
+        echo PHP_EOL;
+        for ($i = 0; $i < $len1 + 1; $i++) {
+            for ($j = 0; $j < $len2 + 1; $j++) {
+                echo $mx_step[$i][$j].'  ';
+            }
+            echo PHP_EOL;
+        }
+    }
+
+    if (ECHO_MX_NUM) {
+        echo PHP_EOL;
+        for ($i = 0; $i < $len1 + 1; $i++) {
+            for ($j = 0; $j < $len2 + 1; $j++) {
+                echo $mx_num[$i][$j].'  ';
+            }
+            echo PHP_EOL;
+        }
+    }
+
+
     //返回右下角的最大重复行数
-    return $mx_num[$len1][$len2];
+    return $mx_num[$len2][$len1];
 }
+
+

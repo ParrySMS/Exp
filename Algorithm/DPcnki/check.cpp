@@ -8,11 +8,11 @@
 using namespace std;
 
 //var`
-#define FILE1 "B2.txt"
-#define FILE2 "A2.txt"
+//#define FILE1 "B2.txt"
+//#define FILE2 "A2.txt"
 
-//#define FILE1 "test1.txt"
-//#define FILE2 "test2.txt"
+#define FILE1 "test1.md"
+#define FILE2 "test2.md"
 
 const float SIMIRATIO = 0.70; //the params r
 const int LINES = 500;//max limited lines number
@@ -188,7 +188,7 @@ float getSimi(string line_a,string line_b) {
 //	cout<<"LCS:"<<mx_len[len_a][len_b]<<endl;
 //	cout<<"min:"<<min<<endl;
 
-	return min == 0? 0 : ((float)mx_len[len_a][len_b])/min;
+	return min <= 1? 0 : ((float)mx_len[len_a][len_b])/min;
 }
 
 
@@ -240,12 +240,12 @@ int getRepeatedNum(int** mx_d,int numLine,int numCol) {
 
 			} else if(mx_len[i-1][j] > mx_len[i][j-1]) { //cut line_a
 				mx_len[i][j] = mx_len[i-1][j];
-				mx_step[i][j] = 1; // ←
+				mx_step[i][j] = 2; // ↑
 
 			} else { //mx_len[i-1,j] < mx_len[i,j-1]
 				//cut line_b
 				mx_len[i][j] = mx_len[i][j-1];
-				mx_step[i][j] = 2; // ↑
+				mx_step[i][j] = 1; // ←
 			}
 
 		}//for j
