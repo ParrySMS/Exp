@@ -391,10 +391,10 @@ class Problem extends BaseService
             $pre_id = $this->pro->getTransPre($pid);
              // $pre = is_numeric($pre_id) ? GET_TRANS_API . "/$pre_id" : null;
             //如果到了尽头那就输出自己原页面
-            $pre_id = is_numeric($pre_id) ? $pre_id: $pid;
+            $pre_id = is_numeric($pre_id) ? (int)$pre_id: $pid;
             $next_id = $this->pro->getTransNext($pid);
             // $next = is_numeric($pre_id) ? GET_TRANS_API . "/$next_id" : null;
-             $next_id = is_numeric($next_id) ? $next_id: $pid;
+             $next_id = is_numeric($next_id) ? (int)$next_id: $pid;
 
             $page_id = (object)[
                 'pre' => $pre_id,
