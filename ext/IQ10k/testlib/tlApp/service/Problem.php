@@ -385,19 +385,22 @@ class Problem extends BaseService
     public
     function getTrans($pid,$get_next = true)
     {
-        $page = null;
+        $page_id = null;
         // 获取翻译上一个下一个id
         if($get_next) {
             $pre_id = $this->pro->getTransPre($pid);
-            $pre = is_numeric($pre_id) ? GET_TRANS_API . "/$pre_id" : null;
-
+             // $pre = is_numeric($pre_id) ? GET_TRANS_API . "/$pre_id" : null;
+            //如果到了尽头那就输出自己原页面
+            $pre_id = is_numeric($pre_id) ? $pre_id: $pid;
             $next_id = $this->pro->getTransNext($pid);
-            $next = is_numeric($pre_id) ? GET_TRANS_API . "/$next_id" : null;
-            
-            $page = (object)[
-                'pre' => $pre,
-                'self' => GET_TRANS_API . "/$pid",
-                'next' => $next,
+            // $next = is_numeric($pre_id) ? GET_TRANS_API . "/$next_id" : null;
+             $next_id = is_numeric($next_id) ? $next_id: $pid;
+
+            $page_id = (object)[
+                'pre' => $pre_id,
+                //'self' => GET_TRANS_API . "/$pid",
+                'self' => $pid,                
+                'next' => $next_id,
             ];
         }
 
@@ -440,7 +443,7 @@ class Problem extends BaseService
 
         $retdata = (object)[
             'problem' => $retdata->problem,
-            'page'=>$page,
+            'page_id'=>$page_id,
             'trans'=> (object)[
                 'title'=> $trans_title,
                 'optionAr'=>$trans_options,
