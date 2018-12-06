@@ -42,10 +42,45 @@ class File
             $regex = '/ *|\s*|\r*|\n*|\t*/';
             $t = (string)preg_replace($regex, "", trim(fgets($this->io)));;
 //            echo 'read:line '.$t.PHP_EOL;
-            $this->rows[] = $t;
+            if (!empty($t)) {
+                $this->rows[] = $t;
+            }
         }
     }
 
+
+    /**
+     *  todo 基于变量替换的查重
+     */
+    public function var_tran()
+    {
+        $var_origin = [];
+        foreach ($this->rows as & $t) {
+            $var_origin[] = $this->get_between($t, '$', '=');
+        }
+
+        $var_name = 'a';
+        for ($i = 0; $i < sizeof($var_origin); $i++, $var_name++) {
+            for ($j = 0; $j < sizeof($this->rows); $j++) {
+                $this->rows[$j] = str_replace($var_origin[$i], '', $this->rows[$j]);
+            }
+
+        }
+    }
+
+    /** 获取中间的字符
+     * @param $input
+     * @param $start
+     * @param $end
+     * @return bool|string
+     */
+    public function get_between($input, $start, $end)
+    {
+        $substr = substr($input, strlen($start) + strpos($input, $start), (strlen($input) - strpos($input, $end)) * (-1));
+
+        return $substr;
+
+    }
 
     /** 计算两个行的相似度
      * 使用LCS算法
@@ -76,13 +111,13 @@ class File
 //                echo "char1:".substr($row1,$i - 1,1).PHP_EOL;
 //                echo "char2:".substr($row2,$j - 1,1).PHP_EOL;
 
-                if ($i==0 || $j==0) { //i j其中一个是0 边界
+                if ($i == 0 || $j == 0) { //i j其中一个是0 边界
                     $mx_num[$i][$j] = 0;
                     $mx_step[$i][$j] = -1;
 
                     //字符串从1开始
-                } elseif (substr($row1,$i - 1,1)
-                    == substr($row2,$j - 1,1) ){//字符相等
+                } elseif (substr($row1, $i - 1, 1)
+                    == substr($row2, $j - 1, 1)) {//字符相等
 
 
                     $mx_num[$i][$j] = $mx_num[$i - 1][$j - 1] + 1;
@@ -115,7 +150,7 @@ class File
 
         $min_len = $len1 > $len2 ? $len2 : $len1;
 
-        if ($min_len>1) { //计算LCS的相似度 超过一个字符才有比例的意义
+        if ($min_len > 1) { //计算LCS的相似度 超过一个字符才有比例的意义
             return ((float)$mx_num[$len1][$len2]) / $min_len;
         } else {//分母0
             return 0;
