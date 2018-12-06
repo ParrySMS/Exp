@@ -548,16 +548,28 @@ class Problem extends BaseDao
      */
     public function getTransNext($pid)
     {
-        $t = $this::$T_TRANS_PROBLEM;
+        $ts = [
+            $this::$T_TRANS_PROBLEM,
+            $this::$T_TRANS_OPTION,
+            $this::$T_TRANS_HINT,
+            $this::$T_TRANS_ANSWER
+        ];
 
-        $next = $this->database->get($t,'pid',[
-            'AND'=>[
-                'pid[<]'=>$pid
-            ],
-            'ORDER'=>[
-                'pid'=>'DESC'
-            ]
-        ]);
+        $next = null;
+        foreach ($ts as $t) {
+            $id = $this->database->get($t, 'pid', [
+                'AND' => [
+                    'pid[<]' => $pid
+                ],
+                'ORDER' => [
+                    'pid' => 'DESC'
+                ]
+            ]);
+
+            if(empty($next) || (int)$id > (int)$next){
+                $next = $id;
+            }
+        }
 
         return $next;
         
@@ -569,17 +581,28 @@ class Problem extends BaseDao
      */
     public function getTransPre($pid)
     {
-        $t = $this::$T_TRANS_PROBLEM;
+        $ts = [
+            $this::$T_TRANS_PROBLEM,
+            $this::$T_TRANS_OPTION,
+            $this::$T_TRANS_HINT,
+            $this::$T_TRANS_ANSWER
+        ];
 
-        $pre = $this->database->get($t,'pid',[
-            'AND'=>[
-                'pid[>]'=>$pid
-            ],
-            'ORDER'=>[
-                'pid'=>'ASC'
-            ]
-        ]);
+        $pre = null;
+        foreach ($ts as $t) {
+            $id = $this->database->get($t, 'pid', [
+                'AND' => [
+                    'pid[>]' => $pid
+                ],
+                'ORDER' => [
+                    'pid' => 'ASC'
+                ]
+            ]);
 
+            if(empty($pre) || (int)$id < (int)$pre){
+                $pre = $id;
+            }
+        }
         return $pre;
 
     }
