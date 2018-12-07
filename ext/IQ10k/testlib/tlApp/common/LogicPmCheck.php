@@ -40,7 +40,7 @@ class LogicPmCheck extends PmCheck
         //参数范围定义检查
         $this->proRegionCheck($problem_info);
 
-        //todo 临时关闭 题型限制逻辑检查
+        // 题型限制逻辑检查
         $this->proTypeCheck($problem_info);
 
         $this->problem_info = $problem_info;

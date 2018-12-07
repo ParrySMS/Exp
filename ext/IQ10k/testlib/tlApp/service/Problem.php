@@ -125,8 +125,8 @@ class Problem extends BaseService
         //新选项参数默认空
         unset($new_oids);
         $new_oids = [];
-        //准备更新的选项参数
-        $new_options = $problem_info['options'];
+        // 准备更新的选项参数
+        $new_options = isset($problem_info['options'])?$problem_info['options']:[];
         //拿到已有选项的集合
         $op = new Option();
         $option_ids = $this->pro->getOids($pid);
