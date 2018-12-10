@@ -1,6 +1,6 @@
 #include <iostream>
 
-#define NULL_INT 987548987 
+#define NULL_INT 987548987
 //rand
 using namespace std;
 int* hashInit(int m,int *data,int n);
@@ -38,31 +38,29 @@ int main() {
 
 
 int* hashInit(int m,int *data,int n) {
-	int i,hashkey,move;
+	int i,key,hashkey,move,di;
 	int* table = new int[m];
 	//init
 	for(i=0; i<m; i++) {
 		table[i] = NULL_INT;
 	}
 
-
 	//filled
 	for(i=0; i<n; i++) {
-		hashkey = data[i]%11;
+		key = data[i]%11;//first time
 
-		move=0;
+		move = 0;
+		di = 1;//offset
+		hashkey = key;
 		while(move++<m+1) {//avoid endless loop
-
-			if(hashkey>11) {
-				hashkey -= 12;
-			}
 
 			if(table[hashkey] == NULL_INT) {
 				table[hashkey] = data[i];
 				break;
 			}
-			//else
-			hashkey++;
+			//else mean conflick
+			hashkey = (key+di) % m;
+			di++;
 		}
 	}
 
@@ -84,23 +82,17 @@ int* hashInit(int m,int *data,int n) {
 }
 
 void hashSearch(int content,int* hash_table,int m) {
-	int i,key,step = 0,status=0;
+	int i,key,step = 0,status=0,di=1;
+	//di:offset
 	key = content%11;
-	for(i=key,step = 1; hash_table[i] != NULL_INT; step++) {
-
-		if(i>11) {
-			i-=12;
-		}
+	for(i=key,step = 1; hash_table[i] != NULL_INT; step++,di++) {
 
 		if(hash_table[i] == content) {
 			status = 1;
 			break;
 		}
-		//else
-		i++;
-		if(i>11) { //keep hash_table[i] valid
-			i-=12;
-		}
+		//else mean conflick
+		i = (key+di) % m;
 	}
 
 	cout<<status<<" "<<step;
