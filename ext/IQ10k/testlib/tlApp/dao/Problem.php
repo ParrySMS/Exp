@@ -375,7 +375,8 @@ class Problem extends BaseDao
         ], [
             'AND' => [
                 'p.id' => $pid,
-                'p.visible[!]' => VISIBLE_DELETE
+                'p.visible[!]' => VISIBLE_DELETE,
+                'h.visible[!]' => VISIBLE_DELETE
             ]
         ]);
 
