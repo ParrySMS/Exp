@@ -1,6 +1,7 @@
 #include <iostream>
 
-#define NULL_INT -90909090
+#define NULL_INT 987548987 
+//rand
 using namespace std;
 int* hashInit(int m,int *data,int n);
 void hashSearch(int content,int* hashTable,int n);
@@ -37,23 +38,25 @@ int main() {
 
 
 int* hashInit(int m,int *data,int n) {
-	int i,hashkey;
-	int* table = new int[m+1];
+	int i,hashkey,move;
+	int* table = new int[m];
 	//init
-	for(i=0; i<m+1; i++) {
+	for(i=0; i<m; i++) {
 		table[i] = NULL_INT;
 	}
 
+
 	//filled
-	//todo from 0 to mark ,round roop 30 move to front
 	for(i=0; i<n; i++) {
 		hashkey = data[i]%11;
-		
-		if(hashkey == 0) {
-			hashkey++;
-		}
-		
-		while(hashkey<m) {
+
+		move=0;
+		while(move++<m+1) {//avoid endless loop
+
+			if(hashkey>11) {
+				hashkey -= 12;
+			}
+
 			if(table[hashkey] == NULL_INT) {
 				table[hashkey] = data[i];
 				break;
@@ -63,17 +66,18 @@ int* hashInit(int m,int *data,int n) {
 		}
 	}
 
-	for(i=1; i<m+1; i++) {
+	for(i=0; i<m; i++) {
 		if(table[i] == NULL_INT) {
 			cout<<"NULL";
 		} else {
 			cout<<table[i];
 		}
 
-		if(i<m) {
-			cout<<" "<<endl;
+		if(i<m-1) {
+			cout<<" ";
 		}
 	}
+	cout<<endl;
 
 	return table;
 
@@ -81,18 +85,27 @@ int* hashInit(int m,int *data,int n) {
 
 void hashSearch(int content,int* hash_table,int m) {
 	int i,key,step = 0,status=0;
-	key = content%11+1;
-	for(i=key,step = 1; i<m; i++,step++) {
-		if(hash_table[i]==content) {
-			status = 1;
+	key = content%11;
+	for(i=key,step = 1; hash_table[i] != NULL_INT; step++) {
 
+		if(i>11) {
+			i-=12;
+		}
+
+		if(hash_table[i] == content) {
+			status = 1;
 			break;
+		}
+		//else
+		i++;
+		if(i>11) { //keep hash_table[i] valid
+			i-=12;
 		}
 	}
 
 	cout<<status<<" "<<step;
 	if(status) {
-		cout<<" "<<i;
+		cout<<" "<<i+1;
 	}
 	cout<<endl;
 }
