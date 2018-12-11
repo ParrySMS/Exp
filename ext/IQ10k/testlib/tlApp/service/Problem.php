@@ -351,6 +351,10 @@ class Problem extends BaseService
     {
         //先获取在主体题目信息（可能有hint）
         $pro_data = $this->pro->selectOne($pid);
+        //取提示
+        $h = new Hint();
+        $pro_data['hint'] = $h->getOne($pid);
+
         $pro_data['answers'] = json_decode($pro_data['answers']);
         //然后获取选项信息
         $oids = json_decode($pro_data['option_ids']);

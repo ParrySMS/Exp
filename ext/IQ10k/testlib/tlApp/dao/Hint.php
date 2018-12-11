@@ -7,6 +7,7 @@
  */
 
 namespace tlApp\dao;
+
 use \Exception;
 
 class Hint extends BaseDao
@@ -32,11 +33,11 @@ class Hint extends BaseDao
     {
         $pdo = $this->database->update($this->table, [
             'hint' => $hint,
-            'time'=>date(DB_TIME_FORMAT)
-        ],[
-            'AND'=>[
-                'pid'=>$pid,
-                'visible[!]'=>VISIBLE_DELETE
+            'time' => date(DB_TIME_FORMAT)
+        ], [
+            'AND' => [
+                'pid' => $pid,
+                'visible[!]' => VISIBLE_DELETE
             ]
         ]);
 
@@ -46,7 +47,7 @@ class Hint extends BaseDao
         if (!is_numeric($affected) || $affected > 1) {
 //            var_dump($affected);
 //            $this->database->error();
-            throw new Exception(__CLASS__ .'->'. __FUNCTION__ . '(): error', 500);
+            throw new Exception(__CLASS__ . '->' . __FUNCTION__ . '(): error', 500);
         }
     }
 
@@ -57,10 +58,10 @@ class Hint extends BaseDao
      */
     public function has($pid)
     {
-        $has = $this->database->has($this->table,[
-            'AND'=>[
-                'pid'=>$pid,
-                'visible[!]'=>VISIBLE_DELETE
+        $has = $this->database->has($this->table, [
+            'AND' => [
+                'pid' => $pid,
+                'visible[!]' => VISIBLE_DELETE
             ]
         ]);
 
@@ -73,7 +74,7 @@ class Hint extends BaseDao
      * @param $hint
      * @throws Exception
      */
-    public function insert($pid,$hint)
+    public function insert($pid, $hint)
     {
         $pdo = $this->database->insert($this->table, [
             'pid' => $pid,
@@ -94,23 +95,39 @@ class Hint extends BaseDao
      * @param int $visible
      * @throws Exception
      */
-    public function setVisible($pid,$visible = VISIBLE_DELETE)
+    public function setVisible($pid, $visible = VISIBLE_DELETE)
     {
         $pdo = $this->database->update($this->table, [
             'visible' => $visible,
-            'time'=>date(DB_TIME_FORMAT)
-        ],[
-            'AND'=>[
-                'pid'=>$pid,
-                'visible[!]'=>VISIBLE_DELETE
+            'time' => date(DB_TIME_FORMAT)
+        ], [
+            'AND' => [
+                'pid' => $pid,
+                'visible[!]' => VISIBLE_DELETE
             ]
         ]);
 
         $affected = $pdo->rowCount();
 
         if (!is_numeric($affected) || $affected != 1) {
-            throw new Exception(__CLASS__ .'->'. __FUNCTION__ . '(): error', 500);
+            throw new Exception(__CLASS__ . '->' . __FUNCTION__ . '(): error', 500);
         }
 
+    }
+
+    /** 获取一条提示
+     * @param $pid
+     * @return null|string
+     */
+    public function getOne($pid)
+    {
+        $hint = $this->database->get($this->table, 'hint', [
+            'AND' => [
+                'pid' => $pid,
+                'visible[!]' => VISIBLE_DELETE
+            ]
+        ]);
+
+        return is_string($hint)? $hint : null;
     }
 }

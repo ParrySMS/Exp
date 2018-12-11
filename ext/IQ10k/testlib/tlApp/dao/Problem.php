@@ -346,18 +346,18 @@ class Problem extends BaseDao
     }
 
 
-    /** 根据pid 返回一个题目信息 连表提示 评论单独取
+    /** 根据pid 返回一个题目信息 ，提示和评论单独取
      * @param $pid
      * @return array|bool
      * @throws Exception
      */
     public function selectOne($pid)
     {
-        $table_h = $this::$T_HINT;
+//        $table_h = $this::$T_HINT;
 
         $data = $this->database->select($this->table . '(p)', [
-            "[>]" . "$table_h" . "(h)" => ['p.id' => 'pid']
-        ], [
+//            "[>]" . "$table_h" . "(h)" => ['p.id' => 'pid']
+//        ], [
             'p.id',
             'p.title',
             'p.title_pic',
@@ -371,12 +371,13 @@ class Problem extends BaseDao
             'p.edit_time',
             'p.total_edit',
 //            'p.comment_num',
-            'h.hint',
+//            'h.hint',
         ], [
             'AND' => [
                 'p.id' => $pid,
                 'p.visible[!]' => VISIBLE_DELETE,
-                'h.visible[!]' => VISIBLE_DELETE
+                //todo 这个h 可能是pid 1: 0/1/n 最好还是拆掉把
+//                'h.visible[!]' => VISIBLE_DELETE
             ]
         ]);
 
