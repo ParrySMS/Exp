@@ -9,15 +9,15 @@
 
 using namespace std;
 
-const bool ECHO_MAP = false;//输出最开始的邻接矩阵
-const bool ECHO_ADDED_FLOW = false;//输出每次加载的流量
-const bool ECHO_MAX_FLOW = false;//输出最大流
+const bool ECHO_MAP = true;//输出最开始的邻接矩阵
+const bool ECHO_ADDED_FLOW = true;//输出每次加载的流量
+const bool ECHO_MAX_FLOW = true;//输出最大流
 const int TEST_TIMES = 10;
 const int NULL_NODE = -1;
 const int SOURCE_NODE = -2;
-const int MAX = 1970000;
+const int MAX = 500;
 const int MAX_C = 50;
-const int MAX_E = 5530000;
+const int MAX_E = 2000;
 
 //简单的节点对象做数据结构
 class Node {
@@ -65,7 +65,7 @@ void getRandMap(int mx[][MAX],int n,int e) {
 	//end-flow
 	for(i=0; i<end_num; i++) {
 		n1 = getRand(1+(n/2),n-2);
-		mx[n1][n-1] = getRand(0,50);
+		mx[n1][n-1] = getRand(0,MAX_C);
 	}
 
 }
@@ -106,17 +106,13 @@ int main() {
 	int mx_c[MAX][MAX];//容量矩阵 即邻接矩阵
 	int mx_f[MAX][MAX];//流网络矩阵
 
-//	cin>>node_num>>edge_num;
-	node_num = 1965207;
-	edge_num = 5533214;
+	cin>>node_num>>edge_num;
+//	node_num = 1965207;
+//	edge_num = 5533214;
 
 	int v1,v2,c;
 	for(i=0; i<edge_num; i++) { //记录连接点与容量
-//		cin>>v1>>v2>>c;
-		cin>>v1>>v2;
-//		v1 = getRand(0,n-2);
-//		v2 = getRand(0,n-1);
-		c = getRand(0,MAX_C);
+		cin>>v1>>v2>>c;
 		mx_c[v1][v2] = c;
 	}
 
