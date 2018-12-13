@@ -1,21 +1,23 @@
 #include <iostream>
 #include <queue>
-#include <ctime>
+#include <iomanip>
 #include <stdio.h>
 #include <stdlib.h>
-#include <fstream>
-#include <time.h>
-#include <iomanip>
+//#include <fstream>
+//#include <time.h>
+//#include <ctime>
+
 
 using namespace std;
 
-const bool ECHO_MAP = true;//输出最开始的邻接矩阵
-const bool ECHO_ADDED_FLOW = true;//输出每次加载的流量
+const bool ECHO_MAP = false;//输出最开始的邻接矩阵
+const bool ECHO_ADDED_FLOW = false;//输出每次加载的流量
 const bool ECHO_MAX_FLOW = true;//输出最大流
-const int TEST_TIMES = 10;
+const bool ECHO_TIME = false;
+//const int TEST_TIMES = 10;
 const int NULL_NODE = -1;
 const int SOURCE_NODE = -2;
-const int MAX = 500;
+const int MAX = 2000;
 const int MAX_C = 50;
 const int MAX_E = 2000;
 
@@ -34,18 +36,17 @@ class Node {
 };
 
 
-void getRandMap(int mx_c[][MAX],int n,int e) ;//产生一个随机的图
-void initMxFlow(int mx[][MAX],int n) ;//初始化流矩阵
-void echoMx(int mx[][MAX],int x,int y) ;//输出一个矩阵
+void getRandMap(int **mx_c,int n,int e) ;//产生一个随机的图
+void echoMx(int **mx,int x,int y) ;//输出一个矩阵
 void initNode(Node node[MAX],int n);//初始化节点对象数组
 inline int getRand(int a ,int b) {//产生区间[a,b]上的随机数
 	return (int) ( ((double)rand()/RAND_MAX)*(b-a) + a);
 };
 
-//产生一个随机的图
-void getRandMap(int mx[][MAX],int n,int e) {
+//todo 产生一个随机的图
+void getRandMap(int **mx,int n,int e) {
 	int i,j,n1,n2;
-	int end_num = 2;
+	int end_num = 10;
 //	srand((int)clock());
 
 	//init 0
@@ -56,32 +57,22 @@ void getRandMap(int mx[][MAX],int n,int e) {
 	}
 
 	//filled rand
-	for(i=0; i<e-end_num; i++) {
-		n1 = getRand(0,n-2);
-		n2 = getRand(0,n-2);
+	for(i=0; i<e-2*end_num; i++) {
+		n1 = getRand(end_num,n-2-end_num);
+		n2 = getRand(end_num,n-2-end_num);
 		mx[n1][n2] = getRand(0,50);
 	}
 
-	//end-flow
+	//start-end-flow
 	for(i=0; i<end_num; i++) {
-		n1 = getRand(1+(n/2),n-2);
-		mx[n1][n-1] = getRand(0,MAX_C);
+		mx[0][i+1] = getRand(0,MAX_C);
+		mx[end_num-1][end_num-2-i] = getRand(0,MAX_C);
 	}
 
-}
-
-//初始化流矩阵
-void initMxFlow(int mx[][MAX],int n) {
-	int i,j;
-	for(i=0; i<n; i++) {
-		for(j=0; j<n; j++) {
-			mx[i][j] = 0;
-		}
-	}
 }
 
 //输出一个矩阵
-void echoMx(int mx[][MAX],int x,int y) {
+void echoMx(int** mx,int x,int y) {
 	int i,j;
 	for(i=0; i<x; i++) {
 		for(j=0; j<y; j++) {
@@ -100,41 +91,62 @@ void initNode(Node node[MAX],int n) {
 }
 
 int main() {
-	int i,j,k,node_num,edge_num,head,remaining;
+	int i,j,k,t,node_num,edge_num,head,remaining,min_flow;
+	queue<int> q;//找路径的队列
+	
+//	clock_t time_start, time_end,time,time_sum = 0;
 
-	clock_t time_start, time_end,time,time_sum = 0;
-	int mx_c[MAX][MAX];//容量矩阵 即邻接矩阵
-	int mx_f[MAX][MAX];//流网络矩阵
-
-	cin>>node_num>>edge_num;
-//	node_num = 1965207;
-//	edge_num = 5533214;
-
-	int v1,v2,c;
-	for(i=0; i<edge_num; i++) { //记录连接点与容量
-		cin>>v1>>v2>>c;
-		mx_c[v1][v2] = c;
-	}
+	int **mx_c;//容量矩阵 即邻接矩阵
+	int **mx_f;//流网络矩阵
 
 
-	for(k=0; k<TEST_TIMES; k++) {
-		//初始化图
-//		getRandMap(mx_c,node_num,edge_num);
-		//初始化流矩阵
-		initMxFlow(mx_f,node_num);
+	cin>>t; //测试次数
+	for(k=1; k<=t; k++) {
+		cin>>node_num>>edge_num;
+//	node_num = 50;
+//	edge_num = 500;
 
-		if(ECHO_MAP) {
-			echoMx(mx_c,node_num,node_num);
+		mx_c = new int*[node_num]; //初始化矩阵
+		mx_f = new int*[node_num];
+		for(i=0; i<node_num; i++) {
+			mx_c[i] = new int[node_num]();
+			mx_f[i] = new int[node_num]();
+			for(j=0; j<node_num; j++) {
+				mx_c[i][j]=0;
+				mx_f[i][j]=0;
+			}
 		}
 
-		int min_flow = MAX;//初始化最小流
+
+		int v1,v2,c;
+		for(i=0; i<edge_num; i++) { //记录连接点与容量
+			cin>>v1>>v2>>c;
+			//输入是从1开始的
+			mx_c[v1-1][v2-1] = c;
+		}
+		//初始化图
+//	getRandMap(mx_c,node_num,edge_num);
+
+
+
+
+
+		if(ECHO_MAP) {
+			cout<<"c:"<<endl;
+			echoMx(mx_c,node_num,node_num);
+			cout<<"f:"<<endl;
+			echoMx(mx_f,node_num,node_num);
+		}
+
+		min_flow = MAX;//初始化最小流
 		Node node[MAX]; //节点对象数组
 		initNode(node,node_num);
 		node[0].pre = SOURCE_NODE;//原点
-		queue<int> q;//找路径的队列
+
 		q.push(0);//原点开始
 
-		time_start = clock();
+//		time_start = clock();
+
 		while(!q.empty()) {//找最大流
 			//取一个队首出队 分别计算正边反边
 			head = q.front();
@@ -176,7 +188,7 @@ int main() {
 			}
 
 			//end
-			if(node[node_num-1].pre > 0) { //最后的汇点已经被标记 找到一个 进行加载
+			if(node[node_num-1].pre >= 0) { //最后的汇点已经被标记 找到一个 进行加载
 				//记录路径
 				int * path = new int [node_num];
 				int pre;
@@ -204,31 +216,47 @@ int main() {
 				min_flow = MAX;
 				initNode(node,node_num);
 				//clear queue
+				q.push(0);//源点入队列
 				while(q.front()!=0)
-					q.pop();
-				q.push(0);//原点开始
+					q.pop();//把其他节点清出队列
+
 				node[0].pre = SOURCE_NODE;//原点
+
+				delete []path;
 
 			}
 		}//end while
 		while(!q.empty())
 			q.pop();
-		time_end = clock();
-		if(ECHO_MAX_FLOW && k==0) {
+
+//	time_end = clock();
+
+		if(ECHO_MAX_FLOW) {
 			int max_flow = 0;
 			for(i=0; i<node_num; i++) {
 				max_flow += mx_f[0][i];
 			}
-			cout<<"max_flow:"<<max_flow<<endl;
+			cout<<"Case "<<k<<": "<<max_flow<<endl;
 		}
 
-		time = time_end - time_start;
-		time_sum += time;
-		cout<<"time:"<<time<<" ms"<<endl;
-	}
-	cout<<setiosflags(ios::fixed)<<setprecision(2);
-	cout<<"avg-time:"<<(double)time_sum/TEST_TIMES<<" ms"<<endl;
+		if(ECHO_TIME) {
 
+//			time = time_end - time_start;
+//			time_sum += time;
+//			cout<<"time:"<<time<<" ms"<<endl;
+		}
+
+		for(i=0; i<node_num; i++) {
+			delete [] mx_c[i];
+			delete [] mx_f[i];
+		}
+		delete []mx_c;
+		delete []mx_f;
+	}
+	if(ECHO_TIME) {
+//		cout<<setiosflags(ios::fixed)<<setprecision(2);
+//		cout<<"avg-time:"<<(double)time_sum/TEST_TIMES<<" ms"<<endl;
+	}
 
 
 	return 0;
