@@ -23,8 +23,62 @@ int main() {
 }
 
 void countFactor(char* name,int n,int *factor) {
-	//todo
+	int i,j,left=0,right=0;
+	for(i=n; i>0; i--) {
+
+		if(name[i] == '0') {
+			continue;
+		}
+
+		if(2*i>n) { //leaf
+			factor[i] = 0;
+			continue;
+		}
+
+
+		j = 2*i;
+		left = 0;
+		if(j<=n && name[j]!='0') {//has left
+			left++;
+			while(1) {//find path
+
+				if(2*j<=n && name[2*j] != '0') {
+					j =2*j;
+					left++;
+				} else if(2*j+1<=n && name[2*j+1] != '0') {
+					j =2*j+1;
+					left++;
+				} else {
+					break;
+				}
+			}
+		}
+
+		j = 2*i+1;
+		right = 0;
+		if(j<=n && name[j]!='0') {//has right
+			right++;
+			while(1) {//find path
+
+				if(2*j<=n && name[2*j] != '0') {
+					j =2*j;
+					right++;
+				} else if(2*j+1<=n && name[2*j+1] != '0') {
+					j =2*j+1;
+					right++;
+				} else {
+					break;
+				}
+			}
+		}
+		
+		factor[i] = left - right;
+
+	}
+
 }
+
+
 
 //ºóÐò
 void postOrder (char* name,int n,int *factor, int index) {
