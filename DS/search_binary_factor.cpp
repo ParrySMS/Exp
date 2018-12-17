@@ -16,7 +16,7 @@ int main() {
 		}
 
 		countFactor(name,n,factor);
-		postOrder(name,n,factor,1);
+		postOrder(name,n,factor,1);//from root
 
 	}
 	return 0;
