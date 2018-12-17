@@ -2,7 +2,7 @@
 ; make BTB useless
 
 ; init var
-	daddi $t0,$zero,10 ;10 is 010,mean 8
+	daddi $t0,$zero,10 ;
 	daddi $a0,$zero,0  ;init a = 0
 	daddi $s0,$zero,0 ;res of a < 0 
 	
