@@ -3,7 +3,7 @@
 
 
 max_t = 2;
-MX_D = 64;
+MX_D = 32;
 COL = 5;
 GROUP = 2*COL;
 myfun = @(block_struct) imresize(block_struct.data,0.15);
@@ -27,7 +27,7 @@ for t = 1:max_t
     imshow(im_b); title('blockproc');
     im_YCbCr = rgb2ycbcr(im_b);
     
-    subplot(2*max_i, COL, 3+(t-1)*GROUP);
+    subplot(2*max_t, COL, 3+(t-1)*GROUP);
     imshow(im_YCbCr); title('YCbCr image');
     
     % histogram equalization on the Y
@@ -35,22 +35,22 @@ for t = 1:max_t
     Y_H = histeq(Y);
     
     % Display the original image and the adjusted image
-    subplot(2*max_i, COL, 6+(t-1)*GROUP);
+    subplot(2*max_t, COL, 6+(t-1)*GROUP);
     imshow(Y); title('original Y');
-    subplot(2*max_i, COL, 7+(t-1)*GROUP);
+    subplot(2*max_t, COL, 7+(t-1)*GROUP);
     imshow(Y_H); title('adjusted Y');
     
     % Display a histogram of the image.
-    subplot(2*max_i, COL, 8+(t-1)*GROUP);
+    subplot(2*max_t, COL, 8+(t-1)*GROUP);
     imhist(Y,128); title('original Y');
     subplot(2*max_i, COL, 9+(t-1)*GROUP);
     imhist(Y_H,128); title('adjusted Y');
     
     im_YCbCr(:, :, 1) = Y_H;
     im_new_rgb = ycbcr2rgb(im_YCbCr);
-    subplot(2*max_i, COL, 4+(t-1)*GROUP);
+    subplot(2*max_t, COL, 4+(t-1)*GROUP);
     imshow(im_new_rgb); title('new RGB image');
-    subplot(2*max_i, COL, 5+(t-1)*GROUP);
+    subplot(2*max_t, COL, 5+(t-1)*GROUP);
     imshow(im_YCbCr); title('new YCbCr image');
     
     
