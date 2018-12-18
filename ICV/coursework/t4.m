@@ -13,11 +13,12 @@ for t = 1:2
         gray = rgb2gray(im_rgb1)
     else
         im_rgb2 = imread('N2.png');
-        gray = rgb2gray(im_rgb1);
+        gray = rgb2gray(im_rgb2);
     end
     
     subplot(2*max_t, COL, 1+(t-1)*GROUP);
     imshow(gray); title('original RGB-gray image');
+    
 %     To filter using border replication
     hor = medfilt2(gray,[1 5],'symmetric');
     ver =  medfilt2(hor,[5 1],'symmetric');
