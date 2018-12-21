@@ -7,7 +7,7 @@ GROUP = COL;
 for t = 1:2
     %     use 2 image
     if t == 1
-        im_rgb1 = imread('N1.png');
+        im_rgb1 = imread('img2.png');
         gray = rgb2gray(im_rgb1)
     else
         im_rgb2 = imread('N2.png');

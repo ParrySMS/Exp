@@ -44,7 +44,7 @@ KY0 = (mod(1/2 + (0:(N-1))/N, 1) - 1/2);
 KY1 = KY0 * (2*pi/dx);
 [KX,KY] = meshgrid(KX1,KY1);
 %Filter formulation
-lpf = (KX.*KX + KY.*KY < K0^2);
+lpf = (KX.*KX - KY.*KY > K0^2);
 %Filter Application
 rec = ifft2(lpf.*ff);
 %

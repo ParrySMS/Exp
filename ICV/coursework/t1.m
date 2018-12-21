@@ -48,5 +48,3 @@ for i = 1:max_i
     imshow(im_YCbCr); title('new YCbCr image');
     
 end
-
-
