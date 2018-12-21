@@ -23,16 +23,16 @@ $uid ='testuid';
 $http = new Http();//预定义的 http请求类
 try {
 
-    $quiz_json = $http->get(SEQ_URL, compact('uid'));
     //json 格式详见Seq内测接口说明文档
-
     echo 'GET quiz_json' . PHP_EOL;
+    $quiz_json = $http->get(SEQ_URL, compact('uid'));
 
+    //处理题目数据 获取输出数据
     $questionAr = json_decode($quiz_json);
     $output = json_encode(seqPredict($questionAr));
 
-    echo 'WRITE ' . OUTPUT_FILE_NAME . PHP_EOL;
     //写入文件
+    echo 'WRITE ' . OUTPUT_FILE_NAME . PHP_EOL;
     writeIn($output);
 
     echo 'done' . PHP_EOL;
