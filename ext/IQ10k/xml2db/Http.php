@@ -20,10 +20,12 @@ class Http
     }
 
 
-    /**
-     * 模拟get进行url请求
-     * @param string $url
-     * @param array $post_data
+    /** 模拟get进行url请求
+     * @param $url
+     * @param array $data
+     * @param bool $close 默认执行完毕之后关闭流
+     * @return mixed
+     * @throws Exception
      */
     public function get($url, array $data = [],$close = true)
     {
@@ -61,10 +63,12 @@ class Http
         }
     }
 
-    /**
-     * 模拟post进行url请求
-     * @param string $url
-     * @param array $post_data
+    /**  模拟post进行url请求
+     * @param $url
+     * @param array $data
+     * @param bool $close 默认执行完毕之后关闭流
+     * @return mixed
+     * @throws Exception
      */
     public function post($url, array $data = [],$close = true)
     {
