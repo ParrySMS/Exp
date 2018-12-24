@@ -28,43 +28,48 @@ int main() {
 
 
 void quickSort(int* ar, int low, int high,int len) {
-	int i,j,mid = ar[low];
+	int i,j;
+	int key = ar[low],key_index = low;
 
 	if (low >= high) {
 		return ;
 	}
 
-	cout<<"mid:"<<mid<<endl;
+//	cout<<"key:"<<key<<endl;
 
 	int first_index = low;
 	int last_index = high;
 
 	while(low!=high) {
-		while (ar[high] >= mid && low < high) { 	// [l--h] is [small--big]
+		while (ar[high] >= key && low < high) { 	// [l--h] is [small--big]
 			high--;
 		}
-
-		while (ar[low] <= mid && low < high) { 	// [l--h] is [small--big]
-			low++;
+		if(low<high) {
+			ar[key_index] = ar[high];
+			ar[high] = key;
+			key_index = high;
 		}
 
-		if(low<high) {
-			int t = ar[low];
-			ar[low] = ar[high];
-			ar[high] = t;
 
+		while (ar[low] <= key && low < high) { 	// [l--h] is [small--big]
+			low++;
+		}
+		if(low<high) {
+			ar[key_index] = ar[low];
+			ar[low] = key;
+			key_index = low;
 		}
 
 	}//WHILE
 
-	//low == high == mid
-	if (first_index != low) {
-		//first_index == mid_index not need to swap, just len = 1
-		//put mid to first(location of key)
-		ar[first_index] = ar[low];
-		//put key into mid
-		ar [low] = mid;
-	}
+//	//low == high == mid
+//	if (first_index != low) {
+//		//first_index == mid_index not need to swap, just len = 1
+//		//put mid to first(location of key)
+//		ar[first_index] = ar[low];
+//		//put key into mid
+//		ar [low] = key;
+//	}
 	//echo
 	cout<<ar[0];
 	for(i=1; i<len; i++) {
