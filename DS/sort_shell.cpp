@@ -28,29 +28,19 @@ int main() {
 
 
 void shellSort(int *ar,int len) {
-	int i,j,t,gap;
+	int i,j,k,t,gap;
 
-	gap = len/2;
-	bool add_flag = true;
-	while(gap>0) {
-//		cout<<"gap:"<<gap<<endl;
-		for(i=0; i<len; i+=gap) {
-			for(j=i; j<i+gap; j++) {
+	for(gap=len/2; gap>0; gap/=2) {
 
-				if(ar[j]<ar[j+gap]) {
-					t = ar[j];
-//					cout<<"t:"<<t<<endl;
-					ar[j] = ar[j+gap];
-					ar[j+gap] = t;
-				}
-			}
+		for(i=0; i<gap; i++) { //分组
 
-		}
-		
-		if(len%2==1 && gap==1 && add_flag == true) {
-			add_flag = false;
-		} else {
-			gap/=2;
+			for(j=i; j<len-gap; j+=gap) //对每组排序
+				for(k=j; k<len; k+=gap)
+					if(ar[j]<ar[k]) {
+						int t = ar[j];
+						ar[j] = ar[k];
+						ar[k] = t;
+					}
 		}
 		//echo
 		cout<<ar[0];
@@ -59,6 +49,7 @@ void shellSort(int *ar,int len) {
 		}
 		cout<<endl;
 	}
+
 }
 
 
