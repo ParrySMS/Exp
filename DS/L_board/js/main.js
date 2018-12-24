@@ -1,38 +1,72 @@
-var board = new Array();
+var board = [];
 var score = 0;
-var hasConflicted = new Array();
+var hasConflicted = [];
 
 var startx = 0;
 var starty = 0;
 var endx = 0;
 var endy = 0;
-var n = getQueryString('n');
+var n = getQueryString('k');
 
 var randx = 0;
 var randy = 0;
 
+var pieces = [];
+var len;
+var index = 0;
+var delay = 1500;
 $(document).ready(function () {
     prepareForMobile();
+    //初始化棋盘格
+    init();
     //后端决定随机位置
     // selectOne();
 
-})
+
+});
 
 function startCover() {
-    var url = './testJson.php?size='+n;
-    $.get(url, function (data) {
+    var url = './getResp.php?size=' + n;
+    $.getJSON(url, function (data) {
+        // alert("Data Loaded: " + data);
 
+        //第一个随机初始位置
+        var xi = data.initial_occupied_block.row;
+        var yi = data.initial_occupied_block.col;
+        showNumberWithAnimation(xi, yi, "black");
+
+        pieces = data.pieces;
+        len = pieces.length;
+        // alert("len: " + len);
+        setTimeout("setLBlocks()",delay);
 
     });
+}
 
-
-
+function setLBlocks() {
+    var i =index;
+    index++;
+    // alert("setB i: " + i);
+    var x0 = this.pieces[i].loc[0].row;
+    var y0 = pieces[i].loc[0].col;
+    var x1 = pieces[i].loc[1].row;
+    var y1 = pieces[i].loc[1].col;
+    var x2 = pieces[i].loc[2].row;
+    var y2 = pieces[i].loc[2].col;
+    var co = getRandomColor();
+    showNumberWithAnimation(x0, y0, co);
+    showNumberWithAnimation(x2, y2, co);
+    showNumberWithAnimation(x1, y1, co);
+    if(i<len-1) {
+        setTimeout("setLBlocks()", delay);
+    }
 }
 
 //随机颜色
 function getRandomColor() {
-    return "hsb(" + Math.random() + ", 1, 1)";
+    return '#' + ('00100' + (Math.random() * 0x1000000 << 0).toString(16)).substr(-6);
 }
+
 
 function getQueryString(name) {
     var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
@@ -60,17 +94,11 @@ function prepareForMobile() {
     $(".main-box").css("border-radius", 0.01 * cellSideLength);
 }
 
-function selectOne() {
-    //初始化棋盘格
-    init();
-    //随机生成一个位置
-    generateOneNumber();
-}
 
 function init() {
 
     if (n == null) {
-        n = Math.pow(2, 5);
+        n = Math.pow(2, 3);
     } else {
         n = Math.pow(2, n);
     }
@@ -89,8 +117,8 @@ function init() {
     }
 
     for (var i = 0; i < n; i++) {
-        board[i] = new Array();
-        hasConflicted[i] = new Array();
+        board[i] = [];
+        hasConflicted[i] = [];
         for (var j = 0; j < n; j++) {
             board[i][j] = 0;
             hasConflicted[i][j] = false;
@@ -130,6 +158,7 @@ function updateBoardView() {
     }
 }
 
+//随机生成一个位置
 function generateOneNumber() {
     if (nospace(board))
         return false;
@@ -165,22 +194,33 @@ function generateOneNumber() {
 
 }
 
+function showNumberWithAnimation(i, j,color) {
 
-function isgameover() {
-    if (nospace(board) && nomove(board)) {
-        gameover();
-    }
+    var numberCell = $('#number-cell-' + i + "-" + j);
+
+    numberCell.css("background-color", color)
+    numberCell.css("color", color)
+    // numberCell.text(getNumberText(randNumber))
+
+    numberCell.animate({
+        width: cellSideLength,
+        height: cellSideLength,
+        top: getPosTop(i, j),
+        left: getPosLeft(i, j)
+    }, 50);
 }
 
+documentWidth=window.screen.availWidth;
+gridContainerWidth=0.92*documentWidth;
+cellSideLength=0.18*documentWidth;
+cellSpace=0.04*documentWidth;
 
-function gameover() {
-    $(".over").show();
-    $(document).click(function () {
-        $(".over").hide()
-    })
+
+
+function getPosTop(i,j){
+    return cellSpace+i*(cellSpace+cellSideLength);
 }
 
-$("#bot").click(function () {
-    score = 0;
-    updateScore(score)
-})
+function getPosLeft(i,j){
+    return cellSpace+j*(cellSpace+cellSideLength);
+}
