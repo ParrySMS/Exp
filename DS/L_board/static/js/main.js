@@ -2,10 +2,6 @@ var board = [];
 var score = 0;
 var hasConflicted = [];
 
-var startx = 0;
-var starty = 0;
-var endx = 0;
-var endy = 0;
 var n = getQueryString('k');
 
 var randx = 0;
@@ -64,7 +60,7 @@ function setLBlocks() {
 
 //随机颜色
 function getRandomColor() {
-    return '#' + ('00100' + (Math.random() * 0x1000000 << 0).toString(16)).substr(-6);
+    return '#' + ('00100' + (Math.random()*Math.random() * 0x1000000 << 0).toString(16)).substr(-6);
 }
 
 
