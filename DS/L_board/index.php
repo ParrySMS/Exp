@@ -1,7 +1,11 @@
 <?php
+
+
 $n = empty($_GET['n']) ? 3 : $_GET['n'];
 
 $size = pow(2, $n);
+
+
 
 function echoMainBox($size)
 {
@@ -26,7 +30,7 @@ EOT;
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport"
           content="width=device-width,height=device-height,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
-    <title>2048</title>
+    <title>L型棋盘覆盖问题</title>
     <link href="style.css" type="text/css" rel="stylesheet"/>
     <script src="http://libs.baidu.com/jquery/1.9.0/jquery.min.js" type="text/javascript"></script>
     <script src="./js/Support.js"></script>
@@ -37,7 +41,7 @@ EOT;
 <body>
 <header>
     <h1>L型棋盘覆盖问题</h1>
-    <a href="javascript:newgame();" id="bot">开始覆盖</a>
+    <a href="javascript:startCover();" id="bot">开始覆盖</a>
 </header>
 
 <div id="main">

@@ -3,8 +3,8 @@ function showNumberWithAnimation(i, j, randNumber) {
     var numberCell = $('#number-cell-' + i + "-" + j);
 
     numberCell.css("background-color", getNumberBackgroundColor(randNumber))
-    numberCell.css("color", getNumberColor(randNumber))
-    numberCell.text(getNumberText(randNumber))
+    numberCell.css("color", "#000510")
+    // numberCell.text(getNumberText(randNumber))
 
     numberCell.animate({
         width: cellSideLength,
@@ -22,12 +22,12 @@ function showMoveAnimation(fromx, fromy, tox, toy) {
     }, 200)
 }
 
-function updateScore(score) {
-    $("#score").text(score)
-}
-
-$(function () {
-    $("#bot").click(function () {
-        updateScore(0)
-    })
-})
+// function updateScore(score) {
+//     $("#score").text(score)
+// }
+//
+// $(function () {
+//     $("#bot").click(function () {
+//         updateScore(0)
+//     })
+// })

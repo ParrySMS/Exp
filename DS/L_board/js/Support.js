@@ -32,29 +32,31 @@ function getNumberBackgroundColor(number){
 	return "black"
 }
 
-function getNumberText(number){
-	switch(number){
-		case 2:return "小白"; break;
-		case 4:return "实习生"; break;
-		case 8:return "程序员"; break;
-		case 16:return "工程师"; break;	
-		case 32:return "主管"; break;	
-		case 64:return "经理"; break;
-		case 128:return "总监"; break;
-		case 256:return "总经理"; break;	
-		case 512:return "副总裁"; break;	
-		case 1024:return "CEO"; break;	
-		case 2048:return "总裁"; break	;
-		case 4096:return "董事长"; break	;
-		case 8192:return "乔布斯"; break	;
-	}
-    return "black";
-}
+// function getNumberText(number){
+// 	switch(number){
+// 		case 2:return "小白"; break;
+// 		case 4:return "实习生"; break;
+// 		case 8:return "程序员"; break;
+// 		case 16:return "工程师"; break;
+// 		case 32:return "主管"; break;
+// 		case 64:return "经理"; break;
+// 		case 128:return "总监"; break;
+// 		case 256:return "总经理"; break;
+// 		case 512:return "副总裁"; break;
+// 		case 1024:return "CEO"; break;
+// 		case 2048:return "总裁"; break	;
+// 		case 4096:return "董事长"; break	;
+// 		case 8192:return "乔布斯"; break	;
+// 	}
+//     return "black";
+// }
+
 function getNumberColor(number){
 	if(number<=4)
 		return "#776e65";
 		
 	return "#ded0c2"
+
 }
 
 function nospace( board ){
