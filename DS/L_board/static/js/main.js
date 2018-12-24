@@ -26,7 +26,7 @@ $(document).ready(function () {
 });
 
 function startCover() {
-    var url = './getResp.php?size=' + n;
+    var url = './static/getResp.php?size=' + n;
     $.getJSON(url, function (data) {
         // alert("Data Loaded: " + data);
 

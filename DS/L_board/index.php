@@ -6,10 +6,8 @@ $k = empty($_GET['k']) ? 3 : $_GET['k'];
 $size = pow(2, $k);
 
 
-
 function echoMainBox($size)
 {
-
     for ($i = 0; $i < $size; $i++) {
         for ($j = 0; $j < $size; $j++) {
             print <<<EOT
@@ -31,9 +29,9 @@ EOT;
     <meta name="viewport"
           content="width=device-width,height=device-height,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
     <title>L型棋盘覆盖问题</title>
-    <link href="./css/style.css" type="text/css" rel="stylesheet"/>
-    <script src="./js/jquery-2.1.4.min.js" type="text/javascript"></script>
-    <script src="./js/main.js" type="text/javascript"></script>
+    <link href="./static/css/style.css" type="text/css" rel="stylesheet"/>
+    <script src="./static/js/jquery-2.1.4.min.js" type="text/javascript"></script>
+    <script src="./static/js/main.js" type="text/javascript"></script>
 </head>
 
 <body>
