@@ -1,77 +1,117 @@
 #include <iostream>
 #include <cstring>
+#include <cmath>
 #define MAX  200
 using namespace std;
-
+int compareString(string a,string b);
+void merge(string* ar,int low,int mid,int high);
+void mergeSort(string* ar,int low,int high) ;
 int main() {
 
-	int i,t,n;
-	string ar[MAX];
+	int i,j,k,t,n,x;
+	string *ar;
 	cin>>t;
 
 	while(t--) {
 		cin>>n;
-		//INIT
-		for(i=0; i<MAX; i++) {
-			ar[i] = '\0';
-		}
+
+		ar = new string[n]();
+//		//INIT
+//		for(i=0; i<n; i++) {
+//			ar[i] = '\0';
+//		}
 
 		for(i=0; i<n; i++) {
 			cin>>ar[i];
 		}
-
-		mergeSort(ar,n);
+		x =1;
+		for(j = 0; j<(int)(log(n)/log(2)); j++) {
+			x = x*2;
+			for(k = 0; k<n && k+x-1<n; k=k+x) {
+				mergeSort(ar,k,k+x-1);
+			}
+			//echo
+			cout<<ar[0];
+			for(i=1; i<n; i++) {
+				cout<<" "<<ar[i];
+			}
+			cout<<endl;
+		}
+		mergeSort(ar,0,n-1);
+		//echo
+		cout<<ar[0];
+		for(i=1; i<n; i++) {
+			cout<<" "<<ar[i];
+		}
 		cout<<endl;
 
+		cout<<endl;
+
+		delete[] ar;
 	}
 	return 0;
 }
 
-//todo
-void mergeSort(string ar[],int low,int high,int len) {
+void mergeSort(string* ar,int low,int high) {
 
-	if (low >= high) {
-		return ar;
+	if(low<high) {
+		int mid = (low+high)/2;
+		mergeSort(ar,low,mid);
+		mergeSort(ar,mid+1,high);
+		merge(ar,low,mid,high);
 	}
 
-	int mid = (high-low)/2;
+}
+
+void merge(string* ar,int low,int mid,int high) {
+	int i,j,k;
+	int len1 = mid - low +1;
+	int len2 = high - mid;
+
 	string left[MAX];
 	string right[MAX];
-	string new_ar[MAX];
 	//INIT
 	for(i=0; i<MAX; i++) {
-		new_ar[i] = '\0';
+		left[i] = '\0';
+		right[i] = '\0';
 	}
 
-	left = mergeSort(ar,0,mid);
-	right = mergeSort(ar,mid+1,high);
+	for(i=0; i<len1; i++) {
+		left[i] = ar[i+low];
+	}
 
-	int len_left = mid+1;
-	int len_right = high-mid;
-	int i = j = k = 0;
-	while(k < len_left + len_right) {
-		if(i<len_left
-		        && (j==len_right || compareString(left[i],right[j])!=0)) {
+	for(j=0; j<len2; j++) {
+		right[j] = ar[j+mid+1];
+	}
 
-			new_ar[k] = left[i];
-			i++;
-			k++;
-		} else if(j<len_right
-		          && (i==len_left || compareString(left[i],right[j])==1) ) {
+	i=j=0;
+	k=low;
 
-			new_ar[k] = right[j];
-			j++;
-			k++;
+	while(i<len1 && j<len2) {
+		int res = compareString(left[i],right[j]);
+//		cout<<"res:"<<res<<endl;
+		if(res==0) {
+			ar[k++] = left[i++];
+		} else {
+			ar[k++] = right[j++];
 		}
 	}
 
-	return new_ar;
+	//last part still
+	while(i< len1) {
+		ar[k++] = left[i++];
+	}
+	while(j< len2) {
+		ar[k++] = right[j++];
+	}
+
 }
 
 
 int compareString(string a,string b) {
 	char ch1,ch2;
 	for(ch1 = a[0],ch2 = b [0]; ch1!='\0' && ch2!='\0'; ch1++,ch2++) {
+//		cout<<"ch1: "<<ch1<<" ,ch2: "<<ch2<<endl;
 		if(ch2>ch1) {
 			return 1;
 		} else {
