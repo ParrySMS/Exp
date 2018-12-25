@@ -3,6 +3,7 @@ var score = 0;
 var hasConflicted = [];
 
 var n = getQueryString('k');
+var d = getQueryString('d');
 
 var randx = 0;
 var randy = 0;
@@ -10,7 +11,11 @@ var randy = 0;
 var pieces = [];
 var len;
 var index = 0;
-var delay = 1500;
+
+var delay = 1000;
+if(d!=null){
+    delay = d;
+}
 $(document).ready(function () {
     prepareForMobile();
     //初始化棋盘格
@@ -22,6 +27,7 @@ $(document).ready(function () {
 });
 
 function startCover() {
+    //发送请求
     var url = './static/getResp.php?size=' + n;
     $.getJSON(url, function (data) {
         // alert("Data Loaded: " + data);
@@ -29,18 +35,20 @@ function startCover() {
         //第一个随机初始位置
         var xi = data.initial_occupied_block.row;
         var yi = data.initial_occupied_block.col;
-        showNumberWithAnimation(xi, yi, "black");
+        showNumberWithAnimation(xi, yi, "white");
 
         pieces = data.pieces;
         len = pieces.length;
         // alert("len: " + len);
-        setTimeout("setLBlocks()",delay);
+        //延迟放置L星块
+        setTimeout("setLBlocks()", delay);
 
     });
 }
 
+//放置L块
 function setLBlocks() {
-    var i =index;
+    var i = index;
     index++;
     // alert("setB i: " + i);
     var x0 = this.pieces[i].loc[0].row;
@@ -53,14 +61,21 @@ function setLBlocks() {
     showNumberWithAnimation(x0, y0, co);
     showNumberWithAnimation(x2, y2, co);
     showNumberWithAnimation(x1, y1, co);
-    if(i<len-1) {
+    if (i < len - 1) {
         setTimeout("setLBlocks()", delay);
     }
 }
 
 //随机颜色
 function getRandomColor() {
-    return '#' + ('00100' + (Math.random()*Math.random() * 0x1000000 << 0).toString(16)).substr(-6);
+    // return '#'+Math.floor(Math.random()*256).toString(10);
+
+    var r = Math.floor(70+Math.random() * 200);
+    var g = Math.floor(Math.random() * 250);
+    var b = Math.floor(Math.random() * 250);
+
+    return "rgb(" + r + ',' +g + ',' + b + ")";
+    // return '#' + ('00100' + (Math.random() * 0x1000000 << 0).toString(16)).substr(-6);
 }
 
 
@@ -190,7 +205,7 @@ function generateOneNumber() {
 
 }
 
-function showNumberWithAnimation(i, j,color) {
+function showNumberWithAnimation(i, j, color) {
 
     var numberCell = $('#number-cell-' + i + "-" + j);
 
@@ -206,17 +221,16 @@ function showNumberWithAnimation(i, j,color) {
     }, 50);
 }
 
-documentWidth=window.screen.availWidth;
-gridContainerWidth=0.92*documentWidth;
-cellSideLength=0.18*documentWidth;
-cellSpace=0.04*documentWidth;
+documentWidth = window.screen.availWidth;
+gridContainerWidth = 0.92 * documentWidth;
+cellSideLength = 0.18 * documentWidth;
+cellSpace = 0.04 * documentWidth;
 
 
-
-function getPosTop(i,j){
-    return cellSpace+i*(cellSpace+cellSideLength);
+function getPosTop(i, j) {
+    return cellSpace + i * (cellSpace + cellSideLength);
 }
 
-function getPosLeft(i,j){
-    return cellSpace+j*(cellSpace+cellSideLength);
+function getPosLeft(i, j) {
+    return cellSpace + j * (cellSpace + cellSideLength);
 }
