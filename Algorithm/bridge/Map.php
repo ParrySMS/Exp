@@ -15,6 +15,7 @@ class Map
     public $n;//点数
     public $e;//边数据
 
+
     /** 生产地图矩阵 并且设置访问数组
      * Map constructor.
      * @param $n int 节点数
@@ -25,6 +26,7 @@ class Map
     {
         $this->n = $n;
         $this->e = $e;
+
         //初始化矩阵
         for ($i = 0; $i < $n; $i++) {
             $this->isVisit[$i] = false;
@@ -41,67 +43,93 @@ class Map
                 $this->mx[$n1][$n2] = $this->mx[$n2][$n1] = 1;
             }
         }
-
     }
 
     /** 计算连通树
      * @return int
      */
-    public function getConNum():int
+    public function getConNum(): int
     {
         //init visit[]
-        foreach ( $this->isVisit as & $vi) {
+        foreach ($this->isVisit as & $vi) {
             $vi = false;
         }
 
-        for($num=0,$i=0;$i<$this->n;$i++){
-            if(!$this->isVisit[$i]){
+
+        for ($num = 0, $i = 0; $i < $this->n; $i++) {
+            if (!$this->isVisit[$i]) {
+//                echo "outer BFS($i)" . PHP_EOL;
                 $this->BFS($i);
                 $num++;
             }
         }
 
         return $num;
-
     }
 
 
-    public function removeEdge()
+    /** 穷举基准算法 切边返回找到的桥数目
+     * @return int
+     */
+    public function removeEdge(): int
     {
+        $bridge_num = 0;
         $num1 = $this->getConNum();
         //for all edge
         for ($i = 0; $i < $this->n; $i++) {
             for ($j = $i + 1; $j < $this->n; $j++) {
                 //remove one edge
-                if($this->mx[$i][$j]==1){
+                if ($this->mx[$i][$j] == 1) {
                     //set -1 mean cut
                     $this->mx[$i][$j] = -1;
                     $this->mx[$j][$j] = -1;
+                    $num2 = $this->getConNum();
 
-                }
+                    if ($num2 != $num1) {
+                        $bridge_num++;
 
-            }
-        }
+                        echo "bridge[$bridge_num]: $i--$j" . PHP_EOL;
+
+                    }
+
+                }//end if ($this->mx[$i][$j] == 1)
+                //get params back to origin value
+                $this->mx[$i][$j] = $this->mx[$j][$j] = 1;
+            }//end for j
+        }//end for i
+
+        echo "num:$bridge_num" . PHP_EOL;
+        return $bridge_num;
     }
 
 
+    /** 广度优先遍历
+     * @param int $start_node
+     */
     private function BFS(int $start_node)
     {
+//        echo $start_node . PHP_EOL;
+
         $this->isVisit[$start_node] = true;
         $queue = new Queue();
-
         //find connect
-        for($i=0;$i<$this->n;$i++){
-            if($this->mx[$start_node][$i] >0 //connected
-                && !$this->isVisit[$i]){ //not visit
+        for ($i = 0; $i < $this->n; $i++) {
+            if ($this->mx[$start_node][$i] > 0 //connected
+                && !$this->isVisit[$i]) { //not visit
+//                echo "inner push ($i)" . PHP_EOL;
                 $queue->push($i);
             }
         }
+//        echo json_encode($queue->data) . PHP_EOL;
 
-        while(!$queue->empty()){
+        //recursion
+        while (!$queue->empty()) {
+//            echo "a recursion" . PHP_EOL;
             $this->BFS($queue->front());
+//            echo "end a recursion and ready pop" . PHP_EOL;
+            $queue->pop();
+//            echo json_encode($queue->data) . PHP_EOL;
         }
-
     }
 
 }
