@@ -149,8 +149,8 @@ class Map
 
     private function kruForCirEdge():bool
     {//it will change the value of some edges, value may larger
+         node//Union-Find set
 
-        
 
     }
 
