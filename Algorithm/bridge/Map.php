@@ -111,13 +111,13 @@ class Map
     public function markCircleEdge():int
     {
         $num1 = $this->getConNum();
-        for($i=0; $i<$this->e; i++) {
+        for($i=0; $i<$this->e; $i++) {
             if($this->kruForCirEdge() == false) {//找不到边了 跳出
                 break;
             }
         }
 
-    $bridge_num = 0
+    $bridge_num = 0;
         //left most edge may bridge
     for ($i = 0; $i < $this->n-1; $i++) {
             for ($j = $i + 1; $j < $this->n; $j++) {
@@ -149,7 +149,7 @@ class Map
 
     private function kruForCirEdge():bool
     {//it will change the value of some edges, value may larger
-         node//Union-Find set
+         //Union-Find set
 
 
     }
