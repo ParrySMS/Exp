@@ -12,8 +12,8 @@ class Map
 {
     public $mx = [];
     public $isVisit = [];
-    public $n;//点数
-    public $e;//边数据
+    public $node_num;//点数
+    public $edge_num;//边数
 
 
     /** 生产地图矩阵 并且设置访问数组
@@ -24,8 +24,8 @@ class Map
      */
     public function __construct(int $n, int $e, bool $setRand = true)
     {
-        $this->n = $n;
-        $this->e = $e;
+        $this->node_num = $n;
+        $this->edge_num = $e;
 
         //初始化矩阵
         for ($i = 0; $i < $n; $i++) {
@@ -56,7 +56,7 @@ class Map
         }
 
 
-        for ($num = 0, $i = 0; $i < $this->n; $i++) {
+        for ($num = 0, $i = 0; $i < $this->node_num; $i++) {
             if (!$this->isVisit[$i]) {
 //                echo "outer BFS($i)" . PHP_EOL;
                 $this->BFS($i);
@@ -76,8 +76,8 @@ class Map
         $bridge_num = 0;
         $num1 = $this->getConNum();
         //for all edge
-        for ($i = 0; $i < $this->n-1; $i++) {
-            for ($j = $i + 1; $j < $this->n; $j++) {
+        for ($i = 0; $i < $this->node_num - 1; $i++) {
+            for ($j = $i + 1; $j < $this->node_num; $j++) {
                 //remove one edge
                 if ($this->mx[$i][$j] == 1) {
                     //set -1 mean cut
@@ -87,9 +87,7 @@ class Map
 
                     if ($num2 != $num1) {
                         $bridge_num++;
-
                         echo "bridge[$bridge_num]: $i--$j" . PHP_EOL;
-
                     }
 
                 }//end if ($this->mx[$i][$j] == 1)
@@ -101,26 +99,34 @@ class Map
         echo "num:$bridge_num" . PHP_EOL;
         return $bridge_num;
     }
-
 
 
     /**
      * 标记环边的算法
      * @return int
      */
-    public function markCircleEdge():int
+    public function markCircleEdge(): int
     {
         $num1 = $this->getConNum();
-        for($i=0; $i<$this->e; $i++) {
-            if($this->kruForCirEdge() == false) {//找不到边了 跳出
+        for ($i = 0; $i < $this->edge_num; $i++) {
+            if (!$this->kruForCirEdge()) {//找不到边了 跳出
                 break;
             }
         }
 
-    $bridge_num = 0;
+        //ECHO MX
+        for ($i = 0; $i < $this->node_num; $i++) {
+            for ($j = 0; $j < $this->node_num; $j++) {
+                echo $this->mx[$i][$j].' ';
+            }
+            echo PHP_EOL;
+        }
+
+
+        $bridge_num = 0;
         //left most edge may bridge
-    for ($i = 0; $i < $this->n-1; $i++) {
-            for ($j = $i + 1; $j < $this->n; $j++) {
+        for ($i = 0; $i < $this->node_num - 1; $i++) {
+            for ($j = $i + 1; $j < $this->node_num; $j++) {
                 //remove one edge
                 if ($this->mx[$i][$j] == 1) {
                     //set -1 mean cut
@@ -147,11 +153,79 @@ class Map
     }
 
 
-    private function kruForCirEdge():bool
+    /** 最小生成树遍历标记一个环边
+     * @return bool
+     */
+    private function kruForCirEdge(): bool
     {//it will change the value of some edges, value may larger
-         //Union-Find set
+        unset($edges);
+        $edges = [];
+
+        //save all edge
+        for ($i = 0; $i < $this->node_num - 1; $i++) {
+            for ($j = $i + 1; $j < $this->node_num; $j++) {
+                if ($this->mx[$i][$j] == 1) {
+                    $edges[] = new CloseEdge($i, $j, $this->mx[$i][$j]);
+                }
+            }
+        }
+
+        //sort the edges, larger in front, easy to find circle
+        $len = sizeof($edges);
+        for ($i = 0; $i < $len - 1; $i++) {
+            $max_index = $i;
+            for ($j = $max_index+1; $j < $len; $j++) {
+                if ($edges[$j]->value > $edges[$max_index]->value) {
+                    $max_index = $j;
+                }
+            }
+
+            if ($max_index != $i) {
+                $m_fr = $edges[$max_index]->from;
+                $m_to = $edges[$max_index]->to;
+                $m_vl = $edges[$max_index]->value;
+
+                //swap
+                $edges[$max_index] = $edges[$max_index]->init(
+                    $edges[$i]->from,
+                    $edges[$i]->to,
+                    $edges[$i]->value
+                );
+
+                $edges[$i] = $edges[$i]->init($m_fr, $m_to, $m_vl);
+            }
+        }
+
+        //mark the cir edge
+        $set = new UFSet($this->node_num);//Union-Find set
+        $found = false;
+//        echo json_encode($edges).PHP_EOL;
+
+        foreach ($edges as $e) {
+            //find in set
+            $set_id_from = $set->find($e->from);
+            $set_id_to = $set->find($e->to);
 
 
+            if($set_id_from == $set_id_to){//same set, may has cir
+//                echo "from:$e->from ,to:$e->to".PHP_EOL;
+//                echo "set_id_from:$set_id_from ,set_id_to:$set_id_to".PHP_EOL;
+
+                if($this->mx[$e->from][$e->to] == 1) { //connected
+                    $found = true;
+//                    echo 'mark'.PHP_EOL;
+                    $this->mx[$e->from][$e->to]++;
+                    $this->mx[$e->to][$e->from]++;
+
+                }// no connect , no operation
+
+            }else{//diff set
+                $set->union($e->from,$e->to);
+            }
+        }//end foreach
+
+        unset($edges);
+        return $found;
     }
 
     /** 广度优先遍历
@@ -164,7 +238,7 @@ class Map
         $this->isVisit[$start_node] = true;
         $queue = new Queue();
         //find connect
-        for ($i = 0; $i < $this->n; $i++) {
+        for ($i = 0; $i < $this->node_num; $i++) {
             if ($this->mx[$start_node][$i] > 0 //connected
                 && !$this->isVisit[$i]) { //not visit
 //                echo "inner push ($i)" . PHP_EOL;
