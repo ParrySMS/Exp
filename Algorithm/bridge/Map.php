@@ -76,7 +76,7 @@ class Map
         $bridge_num = 0;
         $num1 = $this->getConNum();
         //for all edge
-        for ($i = 0; $i < $this->n; $i++) {
+        for ($i = 0; $i < $this->n-1; $i++) {
             for ($j = $i + 1; $j < $this->n; $j++) {
                 //remove one edge
                 if ($this->mx[$i][$j] == 1) {
@@ -102,6 +102,57 @@ class Map
         return $bridge_num;
     }
 
+
+
+    /**
+     * 标记环边的算法
+     * @return int
+     */
+    public function markCircleEdge():int
+    {
+        $num1 = $this->getConNum();
+        for($i=0; $i<$this->e; i++) {
+            if($this->kruForCirEdge() == false) {//找不到边了 跳出
+                break;
+            }
+        }
+
+    $bridge_num = 0
+        //left most edge may bridge
+    for ($i = 0; $i < $this->n-1; $i++) {
+            for ($j = $i + 1; $j < $this->n; $j++) {
+                //remove one edge
+                if ($this->mx[$i][$j] == 1) {
+                    //set -1 mean cut
+                    $this->mx[$i][$j] = -1;
+                    $this->mx[$j][$j] = -1;
+                    $num2 = $this->getConNum();
+
+                    if ($num2 != $num1) {
+                        $bridge_num++;
+
+                        echo "bridge[$bridge_num]: $i--$j" . PHP_EOL;
+
+                    }
+
+                }//end if ($this->mx[$i][$j] == 1)
+                //get params back to origin value
+                $this->mx[$i][$j] = $this->mx[$j][$j] = 1;
+            }//end for j
+        }//end for i
+
+        echo "num:$bridge_num" . PHP_EOL;
+        return $bridge_num;
+
+    }
+
+
+    private function kruForCirEdge():bool
+    {//it will change the value of some edges, value may larger
+
+        
+
+    }
 
     /** 广度优先遍历
      * @param int $start_node
