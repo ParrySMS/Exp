@@ -15,6 +15,18 @@ class Map
     public $node_num;//点数
     public $edge_num;//边数
 
+    public function echoMx():void
+    {
+        //ECHO MX
+        for ($i = 0; $i < $this->node_num; $i++) {
+            for ($j = 0; $j < $this->node_num; $j++) {
+                echo $this->mx[$i][$j].' ';
+            }
+            echo PHP_EOL;
+        }
+        echo PHP_EOL;
+
+    }
 
     /** 生产地图矩阵 并且设置访问数组
      * Map constructor.
@@ -73,6 +85,8 @@ class Map
      */
     public function removeEdge(): int
     {
+//        $this->echoMx();
+
         $bridge_num = 0;
         $num1 = $this->getConNum();
         //for all edge
@@ -82,8 +96,11 @@ class Map
                 if ($this->mx[$i][$j] == 1) {
                     //set -1 mean cut
                     $this->mx[$i][$j] = -1;
-                    $this->mx[$j][$j] = -1;
+                    $this->mx[$j][$i] = -1;
                     $num2 = $this->getConNum();
+                    //get params back to origin value
+                    $this->mx[$i][$j] = 1;
+                    $this->mx[$j][$i] = 1;
 
                     if ($num2 != $num1) {
                         $bridge_num++;
@@ -91,11 +108,10 @@ class Map
                     }
 
                 }//end if ($this->mx[$i][$j] == 1)
-                //get params back to origin value
-                $this->mx[$i][$j] = $this->mx[$j][$j] = 1;
             }//end for j
         }//end for i
 
+//        $this->echoMx();
         echo "num:$bridge_num" . PHP_EOL;
         return $bridge_num;
     }
@@ -107,6 +123,8 @@ class Map
      */
     public function markCircleEdge(): int
     {
+//        $this->echoMx();
+
         $num1 = $this->getConNum();
         for ($i = 0; $i < $this->edge_num; $i++) {
             if (!$this->kruForCirEdge()) {//找不到边了 跳出
@@ -114,13 +132,7 @@ class Map
             }
         }
 
-        //ECHO MX
-        for ($i = 0; $i < $this->node_num; $i++) {
-            for ($j = 0; $j < $this->node_num; $j++) {
-                echo $this->mx[$i][$j].' ';
-            }
-            echo PHP_EOL;
-        }
+//        $this->echoMx();
 
 
         $bridge_num = 0;
@@ -131,19 +143,18 @@ class Map
                 if ($this->mx[$i][$j] == 1) {
                     //set -1 mean cut
                     $this->mx[$i][$j] = -1;
-                    $this->mx[$j][$j] = -1;
+                    $this->mx[$j][$i] = -1;
                     $num2 = $this->getConNum();
+                    //get params back to origin value
+                    $this->mx[$i][$j] = 1;
+                    $this->mx[$j][$i] = 1;
 
                     if ($num2 != $num1) {
                         $bridge_num++;
-
                         echo "bridge[$bridge_num]: $i--$j" . PHP_EOL;
-
                     }
 
                 }//end if ($this->mx[$i][$j] == 1)
-                //get params back to origin value
-                $this->mx[$i][$j] = $this->mx[$j][$j] = 1;
             }//end for j
         }//end for i
 
@@ -231,7 +242,7 @@ class Map
     /** 广度优先遍历
      * @param int $start_node
      */
-    private function BFS(int $start_node)
+    private function BFS(int $start_node):void
     {
 //        echo $start_node . PHP_EOL;
 
