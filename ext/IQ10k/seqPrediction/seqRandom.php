@@ -4,6 +4,8 @@
  * User: L
  * Date: 2018-12-21
  * Time: 15:21
+ *
+ * Version: PHP7.0
  */
 
 namespace IQ10K;
@@ -44,10 +46,16 @@ try {
 
 /** 把题目数据抽取出来 调用预测的方法来选出答案
  * @param array $questionAr
+ * @throws Exception
  * @return array
+ * Version: PHP7.0
  */
-function seqPredict(array $questionAr)
+function seqPredict(array $questionAr):array
 {
+    if(empty($questionAr)){
+        throw new Exception(__FUNCTION__.'(): null params',500);
+    }
+
     $output = [];
     foreach ($questionAr as $q) {
         $id = $q->id;
@@ -76,10 +84,11 @@ function seqPredict(array $questionAr)
 
 
 /**
- * @param $output
+ * @param string $output
  * @throws Exception
  */
-function writeIn($output,$filename = OUTPUT_FILE_NAME ){
+function writeIn(string $output,string $filename = OUTPUT_FILE_NAME ):void
+{
     $file = fopen($filename, "w");
     if (!$file) {
         throw new Exception('Unable to open file: ' . OUTPUT_FILE_NAME, 500);

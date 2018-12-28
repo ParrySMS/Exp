@@ -4,6 +4,7 @@
  * User: haier
  * Date: 2018-6-17
  * Time: 22:46
+ * Version: PHP7.0
  */
 
 namespace IQ10K;
@@ -24,13 +25,13 @@ class Http
 
 
     /** 模拟get进行url请求
-     * @param $url
+     * @param string $url
      * @param array $data
      * @param bool $close 默认执行完毕之后关闭流
      * @return mixed
      * @throws Exception
      */
-    public function get($url, array $data = [],$close = true)
+    public function get(string $url, array $data = [],bool $close = true)
     {
         $curl =$this->curl;
         /* 设置验证方式 */
@@ -73,7 +74,7 @@ class Http
      * @return mixed
      * @throws Exception
      */
-    public function post($url, array $data = [],$close = true)
+    public function post(string $url, array $data = [],bool $close = true)
     {
         $curl =$this->curl;
 //        $ch = curl_init();
