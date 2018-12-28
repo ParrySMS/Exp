@@ -12,8 +12,11 @@ class Map
 {
     public $mx = [];
     public $isVisit = [];
+    public $level = [];
+    public $layer = 0;
     public $node_num;//点数
     public $edge_num;//边数
+    public $try = false;
 
     public function echoMx():void
     {
@@ -104,7 +107,7 @@ class Map
 
                     if ($num2 != $num1) {
                         $bridge_num++;
-                        echo "bridge[$bridge_num]: $i--$j" . PHP_EOL;
+//                        echo "bridge[$bridge_num]: $i--$j" . PHP_EOL;
                     }
 
                 }//end if ($this->mx[$i][$j] == 1)
@@ -112,13 +115,14 @@ class Map
         }//end for i
 
 //        $this->echoMx();
-        echo "num:$bridge_num" . PHP_EOL;
+//        echo "num:$bridge_num" . PHP_EOL;
         return $bridge_num;
     }
 
 
     /**
      * 标记环边的算法
+     * @throws Exception
      * @return int
      */
     public function markCircleEdge(): int
@@ -133,7 +137,6 @@ class Map
         }
 
 //        $this->echoMx();
-
 
         $bridge_num = 0;
         //left most edge may bridge
@@ -151,26 +154,69 @@ class Map
 
                     if ($num2 != $num1) {
                         $bridge_num++;
-                        echo "bridge[$bridge_num]: $i--$j" . PHP_EOL;
+//                        echo "bridge[$bridge_num]: $i--$j" . PHP_EOL;
+                    }else if($this->try) {
+                        $this->mx[$i][$j] ++;
+                        $this->mx[$j][$i] ++;
                     }
 
                 }//end if ($this->mx[$i][$j] == 1)
             }//end for j
         }//end for i
 
-        echo "num:$bridge_num" . PHP_EOL;
+//        echo "num:$bridge_num" . PHP_EOL;
         return $bridge_num;
 
     }
 
 
+    /**
+     * @param int $mark_v0
+     * @param int $mark_v1
+     * @throws Exception
+     */
+    private function BFSMarkAllCirEdge(int $mark_v0,int $mark_v1):void
+    {//it will change the value of some edges, value may larger
+        //init visit[]
+        foreach ($this->isVisit as & $vi) {
+            $vi = false;
+        }
+
+        unset($this->level);
+        $this->level = [];
+        $this->level[0] = [];
+        $this->level[0][0] = $mark_v0;
+        $this->layer = 1;
+
+        //递归
+        $final = $this->BFSMark($mark_v0,$mark_v0,$mark_v1);
+//        if($final<0){
+//            throw new Exception(__FUNCTION__.'() error,$final == -1,no path.',500);
+//        }
+        if($final>0) {
+            //得到一个BFS层矩阵
+            //倒着标记路径
+            $this->mx[$final][$mark_v1]++;
+            for ($i = $this->layer, $node = $final; $i > 0; $i--) {
+                $head = $this->level[$i][0];
+                if (in_array($node, $this->level[$i]) && $head != $node) {
+                    $this->mx[$head][$node]++;
+                    //to pre
+                    $node = $head;
+                }
+            }
+        }
+
+    }
     /** 最小生成树遍历标记一个环边
+     * @throws Exception
      * @return bool
      */
     private function kruForCirEdge(): bool
     {//it will change the value of some edges, value may larger
         unset($edges);
         $edges = [];
+
 
         //save all edge
         for ($i = 0; $i < $this->node_num - 1; $i++) {
@@ -227,7 +273,13 @@ class Map
 //                    echo 'mark'.PHP_EOL;
                     $this->mx[$e->from][$e->to]++;
                     $this->mx[$e->to][$e->from]++;
-
+                    //todo try
+//                    echo 'mark ++'.PHP_EOL;
+//                    $this->echoMx();
+                    if($this->try) {
+                        $this->BFSMarkAllCirEdge($e->from, $e->to);
+                    }
+//                    $this->echoMx();
                 }// no connect , no operation
 
             }else{//diff set
@@ -239,6 +291,60 @@ class Map
         return $found;
     }
 
+
+    /** BFS用层标记环边的遍历过程
+     * @param int $mark_v0
+     * @param int $start_node
+     * @param $mark_v1
+     * @return int
+     */
+    private function BFSMark(int $mark_v0,int $start_node,int $mark_v1):int
+    {
+
+        $this->level[$this->layer] = [];
+        $this->level[$this->layer][0] = $start_node;//0-->head-->father
+
+//        echo "start_node:$start_node".PHP_EOL;
+//        echo "layer:$this->layer.".PHP_EOL;
+//        echo 'level:'.json_encode($this->level).PHP_EOL;
+
+        $this->isVisit[$start_node] = true;
+        if($this->mx[$start_node][$mark_v1] && $start_node != $mark_v0){
+            return $start_node;
+        }
+
+        $queue = new Queue();
+
+        //find connect
+        for ($i = 0; $i < $this->node_num; $i++) {
+            if ($this->mx[$start_node][$i] > 0 //connected
+                && $i!=$start_node
+                && $i!=$mark_v1
+                && !$this->isVisit[$i]) { //not visit
+//                echo "inner push ($i)" . PHP_EOL;
+                $queue->push($i);
+                $this->level[$this->layer][] =$i;
+            }
+        }
+        $this->layer++;
+//        echo 'after find connected:'.PHP_EOL;
+
+//        echo 'level:'.json_encode($this->level).PHP_EOL;
+
+        //recursion
+        $final = -1;
+        while (!$queue->empty()) {
+//            echo "a recursion" . PHP_EOL;
+            $final = $this->BFSMark($mark_v0,$queue->front(),$mark_v1);
+//            echo "end a recursion and ready pop" . PHP_EOL;
+            $queue->pop();
+//            echo "final:$final".PHP_EOL;
+            return $final;
+//            echo json_encode($queue->data) . PHP_EOL;
+        }
+
+        return $final;
+    }
     /** 广度优先遍历
      * @param int $start_node
      */
