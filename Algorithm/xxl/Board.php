@@ -26,7 +26,7 @@ foreach ($b->getBoard() as $gb) {
 echo "<br/>";
 
 //init
-$t = 100;
+$t = 1000;
 while ($t--) {
     $c = $b->getConnectedBoxes();
     $score = $b->getScore($c, $score);
@@ -57,6 +57,15 @@ while ($t--) {
 
     $c = $b->getConnectedBoxes();
     $two = $b->OLDselectTwoBoxes($c);
+    echo "two:<br/>";
+    echo json_encode($two);
+    echo "<br/>";
+
+    echo "poor:<br/>";
+    echo json_encode($b->poorClean());
+    echo "<br/>";
+
+
 
     if (sizeof($two) == 0) {//换穷举
         $two = $b->selectTwoBoxes();
@@ -95,6 +104,12 @@ while ($t--) {
 
     while ($t--) {
         $c = $b->getConnectedBoxes();
+//        echo "c:<br/>";
+//        echo json_encode($c);
+//        echo "<br/>";
+//        echo "poor:<br/>";
+//        echo json_encode($b->poorClean());
+//        echo "<br/>";
         if (!$b->updateBoard($c)) {
             break;
         }
@@ -108,6 +123,8 @@ while ($t--) {
         echo "[score: $score ]<br/>";
         echo "<br/>";
     }
+
+
 }//while
 
 
@@ -1464,6 +1481,47 @@ class Board
         unset($col_two_connected);
 
         return $connected_boxes;
+    }
+
+
+    public function poorClean(){
+        for ($x = 1; $x < $this->col-1; $x++) {
+            for ($y =1; $y < $this->line-1; $y++) {
+
+                if($this->board[$x][$y] == 0) continue;
+
+
+                $connected_boxes = [];
+                $col_boxes = [];
+                if($this->board[$x+1][$y] == $this->board[$x][$y]
+                     &&$this->board[$x-1][$y] == $this->board[$x][$y]){
+
+                    $col_boxes[] = new Box($x-1, $y, $this->board[$x][$y]);
+                    $col_boxes[] = new Box($x, $y, $this->board[$x][$y]);
+                    $col_boxes[] = new Box($x+1, $y, $this->board[$x][$y]);
+                }
+                $connected_boxes[0] = $col_boxes;
+
+
+                $line_boxes = [];
+                if($this->board[$x][$y-1] == $this->board[$x][$y]
+                     &&$this->board[$x][$y+1] == $this->board[$x][$y]){
+
+                    $line_boxes[] = new Box($x, $y-1, $this->board[$x][$y]);
+                    $line_boxes[] = new Box($x, $y, $this->board[$x][$y]);
+                    $line_boxes[] = new Box($x, $y+1, $this->board[$x][$y]);
+                }
+                $connected_boxes[1] =$line_boxes;
+
+                if(!empty( $connected_boxes[0] )
+                 ||!empty( $connected_boxes[1] )){
+
+                    return $connected_boxes;
+                }
+            }
+        }
+
+        return [];
     }
 
 }
