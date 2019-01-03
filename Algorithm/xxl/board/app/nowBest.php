@@ -26,8 +26,12 @@ try{
     $board->echoBoard();
     $score = $board->clearAndGetScore();
     $board->echoBoard();
+    echo "score:$score".PHP_EOL;
+    echo "start:".PHP_EOL;
+    $add_score = $board->loop4BestOnce();
+    $board->echoBoard();
+    $score += $add_score;
     echo "score:$score";
-    echo "start:";
 
 
 

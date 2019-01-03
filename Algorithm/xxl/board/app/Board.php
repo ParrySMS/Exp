@@ -126,7 +126,7 @@ class Board
      * @param int $score
      * @return int
      */
-    private function threeBoxesCheck(array $connect, int $score, string $type): int
+    private function threeBoxesCheck(array & $connect, int $score, string $type,bool $set_zero = true): int
     {
         if (sizeof($connect) < 3) {
             return -1;
@@ -145,7 +145,7 @@ class Board
                     }
                 }
 
-            } else {//line
+            } else {//COL
                 if ($l + 1 < $this->size && $this->b[$l + 1][$c] == $v) {
                     $connect[] = new Box($l + 1, $c, $v);//4
 
@@ -156,7 +156,9 @@ class Board
             }
 
             $score += $this->num2Score(sizeof($connect));
-            $this->setZero($connect);
+            if($set_zero) {
+                $this->setZero($connect);
+            }
             return $score;
         }
     }
@@ -164,7 +166,7 @@ class Board
     /**
      * @return int
      */
-    public function clearAndGetScore(): int
+    public function clearAndGetScore($set_zero = true): int
     {
 
         $connect = [];
@@ -173,9 +175,9 @@ class Board
         //line
         for ($line = 0; $line < $this->size; $line++) {
 
-            $res = $this->threeBoxesCheck($connect, $score, 'line');
+            $res = $this->threeBoxesCheck($connect, $score, 'line',$set_zero);
             if ($res >= 0) {
-                $score = $res;
+                $score += $res;
                 unset($connect);
                 $connect = [];
             }
@@ -183,9 +185,9 @@ class Board
             $connect = [];
             for ($col = 0; $col < $this->size; $col++) {
 
-                $res = $this->threeBoxesCheck($connect, $score, 'line');
+                $res = $this->threeBoxesCheck($connect, $score, 'line',$set_zero);
                 if ($res >= 0) {
-                    $score = $res;
+                    $score += $res;
                     unset($connect);
                     $connect = [];
                 }
@@ -201,13 +203,17 @@ class Board
             }
         }//end for line
 
+        if($set_zero){
+            $this->drop();
+        }
 
         //col
+        $connect = [];
         for ($col = 0; $col < $this->size; $col++) {
 
             $res = $this->threeBoxesCheck($connect, $score, 'col');
             if ($res >= 0) {
-                $score = $res;
+                $score += $res;
                 unset($connect);
                 $connect = [];
             }
@@ -217,7 +223,7 @@ class Board
 //                var_dump($connect);
                 $res = $this->threeBoxesCheck($connect, $score, 'col');
                 if ($res >= 0) {
-                    $score = $res;
+                    $score += $res;
                     unset($connect);
                     $connect = [];
                 }
@@ -233,24 +239,129 @@ class Board
             }
         }//end for col
 
+        if($set_zero){
+            $this->drop();
+        }
 
-        $this->drop();
         return $score;
     }
 
     /**
-     *  todo 穷举遍历
+     *  穷举遍历
      */
     public function loop4BestOnce()
     {
+        $score = 0;
+        $try_action = [];
+
+        $valid = function (int $x){
+            return ($x<$this->size && $x>0);
+        };
+
         for ($line = 0; $line < $this->size; $line++) {
             for ($col = 0; $col < $this->size; $col++) {
                 if ($this->b[$line][$col] == 0) {
                     continue;
                 }
-                //todo 四个方向
 
+                $selected_box =new Box($line,$col,$this->b[$line][$col]);
+
+                //四个方向 0 up
+                if($valid($line+1)){//up
+                    $this->b[$line][$col] = $this->b[$line+1][$col];
+                    $this->b[$line+1][$col] = $selected_box->value;
+                    $score_try = $this->clearAndGetScore(false);
+                    if($score_try>$score){
+                        $selected_box->direction = $this::DIREC_UP;
+                        $try_action[] = $selected_box;
+                        $score =$score_try;
+                    }
+                    //fill back
+                    $this->b[$line+1][$col] =  $this->b[$line][$col];
+                    $this->b[$line][$col] = $selected_box->value;
+                }
+
+                //四个方向 1 down
+                if($valid($line-1)){//down
+                    $this->b[$line][$col] = $this->b[$line-1][$col];
+                    $this->b[$line-1][$col] = $selected_box->value;
+                    $score_try = $this->clearAndGetScore(false);
+                    if($score_try>$score){
+                        $selected_box->direction = $this::DIREC_DOWN;
+                        $try_action[] = $selected_box;
+                        $score =$score_try;
+                    }
+                    //fill back
+                    $this->b[$line-1][$col] =  $this->b[$line][$col];
+                    $this->b[$line][$col] = $selected_box->value;
+                }
+                //四个方向 2 left
+                if($valid($col-1)){//left
+                    $this->b[$line][$col] = $this->b[$line][$col-1];
+                    $this->b[$line][$col-1] = $selected_box->value;
+                    $score_try = $this->clearAndGetScore(false);
+                    if($score_try>$score){
+                        $selected_box->direction = $this::DIREC_LEFT;
+                        $try_action[] = $selected_box;
+                        $score =$score_try;
+                    }
+                    //fill back
+                    $this->b[$line][$col-1] =  $this->b[$line][$col];
+                    $this->b[$line][$col] = $selected_box->value;
+                }
+                //四个方向 3 right
+                if($valid($col+1)){//RIGHT
+                    $this->b[$line][$col] = $this->b[$line][$col+1];
+                    $this->b[$line][$col+1] = $selected_box->value;
+                    $score_try = $this->clearAndGetScore(false);
+                    if($score_try>$score){
+                        $selected_box->direction = $this::DIREC_RIGHT;
+                        $try_action[] = $selected_box;
+                        $score =$score_try;
+                    }
+                    //fill back
+                    $this->b[$line][$col+1] =  $this->b[$line][$col];
+                    $this->b[$line][$col] = $selected_box->value;
+                }
+            }//for col
+        }//for line
+
+        //取最好的一次
+        $best_box = array_pop($try_action);
+        if(!empty($best_box)){
+            $line = $best_box->line;
+            $col = $best_box->col;
+            switch ($best_box->direction){
+                case $this::DIREC_UP:
+                    $this->b[$line][$col] = $this->b[$line+1][$col];
+                    $this->b[$line-1][$col] = $best_box->value;
+                    $score = $this->clearAndGetScore();
+                    break;
+
+                case $this::DIREC_DOWN:
+                    $this->b[$line][$col] = $this->b[$line-1][$col];
+                    $this->b[$line-1][$col] = $best_box->value;
+                    $score = $this->clearAndGetScore();
+                    break;
+
+
+                case $this::DIREC_LEFT:
+                    $this->b[$line][$col] = $this->b[$line][$col-1];
+                    $this->b[$line][$col-1] = $best_box->value;
+                    $score = $this->clearAndGetScore();
+
+                    break;
+
+
+                case $this::DIREC_RIGHT:
+                    $this->b[$line][$col] = $this->b[$line][$col+1];
+                    $this->b[$line][$col+1] = $best_box->value;
+                    $score = $this->clearAndGetScore();
+                    break;
+
+                default: $score = 0;
             }
         }
+        return $score;
     }
 }
