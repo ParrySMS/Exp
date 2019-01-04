@@ -198,11 +198,106 @@ DELIMITER ;
 /*
 
 4.	(9 points) Add a tuple to the logs table automatically whenever any table is modified. To simplify, you are only required to consider the following modifications (events): (1) insert a tuple into the purchases table; (2) update the qoh attribute of the products table; and (3) update the visits_made attribute of the customers table. When a tuple is added to the logs table due to the first event, the table_name should be “purchases”, the operation should be “insert” and the key_value should be the pur of the newly inserted purchase. When a tuple is added to the logs table due to the second event, the table_name should be “products”, the operation should be “update” and the key_value should be the pid of the affected product. When a tuple is added to the logs table due to the third event, the table_name should be “customers”, the operation should be “update” and the key_value should be the cid of the affected customer. Adding tuples to the logs table should be implemented using triggers. You need to implement three triggers for this task, one for each event.
+*/
+DELIMITER $$
 
+CREATE TRIGGER logPurch AFTER INSERT ON db_purchases FOR EACH ROW
+  BEGIN
+    INSERT INTO db_logs(time,table_name,operation,key_value) values(
+      now(),'purchases','insert',NEW.pur);
+  END$$
+
+CREATE TRIGGER logProd AFTER UPDATE ON db_products FOR EACH ROW
+  BEGIN
+    INSERT INTO db_logs(time,table_name,operation,key_value) values(now(),'products','update',NEW.pid);
+  END$$
+
+CREATE TRIGGER logCust AFTER UPDATE ON db_customers FOR EACH ROW
+  BEGIN
+    INSERT INTO db_logs(time,table_name,operation,key_value) values(now(),'customers','update',NEW.cid);
+  END$$
+
+DELIMITER ;
+
+/*
 
 5.	(4 points) Before a purchase is actually made (i.e., before a tuple is added into the purchases table), your program needs to make sure that, for the involved product, the quantity to be purchased is equal to or smaller than the quantity on hand (qoh). Otherwise, an appropriate message should be displayed (e.g., “Insufficient quantity in stock.”) and the purchase request should be rejected.
+*/
+
+DELIMITER $$
+
+CREATE PROCEDURE add_purchase(
+  IN pur_no VARCHAR(4),
+  IN c_id VARCHAR(4),
+  IN e_id VARCHAR(3),
+  IN p_id VARCHAR(4),
+  IN pur_qty INT)
+
+  BEGIN
+    SELECT qoh INTO @Qoh FROM db_products WHERE pid = p_id;
+    IF (@Qoh >= pur_qty ) THEN
+      #GET PRIDE
+      SELECT original_price INTO @ori_price FROM db_products WHERE pid = p_id;
+      SELECT discnt_rate INTO @discount_rate FROM db_products WHERE pid = p_id;
+
+      UPDATE db_products SET qoh=(qoh-pur_qty) WHERE pid= p_id;
+
+      insert INTO db_purchases(pur,cid,eid,pid,qty,ptime,total_price)
+      values(pur_no,c_id,e_id,p_id,pur_qty,now(),
+             @ori_price*@discount_rate*pur_qty);
+    else
+      select 'Insufficient !! we need some time ~ .' as error;
+    end IF;
+  END$$
+
+DELIMITER ;
+
+
+/*
 
 6.	(16 points) After adding a tuple to the purchases table, the qoh column of the products table should be modified accordingly; that is, the qoh of the product involved in the purchase should be reduced by the quantity purchased. If the purchase causes the qoh of the product to be below qoh_threshold, your program should perform the following tasks: (1) print a message indicating the current qoh of the product, (b) increase qoh by making it 2 * old_qoh, where old_qoh represents the value of qoh before the corresponding purchase was made (other attribute values of the product will not be changed), and (c) print another message indicating that the quantity on hand of the product has been increased by old_qoh + qty_sold, where qty_sold is the number of the product sold in the involved purchase. In addition, the insertion of the new tuple in the purchases table will cause the visits_made of the customer to be increased by one. Use triggers to implement the update of qoh, printing of the messages and the update of visits_made and last_visit_time.
+*/
 
+DELIMITER $$
+Drop TRIGGER logPurch$$
+
+CREATE TRIGGER logPurch AFTER INSERT ON db_purchases FOR EACH ROW
+  BEGIN
+    INSERT INTO db_logs(time,table_name,operation,key_value)
+    VALUES(now(),'purchases','insert',NEW.pur);
+    # 记录
+    SELECT qoh INTO @rest FROM db_products WHERE pid = NEW.pid;
+    SELECT qoh_threshold INTO @qot FROM db_products WHERE pid = NEW.pid;
+    UPDATE db_customers
+    SET visits_made = (visits_made+1),
+         last_visit_time = now()
+    WHERE cid = NEW.cid;
+    IF @rest < @qot THEN
+      UPDATE db_products SET qoh=((qoh+NEW.qty)*2) WHERE pid= NEW.pid;
+      INSERT INTO db_mesqo_logs (time,msg1,msg2)
+      VALUES( now(),
+              concat(' the current qoh of the product  is ',@rest),
+              concat(' the quantity on hand of the product has been increased by ' ,@rest+NEW.qty)
+      );
+    end IF;
+
+  END$$
+
+DELIMITER ;
+
+/*
 7.	(4 points) You need to make your code user friendly by designing and displaying appropriate messages for all exceptions. For example, if someone wants to find the purchases of a customer but entered a non-existent customer id, your program should report the problem clearly.
 */
+
+DROP PROCEDURE IF EXISTS finding_purs_with_error_id;
+DELIMITER $$
+CREATE PROCEDURE finding_purs_with_error_id(IN c_id VARCHAR(4))
+  BEGIN
+    Select cid into @var from db_customers where cid = c_id;
+    if @var != c_id then
+      select 'ERROR: find the purchases with a non-existent customer id!!' as error;
+    else
+      Select * from db_customers where cid = c_id;
+    End if;
+  END$$
+DELIMITER ;
