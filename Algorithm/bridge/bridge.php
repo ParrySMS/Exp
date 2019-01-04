@@ -5,7 +5,7 @@ require 'Map.php';
 require 'CloseEdge.php';
 require 'UFSet.php';
 
-define('MAX', 10);
+define('MAX', 60);
 
 //$cmd=fopen("php://stdin", "r");//打开命令行的输入文件流 用于读入输入的参数
 //$t = fgets($cmd);//获取输入的参数
@@ -13,8 +13,8 @@ define('MAX', 10);
 //while($t--) {
 
 //点数 边数
-$n = rand(4, MAX);
-$e = rand(3, 3 * $n);
+$n = rand(40, MAX);
+$e = rand(2, $n);
 $map = new Map($n, $e);
 
 try {
@@ -46,19 +46,19 @@ try {
             echo "num: $num1 " . PHP_EOL;
             echo "time: $time1 ms" . PHP_EOL;
             $map->mx = $mx1;
-            $map->echoMx();
+//            $map->echoMx();
 
             echo PHP_EOL . "markCircleEdge:" . PHP_EOL;
             echo "num: $num2 " . PHP_EOL;
             echo "time: $time2 ms" . PHP_EOL;
             $map->mx = $mx2;
-            $map->echoMx();
+//            $map->echoMx();
 
             echo PHP_EOL . "markCircleEdge--add:" . PHP_EOL;
             echo "num: $num3 " . PHP_EOL;
             echo "time: $time3 ms" . PHP_EOL;
             $map->mx = $mx3;
-            $map->echoMx();
+//            $map->echoMx();
 
             break;
         }
