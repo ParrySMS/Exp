@@ -16,7 +16,7 @@
  */
 
 fscanf(STDIN,"%d %d",$a,$b);
-想·
+
 $func1 = function (int $a, int $b){
     $t = $a;
     $a = $b;
