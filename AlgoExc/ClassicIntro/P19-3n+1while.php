@@ -11,6 +11,9 @@
  * 样例输入：3
  * 样例输出：7
  *
+ * 样例输入：987654321
+ * 样例输出：180
+ *
  */
 
 //对于未知循环次数的情况 常用while循环
@@ -50,7 +53,7 @@ function funcFor(int $num):int
 }
 
 fscanf(STDIN, "%d", $num);
-echo funcFor($num);
+echo stepMore($num);
 
 
 /**
@@ -76,3 +79,54 @@ echo funcFor($num);
  *
  *
  */
+
+
+function step2(int $num):int
+{
+    $count = 0;
+    while ($num>1) {
+
+        if ($num % 2 == 1) {
+            $num = 3 * $num + 1;
+            $num = $num / 2;
+            $count += 2;//一次两步
+
+        } else {
+            $num = $num / 2;
+            $count++;
+        }
+    }
+
+    return $count;
+}
+
+
+
+function stepMore(int $num):int
+{
+    $count = 0;
+    while ($num>1) {
+
+        if($num == 16){
+            $count += 4; // must 16-8-4-2-1
+            break;
+        }
+
+        if($num == 8){//may be step2 to 8
+            $count += 3; // must 8-4-2-1
+            break;
+        }
+
+        if ($num % 2 == 1) {
+            $num = 3 * $num + 1;
+            $num = $num / 2;
+            $count += 2;//一次两步
+
+        } else {
+            $num = $num / 2;
+            $count++;
+        }
+    }
+
+    return $count;
+}
