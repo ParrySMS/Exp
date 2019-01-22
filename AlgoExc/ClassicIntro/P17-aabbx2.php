@@ -32,14 +32,14 @@ function f2():void
     $root=32;
     while($root*$root<9999){
         $num = $root*$root;
+        $root++;
+
         $aa = intval($num/100);
         $bb = $num%100;
 
         if(intval($aa/10) == $aa%10
-            && intval($bb/10) == $bb%10) {
+        && intval($bb/10) == $bb%10) {
             echo $num . PHP_EOL;
-        }else{
-            $root++;
         }
     }
 }
@@ -60,5 +60,5 @@ function f3():void
 
 }
 
-f1();
+f2();
 
