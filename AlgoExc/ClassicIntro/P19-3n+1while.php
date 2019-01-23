@@ -19,6 +19,10 @@
 //对于未知循环次数的情况 常用while循环
 
 
+fscanf(STDIN, "%d", $num);
+echo stepMore($num);
+
+
 
 function funcWhile(int $num):int
 {
@@ -52,8 +56,6 @@ function funcFor(int $num):int
     return $count;
 }
 
-fscanf(STDIN, "%d", $num);
-echo stepMore($num);
 
 
 /**
