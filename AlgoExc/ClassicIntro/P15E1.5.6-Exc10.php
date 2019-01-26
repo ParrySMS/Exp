@@ -67,7 +67,7 @@ function sincos(int $angle, bool $return_array = false)
  * @param float $y2
  * @return float
  */
-function distance(double $x1, double $y1, double $x2, double $y2): float
+function distance(float $x1, float $y1, float $x2, float $y2): float
 {
     return sqrt(pow($x1 - $x2, 2) + pow($y1 - $y2, 2));
 }
@@ -106,7 +106,7 @@ function odd2(int $num, bool $return_bool = false)
         case '5':
         case '7':
         case '9':
-            echo 'yes' . PHP_EOL;
+            echo 'no' . PHP_EOL;
             if ($return_bool) {
                 return true;
             }
@@ -117,7 +117,7 @@ function odd2(int $num, bool $return_bool = false)
         case '4':
         case '6':
         case '8':
-            echo 'no' . PHP_EOL;
+            echo 'yes' . PHP_EOL;
             if ($return_bool) {
                 return false;
             }
