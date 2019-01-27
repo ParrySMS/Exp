@@ -8,30 +8,30 @@
 
 $ter = fopen('php://stdin','r');
 
-/**
+
 //--------- R-S-P GAME
-echo '1:rock, 2:sci, 3:paper'.PHP_EOL;
+//echo '1:rock, 2:sci, 3:paper'.PHP_EOL;
+//
+//echo 'A player input:'.PHP_EOL;
+//$a = (int)fgets($ter);
+//
+//echo 'B player input:'.PHP_EOL;
+//$b = (int)fgets($ter);
+//$b = -1*$b;
+////params check
+//
+//if($a + $b == 0) {
+//    echo 'draw'.PHP_EOL;
+//
+//}else if($a%3+$b == -1) {
+//    echo 'A win'.PHP_EOL;
+//
+//}else {
+//    echo 'B win'.PHP_EOL;
+//}
+//
+//echo 'finish'.PHP_EOL;
 
-echo 'A player input:'.PHP_EOL;
-$a = (int)fgets($ter);
-
-echo 'B player input:'.PHP_EOL;
-$b = (int)fgets($ter);
-$b = -1*$b;
-//params check
-
-if($a + $b == 0) {
-    echo 'draw'.PHP_EOL;
-
-}else if($a%3+$b == -1) {
-    echo 'A win'.PHP_EOL;
-
-}else {
-    echo 'B win'.PHP_EOL;
-}
-
-echo 'finish'.PHP_EOL;
- **/
 
 
 //--------- GUESS GAME -------------
