@@ -10,12 +10,15 @@
 $cmd=fopen("php://stdin", "r");//打开命令行的输入文件流 用于读入输入的参数
 
 
-echo 'choose menu: 1 --> rps, 2 -->numgame, e of q  -->exit';
+echo 'choose menu: 1 --> rps, 2 -->numgame, e of q  -->exit'.PHP_EOL;
 
 $menu_var = fgets($cmd);
 
+$menu_var = str_replace(PHP_EOL,'',$menu_var);
+
 if($menu_var == 'e' || $menu_var == 'q'){
-    echo 'exit'.PHP_EOL;
+
+    echo PHP_EOL.'exit'.PHP_EOL;
 
 }else if ((int)$menu_var == 1 ){
 

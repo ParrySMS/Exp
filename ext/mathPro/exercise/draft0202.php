@@ -11,8 +11,11 @@ $ter = fopen('php://stdin','r');
 
 $n = (int)fgets($ter);
 
+echo 'funcFor:'.funcFor($n).PHP_EOL;
+echo 'funcWhile:'.funcWhile($n).PHP_EOL;
 
-$count = 0;
+
+//$count = 0;
 //for ($count = 0 ;$n != 1;$count++) {
 //
 //    if ($n % 2 == 1) {
@@ -24,10 +27,7 @@ $count = 0;
 //echo $count;
 
 
-
-
 fclose($ter);
-
 
 
 
