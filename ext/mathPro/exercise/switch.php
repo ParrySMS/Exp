@@ -23,24 +23,33 @@ $menu_var = str_replace(PHP_EOL,'',$menu_var);
 
 //var_dump($menu_var);
 
-switch($menu_var){
+try {
 
-    case 'q'.PHP_EOL:
-    case 'e'.PHP_EOL:
-    case 'e':
-    case 'q':
+    switch ($menu_var) {
 
-        echo PHP_EOL.'exit'.PHP_EOL;
-        break;
+        case 'q' . PHP_EOL:
+        case 'e' . PHP_EOL:
+        case 'e':
+        case 'q':
 
-    case 1:
-        rps($cmd);
-        break;
+            echo PHP_EOL . 'exit' . PHP_EOL;
+            break;
 
-    case 2:
-        numgame($cmd);
-        break;
+        case 1:
+            rps($cmd);
+            break;
 
+        case 2:
+            numgame($cmd);
+            break;
+
+
+    }
+
+}catch (Exception $e){
+
+    echo 'catch a Exception:';
+    echo $e->getMessage().PHP_EOL;
 
 }
 

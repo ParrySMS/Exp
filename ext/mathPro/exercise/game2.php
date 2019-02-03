@@ -6,6 +6,21 @@
  * Time: 14:56
  */
 
+/**
+ * @param $num
+ * @param int $min
+ * @param int $max
+ * @throws Exception
+ */
+function numcheck($num, int $min = 1, int $max = 6)
+{
+//    return (is_numeric($num) && $num>=$min && $num <=$max);
+    if (!(is_numeric($num) && $num >= $min && $num <= $max)) {
+//        echo 'num is not int from [1-6]' . PHP_EOL;
+        throw new Exception('num is not int from [1-6]');
+    }
+
+}
 
 
 function numgame($input)
@@ -17,8 +32,13 @@ function numgame($input)
     echo 'A:choose a num from [1-6]' . PHP_EOL;
     $a_self_value = (int)fgets($input);
 
+    numcheck($a_self_value);
+
     echo 'guess B num from [1-6]:' . PHP_EOL;
     $a_guess_value = (int)fgets($input);
+
+    numcheck($a_guess_value);
+
 
     echo 'guess B is odd (1:yes,0:no)' . PHP_EOL;
     $a_guess_odd = (int)fgets($input);
@@ -27,8 +47,13 @@ function numgame($input)
     echo 'B:choose a num from [1-6]' . PHP_EOL;
     $b_self_value = (int)fgets($input);
 
+    numcheck($b_self_value);
+
     echo 'guess A num from [1-6]:' . PHP_EOL;
     $b_guess_value = (int)fgets($input);
+
+    numcheck($b_guess_value);
+
 
     echo 'guess A is odd (1:yes,0:no)' . PHP_EOL;
     $b_guess_odd = (int)fgets($input);
