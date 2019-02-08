@@ -3,26 +3,28 @@
  * Created by PhpStorm.
  * User: L
  * Date: 2019-2-8
- * Time: 20:36
+ * Time: 110min
+ * 20:36 - 21:51
+ * 22:36 - 23:11
  *
  */
 
-function odd(int $region = 20):void
+function odd(int $region = 20): void
 {
-    for($i=1;$i<=$region;$i+=2){
+    for ($i = 1; $i <= $region; $i += 2) {
         echo "$i ";
     }
 }
 
 
-function randArrMaxMinAvg(int $size = 10,int $rand_min=0,int $rand_max=99):void
+function randArrMaxMinAvg(int $size = 10, int $rand_min = 0, int $rand_max = 99): void
 {
     $ar = [];
     $min = null;
     $max = null;
-    for($i=0,$sum = 0;$i<$size;$i++){//一个个放进数组
+    for ($i = 0, $sum = 0; $i < $size; $i++) {//一个个放进数组
 
-        $num = rand($rand_min,$rand_max);
+        $num = rand($rand_min, $rand_max);
         $ar[] = $num;
 
         //表示向数组的尾部增加一个数 默认数字索引
@@ -32,11 +34,11 @@ function randArrMaxMinAvg(int $size = 10,int $rand_min=0,int $rand_max=99):void
 
         //产生数据之后就更新最值
 
-        if(empty($min)||$num<$min){
+        if (empty($min) || $num < $min) {
             $min = $num;
         }
 
-        if(empty($max)||$num>$max){
+        if (empty($max) || $num > $max) {
             $max = $num;
         }
 
@@ -46,28 +48,28 @@ function randArrMaxMinAvg(int $size = 10,int $rand_min=0,int $rand_max=99):void
     }//end for
 
     //循环结束之后 算平均
-    $avg = $sum/$size;
+    $avg = $sum / $size;
 
-    echo "max:$max".PHP_EOL;
-    echo "min:$min".PHP_EOL;
-    echo "avg:$avg".PHP_EOL;
+    echo "max:$max" . PHP_EOL;
+    echo "min:$min" . PHP_EOL;
+    echo "avg:$avg" . PHP_EOL;
 
 }
 
-function prime1(int $region = 100):void
+function prime1(int $region = 100): void
 {
-    for($num = 2;$num<=$region;$num++){//循环全部数字
+    for ($num = 2; $num <= $region; $num++) {//循环全部数字
 
-        for($mod_num =2;$mod_num<$num;$mod_num++){
+        for ($mod_num = 2; $mod_num < $num; $mod_num++) {
             //拿2到自己本身的数字取余 如果都是不能除尽 那就是质数
             //一旦有一个能除尽 那就不是
-            if($num % $mod_num == 0){//除尽
+            if ($num % $mod_num == 0) {//除尽
                 break;
             }
 
         }//end mod for
 
-        if($mod_num == $num){//判断是从break跳出来的 还是结束for循环出来的
+        if ($mod_num == $num) {//判断是从break跳出来的 还是结束for循环出来的
             //结束for循环出来的 则没有除尽
             echo "$num ";
         }
@@ -78,67 +80,67 @@ function prime1(int $region = 100):void
 /** 性能更好的版本 自己思考为什么
  * @param int $region
  */
-function prime2(int $region = 100):void
+function prime2(int $region = 100): void
 {
     echo '2 ';
 
-    for($num = 3;$num<=$region;$num+=2){
+    for ($num = 3; $num <= $region; $num += 2) {
 
-        for($mod_num = 3;$mod_num<sqrt($num);$mod_num+=2){
-            if($num % $mod_num == 0){
+        for ($mod_num = 3; $mod_num < sqrt($num); $mod_num += 2) {
+            if ($num % $mod_num == 0) {
                 break;
             }
 
         }//end mod for
 
-        if($mod_num == $num){
+        if ($mod_num == $num) {
             echo "$num ";
         }
     }//end num for
 }
 
 
-function primeAvg(int $region = 200):void
+function primeAvg(int $region = 200): void
 {
     $sum = 2;
-    for($num = 3,$size = 0;$num<=$region;$num+=2){
+    for ($num = 3, $size = 0; $num <= $region; $num += 2) {
 
-        for($mod_num = 3;$mod_num<sqrt($num);$mod_num+=2){
-            if($num % $mod_num == 0){
+        for ($mod_num = 3; $mod_num < sqrt($num); $mod_num += 2) {
+            if ($num % $mod_num == 0) {
                 break;
             }
 
         }//end mod for
 
-        if($mod_num == $num){
-            $sum +=$num;
+        if ($mod_num == $num) {
+            $sum += $num;
             $size++;
         }
     }//end num for
 
-    $avg = $sum/$size;
+    $avg = $sum / $size;
 
     echo "avg:$avg";
 }
 
-function standardDeviation(array $num,int $size = 6):void
+function standardDeviation(array $num, int $size = 6): void
 {
 
     //标准差公式 需要平均数
-    if(sizeof($num)==$size){//保证是正常参数
+    if (sizeof($num) == $size) {//保证是正常参数
 
         $max = null;
         $min = null;
-        for($i=0,$sum=0;$i<$size;$i++){//遍历数组
+        for ($i = 0, $sum = 0; $i < $size; $i++) {//遍历数组
             $value = $num[$i];
 
             //更新最值
-            if(empty($max)||$value>$max){
+            if (empty($max) || $value > $max) {
                 $max = $value;
                 $max_index = $i;
             }
 
-            if(empty($min)||$value<$min){
+            if (empty($min) || $value < $min) {
                 $min = $value;
                 $min_index = $i;
             }
@@ -149,21 +151,21 @@ function standardDeviation(array $num,int $size = 6):void
 
         //去掉最值 用和求平均数和标准差
         $sum = $sum - $max - $min;
-        $avg = $sum/($size-2);
+        $avg = $sum / ($size - 2);
 
         //求方差的分子部分和
-        for($i=0,$upper_sum=0;$i<$size;$i++){
+        for ($i = 0, $upper_sum = 0; $i < $size; $i++) {
 
-            if($i == $max_index || $i == $min_index){
+            if ($i == $max_index || $i == $min_index) {
                 continue; //跳过
             }
 
-            $upper_sum += pow($num[$i]-$avg,2);
+            $upper_sum += pow($num[$i] - $avg, 2);
         }
 
-        $deviation = sqrt($upper_sum/($size-2));//标准差
+        $deviation = sqrt($upper_sum / ($size - 2));//标准差
 
-        echo round($deviation,2);
+        echo round($deviation, 2);
 
     }
 }
@@ -174,26 +176,26 @@ function standardDeviation(array $num,int $size = 6):void
  * @param array $num
  * @param int $size
  */
-function stdDevSimple(array $num,int $size = 6):void
+function stdDevSimple(array $num, int $size = 6): void
 {
-    if(sizeof($num)==$size) {//保证是正常参数
+    if (sizeof($num) == $size) {//保证是正常参数
 
 
 //    　sort() 函数用于对数组单元从低到高进行排序。
-        sort($num,SORT_NUMERIC);
+        sort($num, SORT_NUMERIC);
 
         //直接删除头尾元素
         unset($num[0]);
-        unset($num[$size-1]);
+        unset($num[$size - 1]);
 
         //删除之后会有索引中断问题 重排一下索引
         $num = array_values($num);
 
 //        求平均  array_sum返回数组中所有值的和
-        $avg = array_sum($num)/($size-2);
+        $avg = array_sum($num) / ($size - 2);
 
 
-        if(!empty($num)&&sizeof($num)>0) {//非空数组 为了下面用foreach
+        if (!empty($num) && sizeof($num) > 0) {//非空数组 为了下面用foreach
 
             $upper_sum = 0; //方差公式分子和
             foreach ($num as $n) {
@@ -201,9 +203,9 @@ function stdDevSimple(array $num,int $size = 6):void
                 $upper_sum += pow($n - $avg, 2);
             }
 
-            $deviation = sqrt($upper_sum/($size-2));//标准差
+            $deviation = sqrt($upper_sum / ($size - 2));//标准差
 
-            echo round($deviation,2);
+            echo round($deviation, 2);
 
         }
     }
@@ -214,7 +216,8 @@ function stdDevSimple(array $num,int $size = 6):void
  * @param int $a
  * @param int $b
  */
-function swapInt(int $a,int $b){
+function swapInt(int $a, int $b)
+{
     $t = $a;
     $a = $b;
     $b = $t;
@@ -226,17 +229,16 @@ function swapInt(int $a,int $b){
  * @param int $a
  * @param int $b
  */
-function swapInt2(int $a,int $b){
+function swapInt2(int $a, int $b)
+{
     echo "$b $a";
 }
-
 
 
 /*** 从小到大排序3个整数 并输出
  *  下面给出四种做法
  *
  * 所有做法都要看得懂
-
  * @param int $a
  * @param int $b
  * @param int $c
@@ -409,10 +411,10 @@ function aabb4(): void
  * @param int $n
  * @return int
  */
-function last6Bit1 (int $n):int
+function last6Bit1(int $n): int
 {
-    for($fnum = 1,$sum = 0;$fnum<=$n;$fnum++){
-        for($multi_num = 1,$fa_res = 1;$multi_num<=$fnum;$multi_num++){
+    for ($fnum = 1, $sum = 0; $fnum <= $n; $fnum++) {
+        for ($multi_num = 1, $fa_res = 1; $multi_num <= $fnum; $multi_num++) {
             $fa_res *= $multi_num;// 计算 fnum!
         }
 
@@ -422,7 +424,7 @@ function last6Bit1 (int $n):int
 
     }
 
-    return $sum%1000000;
+    return $sum % 1000000;
 
 }
 
@@ -431,9 +433,9 @@ function last6Bit1 (int $n):int
  * @param int $n
  * @return int
  */
-function last6Bit2 (int $n):int
+function last6Bit2(int $n): int
 {
-    for($fnum = 1,$sum = 0;$fnum<=$n;$fnum++) {
+    for ($fnum = 1, $sum = 0; $fnum <= $n; $fnum++) {
         for ($multi_num = 1, $fa_res = 1; $multi_num <= $fnum; $multi_num++) {
             $fa_res = ($fa_res * $multi_num) % MOD;// 计算 fnum!
         }
@@ -454,11 +456,11 @@ function last6Bit2 (int $n):int
  * @param int $n
  * @return int
  */
-function last6Bit3 (int $n):int
+function last6Bit3(int $n): int
 {
-    if($n>25) $n =25;//发现的规律
+    if ($n > 25) $n = 25;//发现的规律
 
-    for($fnum = 1,$sum = 0;$fnum<=$n;$fnum++) {
+    for ($fnum = 1, $sum = 0; $fnum <= $n; $fnum++) {
         for ($multi_num = 1, $fa_res = 1; $multi_num <= $fnum; $multi_num++) {
             $fa_res = ($fa_res * $multi_num) % MOD;// 计算 fnum!
         }
@@ -476,17 +478,17 @@ function last6Bit3 (int $n):int
  * @param int $n
  * @return int
  */
-function last6Bit4 (int $n):int
+function last6Bit4(int $n): int
 {
-    if($n>25) $n =25;//发现的规律
+    if ($n > 25) $n = 25;//发现的规律
 
     $fa_res = [];
     $fa_res[] = 1;
 
-    for($fnum = 1,$sum = 0;$fnum<=$n;$fnum++) {
+    for ($fnum = 1, $sum = 0; $fnum <= $n; $fnum++) {
 
-        if (empty($fa_res[$fnum])){
-            $fa_res[$fnum] = ($fnum * $fa_res[$fnum-1])%MOD; // 利用上一次的保存结果
+        if (empty($fa_res[$fnum])) {
+            $fa_res[$fnum] = ($fnum * $fa_res[$fnum - 1]) % MOD; // 利用上一次的保存结果
         }
 
         $sum = ($sum + $fa_res[$fnum]) % MOD; // 求和 重复到n
@@ -508,4 +510,121 @@ function last6Bit4 (int $n):int
  */
 
 
-// todo：for bath ---> 12 13 random array
+
+// 12. 先写几个小函数
+
+/** 获取一个随机数数组
+ * @param int $size
+ * @param int $rand_min
+ * @param int $rand_max
+ */
+function getRandArray($size = 10, $rand_min = 0, $rand_max = 100): array
+{
+
+    for ($ar = [], $i = 0; $i < $size; $i++) {
+        $ar[] = rand($rand_min, $rand_max);
+    }
+
+    return $ar;
+}
+
+/** 冒泡法升序
+ * @param $ar
+ */
+function bubble(& $ar):void
+{
+    $size = sizeof($ar);
+    for ($i = 0; $i < $size-1; $i++) {
+        for ($j = 0; $j < $size - $i - 1; $j++) {
+
+            if ($ar[$j] > $ar[$j + 1]) {//swap
+
+                $t = $ar[$j];
+                $ar[$j] = $ar[$j + 1];
+                $ar[$j + 1] = $t;
+            }
+
+        }
+    }
+
+}
+
+/** 输出数组 两两空一格
+ * @param array $ar
+ */
+function echoArr(array $ar):void
+{
+    foreach ($ar as $num) {
+        echo "$num ";
+    }
+    echo PHP_EOL;
+}
+
+/**
+ * 12题的主程序
+ */
+function excT12():void
+{
+    $ar = getRandArray();
+    echoArr($ar);
+
+    bubble($ar);
+    echoArr($ar);
+}
+
+/** 往数组里插入数据
+ * @param array & $ar 要插入的数组
+ * @param int $index 插入的位置
+ * @param int $data 插入的数据
+ * @throws Exception
+ */
+function insertInArr(array & $ar,int $index,int $data):void
+{
+    $len = sizeof($ar);
+
+    if($index < 0 || $index > $len){
+        throw new Exception('error');
+    }
+
+    //先判断是不是尾部 如果是的话 直接插入就好了
+
+    if($index == $len){
+        $ar[] = $data;
+        return;//结束子函数
+    }
+
+    //中间插入
+    for($i = $len;$i >= $index;$i--){
+        //从数组的尾部开始挪位置开始空出来要插入的位置
+        $ar[$i+1] = $ar[$i];
+    }
+
+    $ar[$index] = $data; //插入 直接覆盖掉
+
+}
+
+/**
+ * 13 题主函数 因为这个是中途输入 所以 单独处理输入
+ */
+function excT13( ):void
+{
+    try {
+
+        $ar = getRandArray();
+        echoArr($ar);
+
+        echo 'please input as [%d %d],input index data'.PHP_EOL;
+        $index = null;
+        $data = null;
+        fscanf(STDIN,'%d %d',$index,$data);
+        //此代码表示，按照指定格式 整数 空格 整数 读取两个整数变量里，不再需要用fget逐行读取
+//        但是变量需要提前预定义
+        insertInArr($ar,$index,$data);
+        echoArr($ar);
+
+    }catch (Exception $e){
+        echo $e->getMessage().PHP_EOL;
+    }
+
+}
+
