@@ -118,7 +118,7 @@
      * 下滑的时候触发
      */
     window.onscroll = function () {
-        if (check_onload() && imgsNumber < 100) {//下滑并且数量小于100图的时候
+        if (check_onload() && imgsNumber < 100) {//下滑滑到第了 并且 数量小于100图的时候
             for (var i = 0; i < 5; i++) {
 
                 if (imgsNumber > 100) {//此次已经加载完了
@@ -155,9 +155,9 @@
         //客户端窗口高度
 
         var lastBoxOffsetTop = boxes[boxes.length - 1].offsetTop + boxes[boxes.length - 1].offsetHeight / 2;
-        //最短列 加载完最后一个盒子设置的top的距离 + 盒子高度的一半
+        //最短列 加载完最后一个盒子设置的top的距离 + 盒子高度的一半（也就是快到图片底了）
 
-        //判断 如果最后一个盒子
+        //判断 如果最后一个盒子的一半位置高度 已经比下滑距离+窗口高度小了 说明滑到底了
         return (lastBoxOffsetTop < scrollTop + clientHeight);
         //返回一个布尔值
     }
