@@ -5,29 +5,31 @@
  * Date: 2018-7-25
  * Time: 15:53
  */
-require 'PmCheck.php';
-require 'Http.php';
+require 'PmCheck.php'; //参数检查类
+require 'Http.php'; //用于发请求的类
 
 try {
     //参数检查
-    $pm = new PmCheck();
+    $pm = new PmCheck('POST');
     //获取参数
-    $problem = $_POST['problem'];
-    $option_num = $_POST['option_num'];
+    $problem = $pm->getParams()['problem'];
+    $option_num = $pm->getParams()['option_num'];
     //定义空数组
-    $options = array();
+    $options = [];
     //转为数组
-    $answers = array($_POST['answers']);
+    $answers = array($pm->getParams()['answers']);
 
-    $hint = $_POST['hint'];
-    $classification = $_POST['classification'];
-    $language = $_POST['language'];
-    $pro_type = $_POST['pro_type'];
-    $pro_source = $_POST['pro_source'];
+    $hint = $pm->getParams()['hint'];
+    $classification = $pm->getParams()['classification'];
+    $language = $pm->getParams()['language'];
+    $pro_type = $pm->getParams()['pro_type'];
+    $pro_source = $pm->getParams()['pro_source'];
 
     //获取参数之后 发送请求
     $http = new Http();
-    $url = 'http://exp.szer.me/parry/testlib/problem';
+//    $url = 'http://exp.szer.me/parry/testlib/problem';
+    $url = 'http://exp.szer.me/parry/testlib';
+
     $data = compact('problem', 'option_num', 'options', 'answers',
         'hint', 'classification', 'language', 'pro_type', 'pro_source');
 
@@ -63,6 +65,8 @@ try {
 }
 ?>
 
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -85,7 +89,6 @@ try {
 <h3>切分出每个选项的图，根据上面网页给的id，命名格式为 id-小写选项，例如 <?php echo isset($pid)?$pid:'error'; ?>-a</h3>
 <h3> 处理完选项图之后，如果还有一个包含全部选项的大图，根据上面网页给的id，命名格式为 id-0，例如 <?php echo isset($pid)?$pid:'error'; ?>-0</h3>
 <h3> 处理完选项图之后，如果还有一个包含题目+全部选项的大图，根据上面网页给的id，命名格式为 id-1，例如 <?php echo isset($pid)?$pid:'error'; ?>-1</h3>
-
 
 
 </body>
