@@ -138,20 +138,28 @@
                 }
                 newPic.appendChild(newImg);
                 imgsNumber++;
-                setTimeout(waterFull, 200);//每次加载重新执行waterFull
+                setTimeout(waterFull, 200);//每次加载之后 200ms重新执行waterFull
             }//for
         }
     }
 
 
-    //todo:
     function check_onload() {
         var boxes = document.getElementsByClassName("box");
-        var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;       //页面圈走的高度
-        var clientHeight = document.documentElement.clientHeight || document.body.clientHeight;	//客户端窗口高度
+        //拿到全部box
+
+        var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        //页面走的高度
+
+        var clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
+        //客户端窗口高度
+
         var lastBoxOffsetTop = boxes[boxes.length - 1].offsetTop + boxes[boxes.length - 1].offsetHeight / 2;
-        //最后一个盒子设置的top的距离 + 盒子高度的一半
-        return (lastBoxOffsetTop < scrollTop + clientHeight) ? true : false;
+        //最短列 加载完最后一个盒子设置的top的距离 + 盒子高度的一半
+
+        //判断 如果最后一个盒子
+        return (lastBoxOffsetTop < scrollTop + clientHeight);
+        //返回一个布尔值
     }
 
     window.onload = preload();
