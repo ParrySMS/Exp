@@ -10,23 +10,37 @@
 
 class PmCheck
 {
+    protected $params = [];
 
-
-    public function __construct($is_encode = false)
+    public function __construct($method,$is_encode = false)
     {
-        if($is_encode == false) {
             //默认检查
-            $_GET = $this->arrayCheck($_GET);
-            $_POST = $this->arrayCheck($_POST);
-        }else {
-            //部分前端加密数据
-            $get_body = $this->pmDecode($_GET);
-            $post_body = $this->pmDecode($_POST);
-            $_GET = $this->arrayCheck($get_body);
-            $_POST = $this->arrayCheck($post_body);
-        }
+            switch ($method){
+
+                case 'GET':
+                case 'get':
+                    $content = $is_encode ? $this->pmDecode($_GET):$_GET;
+                    $this->params = $this->arrayCheck($content);
+                break;
+
+                case 'POST':
+                case 'post':
+                    $content = $is_encode ? $this->pmDecode($_POST):$_POST;
+                    $this->params = $this->arrayCheck($content);
+                break;
+
+            }
+
 //            $_COOKIE = $this->array_check($_COOKIE);
 //            $_FILES = $this->array_check($_FILES);
+    }
+
+    /**
+     * @return array
+     */
+    public function getParams():array
+    {
+        return $this->params;
     }
 
 
