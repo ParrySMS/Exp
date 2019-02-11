@@ -7,6 +7,11 @@
  */
 require './func/pm.php';
 require './func/check.php';
+require './db/Db.php';
+require './config/params.php';
+require './config/db.php';
+require './config/Medoo.php';
+
 
 try {
 
@@ -18,13 +23,7 @@ try {
 
 
 //todo 参数校验
-    lenCheck($acccout, 5, 10);
-    lenCheck($password, 6, 12);
-    numChar($acccout);//还没写好
-    noSP($acccout);
-    noZH($acccout);
-    noSP($password);
-    noZH($password);
+    $usercheck = new UserCheck($acccout,$password);
 
 
 //todo 验证账号密码
@@ -37,7 +36,9 @@ try {
 
 }catch (Exception $e){
 //    echo 'INFO:'.$e->getMessage().'<br/>';
-    $res = 'FAILED:'.$e->getMessage();
+
+    $res = DEBUG_MODE ? 'FAILED:'.$e->getMessage(): ERROR_INFO;
+
 }
 
 ?>
