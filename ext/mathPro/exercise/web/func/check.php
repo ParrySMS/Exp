@@ -13,24 +13,8 @@ function check($acc,$pw){
 
 //    $acc_pw_ar = json_decode(ACC_PW_ARRAY,true);
 
-    $medoo = new Db();
-    $database = $medoo->getDatabase();
-
-    $datas = $database->select('user_login',[
-        'account',
-        'password'
-    ],[
-        'visible[!]'=>0
-    ]);
-
-    if(!is_array($datas)||sizeof($datas) == 0){
-        throw new Exception('DB data error');
-    }
-
-    $acc_pw_ar = [];
-    foreach ($datas as & $d){
-        $acc_pw_ar[$d['account']] = $d['password'];
-    }
+    $user = new User();
+    $acc_pw_ar = $user->getAccPwDatas();
 
     if(!is_array($acc_pw_ar)){
         throw new Exception('config error: ACC_PW_ARRAY');
