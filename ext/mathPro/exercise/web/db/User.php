@@ -27,7 +27,11 @@ class User extends Db
 
         $acc_pw_ar = [];
         foreach ($datas as & $d) {
-            $acc_pw_ar[$d['account']] = $d['password'];
+            $key = $d['account'];
+            $value = $d['password'];
+            $acc_pw_ar[$key] = $value;
+
+//            $acc_pw_ar[$d['account']] = $d['password'];
         }
 
 
