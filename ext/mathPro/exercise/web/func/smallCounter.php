@@ -99,6 +99,8 @@ function getOptions2($answer)
         }
         $arr[] = $rand;//放进去 开始下一个选项生成
     }
+    shuffle($arr);
+    return $arr;
 }
 
 
@@ -147,7 +149,7 @@ function getTotalQuestion()
     $diff = $small_q['diff'];
 
 
-    $options = getOptions($answer);
+    $options = getOptions2($answer);
 
     return [
         'content' => $content,
