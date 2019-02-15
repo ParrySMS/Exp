@@ -18,32 +18,34 @@ class Question extends Db
      * @return array  value还是数组 有三个属性 'qid','content', 'diff'
      * @throws Exception
      */
-    public function getQt(int $type,int $diff,int $question_num = QUIZ_EACH_TIMES_QUESTION):array
+    public function getQt(int $type, int $diff, int $question_num = QUIZ_EACH_TIMES_QUESTION): array
     {
         //todo  拿option
-        $datas = $this->getDatabase()->select($this->table,[
+        $datas = $this->getDatabase()->select($this->table, [
             'qid',
             'content',
             'diff'
-        ],[
-            'type'=>$type,
-            'diff'=>$diff,
-            'visible'=>QUESTION_VALID,
+        ], [
+            'AND' => [
+                'type' => $type,
+                'diff' => $diff,
+                'visible' => QUESTION_VALID,
+            ],
             'LIMIT' => QUESTION_SELECT_LIMIT
         ]);
 
-        if(!is_array($datas) || sizeof($datas)< $question_num){
-            throw new Exception(__FUNCTION__.'():error');
+        if (!is_array($datas) || sizeof($datas) < $question_num) {
+            throw new Exception(__FUNCTION__ . '():error');
         }
 
         shuffle($datas);
 
 
         //取出部分结果 -- 并且找对应选项
-        $qArray=[];
+        $qArray = [];
         $op = new Option();//操控Option表
 
-        for($i = 0;$i<$question_num;$i++){
+        for ($i = 0; $i < $question_num; $i++) {
             $que = $datas[$i];
 
             $qid = $que['qid'];
@@ -61,47 +63,48 @@ class Question extends Db
     }
 
 
-    public function getQtJoin(int $type,int $diff,int $question_num = QUIZ_EACH_TIMES_QUESTION):array
+    public function getQtJoin(int $type, int $diff, int $question_num = QUIZ_EACH_TIMES_QUESTION): array
     {
         //连表拿option
-        $datas = $this->getDatabase()->select($this->table.'(q)',[
+        $datas = $this->getDatabase()->select($this->table . '(q)', [
 //            "[>]account" => ["author_id" => "user_id"],
 //           '[>]math_option' => ['qid'=>'qid'],
-           '[>]math_option(o)' => ['q.pid'=>'qid'],
+            '[>]math_option(o)' => ['q.pid' => 'qid'],
 
-        ],[
+        ], [
             'q.qid',
             'q.content',
             'q.diff',
             'o.id(oid)',
             'o.key',
             'o.content'
-        ],[
-            'q.type'=>$type,
-            'q.diff'=>$diff,
-            'q.visible'=> QUESTION_VALID,
-            'o.visible'=> OPTION_VALID,
+        ], [
+            'AND' => [
+                'q.type' => $type,
+                'q.diff' => $diff,
+                'q.visible' => QUESTION_VALID,
+                'o.visible' => OPTION_VALID,
+            ],
             'LIMIT' => QUESTION_SELECT_LIMIT * OPTION_NUM_OF_EACH_QT
         ]);
 
         $qids = [];//保存全部独立的 datas开始key ==> qid
-        foreach ($datas as $key => $que){
-            if(empty($qids) || !in_array($que['qid'],$qids)){
+        foreach ($datas as $key => $que) {
+            if (empty($qids) || !in_array($que['qid'], $qids)) {
                 $qids[(string)$key] = $que['qid'];
             }
         }
 
         shuffle($qids);
-        $qArray=[];//保存部分结果
+        $qArray = [];//保存部分结果
 
         $counter = 0;//计数器 取部分结果
-        foreach ($qids as $key => $qid){
-            if($counter >= QUESTION_SELECT_LIMIT){
+        foreach ($qids as $key => $qid) {
+            if ($counter >= QUESTION_SELECT_LIMIT) {
                 break;
             }
 //            $options = getOptionsInDatas($qid)
         }
-
 
 
     }
