@@ -28,7 +28,7 @@ class Submit extends Db
         }
     }
 
-    public function getLatestResult(int $uid, int $quiz_id, int $limit = QUIZ_EACH_TIMES_QUESTION):array
+    public function getLatestResult(int $uid, int $quiz_id, int $limit = QUIZ_EACH_TIMES_QUESTION): array
     {
         $datas = $this->getDatabase()->select($this->table, [
             'id',
@@ -42,13 +42,38 @@ class Submit extends Db
             'ORDER' => [
                 'id' => 'DESC'
             ],
-            'LIMIT' =>$limit
+            'LIMIT' => $limit
         ]);
 
-        if(!is_array($datas)||sizeof($datas)!=$limit){
+        if (!is_array($datas) || sizeof($datas) != $limit) {
             throw new Exception(__FUNCTION__ . ':ERROR');
         }
 
         return $datas;
+    }
+
+    /** 判断一个quiz的提交数量 如果已经足够 就应该结束
+     * @param $quiz_id
+     * @return bool
+     * @throws Exception
+     */
+    public function isEnoughSubmit($quiz_id):bool
+    {
+        $num = $this->getDatabase()->count($this->table, [
+            'quiz_id' => $quiz_id,
+            'visible[!]'=> SUBMIT_INVALID
+        ]);
+
+        if($num<0 || $num > QUIZ_TIMES_LIMIT * QUIZ_EACH_TIMES_QUESTION){
+            throw new Exception(__FUNCTION__ . ':submit num error');
+        }
+
+
+//        if($num == QUIZ_TIMES_LIMIT * QUIZ_EACH_TIMES_QUESTION){
+//            return true;
+//        }else{
+//            return false;
+//        }
+        return ($num == QUIZ_TIMES_LIMIT * QUIZ_EACH_TIMES_QUESTION);
     }
 }
