@@ -41,7 +41,7 @@ function updateDiff($uid, $quiz_id): int
 
     $datas = $db_submit->getLatestResult($uid, $quiz_id);
     // 判断 --- 升级 --保存在quiz里
-    $res = 0;//默认0题正确
+    $res = 0;//res 正确题目数量 默认0题正确
     foreach ($datas as $d) {//遍历全部结果
         if ($d['result'] == ANSWER_INCORRECT) {//如果错了一题 退出
             break;
@@ -51,10 +51,10 @@ function updateDiff($uid, $quiz_id): int
 
     $db_quiz = new Quiz();
     if ($res == QUIZ_EACH_TIMES_QUESTION) {//如果正确的题数符合要求（全对）
-        $db_quiz->addFinalDiff($quiz_id);
+        $db_quiz->addFinalDiff($quiz_id);//等级自动升级
     }
 
-    return $db_quiz->getFinalDiff($quiz_id);
+    return $db_quiz->getFinalDiff($quiz_id);//去数据库拿最新的等级 返回出去
 }
 
 /** 获取当前对应diff
@@ -90,7 +90,7 @@ function saveCurrentResult(int $uid, int $qid, $answer, int $quiz_id)
 
     //第二步 判断
     //
-    $res = $answer == $std_answer ? ANSWER_CORRECT : ANSWER_INCORRECT;
+    $res = ($answer == $std_answer) ? ANSWER_CORRECT : ANSWER_INCORRECT;
     // 第三步 保存结果--insert
     $submit = [
         'uid' => $uid,
@@ -106,7 +106,7 @@ function saveCurrentResult(int $uid, int $qid, $answer, int $quiz_id)
     $db_submit = new Submit();
     $db_submit->insert($submit);
 
-    //todo 保存diff结果 到数据库
+    //外面更新diff结果到数据库
 
 }
 
