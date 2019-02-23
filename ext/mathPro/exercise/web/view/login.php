@@ -59,6 +59,9 @@ function jump($res,int $second ,string $url){
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <?php
+    jump($res,3,$next_url);
+    ?>
     <title>登录页面</title>
     <link rel="stylesheet" type="text/css" href="../css/login.css"/>
 </head>
