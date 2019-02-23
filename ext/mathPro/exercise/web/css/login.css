@@ -37,8 +37,9 @@ html,body{height: 100%}     /*这里很关键*/
     outline: none; /* 不显示轮廓线 */
     font-family: Microsoft YaHei; /* 设置字体 */
     color: white; /* 字体颜色 */
-    font-size: 20px; /* 字体大小 */
+    font-size: 14px; /* 字体大小 */
 }
+
 .login-submit-input:hover { /* 鼠标移入按钮范围时改变颜色 */
     background: #1485e1;
 }
