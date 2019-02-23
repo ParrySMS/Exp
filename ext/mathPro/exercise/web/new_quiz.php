@@ -22,8 +22,9 @@ require './config/params.php';
 require './config/db.php';
 require './config/Medoo.php';
 
-
-
+$is_end = false;
+$second = 3;
+$next_url = '';
 
 try {
 
@@ -33,13 +34,13 @@ try {
 
     $url = "./new_quiz.php?uid=$uid";
 
-    $qids = $_GET['qids']??null;// 用户拿过来的题目id数组
+    $qids = $_GET['qids'] ?? null;// 用户拿过来的题目id数组
 
     $answers = [];// 可能用循环-- 很多题的答案
-    $size = empty($qids)?0:sizeof($qids);
-    for($i = 0;$i<$size;$i++){
+    $size = empty($qids) ? 0 : sizeof($qids);
+    for ($i = 0; $i < $size; $i++) {
         $input_name = 'Q' . (string)$i . 'Answer';
-        if(!isset($_POST[$input_name])){
+        if (!isset($_POST[$input_name])) {
             break;
         }
         $answers[] = $_POST[$input_name];
@@ -51,7 +52,7 @@ try {
 
     //todo 2 if 有答案 --> 保存答案（里面会记录 判断对错 更新diff）-- 拿到了diff
     //todo 有如果有答案
-    if(!empty($answers)){
+    if (!empty($answers)) {
         //遍历数组里的每一个值 拿进来用
         for ($i = 0; $i < QUIZ_EACH_TIMES_QUESTION; $i++) {
             $qid = $qids[$i];
@@ -74,6 +75,10 @@ try {
         endAQuiz($quiz_id);
         //todo 跳
         echo 'jump';
+        $is_end = true;
+        $second = 3;
+        $next_url = "./quiz_result.php?uid=$uid&quiz_id=$quiz_id";
+
     }
 
     //todo 4 用diff出题
@@ -81,9 +86,9 @@ try {
 
     //todo 5 题目数据保存好 下面放到 html 展示
 //    $url = "./new_quiz.php?uid=$uid";
-     foreach ($questions as $key => $q) {
-         $url = $url . '&qids[' . $key . ']=' . $q['qid'];
-     }
+    foreach ($questions as $key => $q) {
+        $url = $url . '&qids[' . $key . ']=' . $q['qid'];
+    }
 
 } catch (Exception $e) {
     echo $e->getMessage();
@@ -91,16 +96,23 @@ try {
 }
 
 
+function jump(bool $is_end, int $second, string $url)
+{
+    if ($is_end == true) {
+        echo '<meta http-equiv="refresh" content="' . $second . ';url=\'' . $url . '\'">';
+    }
+}
+
 /** 输出问题和选项的html代码
  * @param $questions
  */
 function echoQuestionContent($questions)
 {
 
-    if(!is_array($questions) || sizeof($questions) != QUIZ_EACH_TIMES_QUESTION){
+    if (!is_array($questions) || sizeof($questions) != QUIZ_EACH_TIMES_QUESTION) {
         //输出错误
         echo 'ERROR';
-    }else {
+    } else {
         //输出html代码
         foreach ($questions as $key => $q) {
 
@@ -134,21 +146,25 @@ function echoQuestionContent($questions)
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+
+    <?php
+        jump($is_end, $second, $next_url);
+    ?>
     <title>答题页面</title>
 
 </head>
 <body>
 
-<form action=" <?php echo $url ?? null  ?>" method="post">
+<form action=" <?php echo $url ?? null ?>" method="post">
 
 
-        <?php
-            echo $url;
-            $q = $questions ?? null;
-            echoQuestionContent($q);
-        ?>
+    <?php
+    //            echo $url;
+    $q = $questions ?? null;
+    echoQuestionContent($q);
+    ?>
     <br/>
-<input type="submit" value="Submit" />
+    <input type="submit" value="Submit"/>
 </form>
 
 

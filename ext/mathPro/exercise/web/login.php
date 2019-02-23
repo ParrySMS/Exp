@@ -7,7 +7,9 @@
  */
 require './func/pm.php';
 require './func/check.php';
+require './func/crypy.php';
 require './db/Db.php';
+require './db/User.php';
 require './config/params.php';
 require './config/db.php';
 require './config/Medoo.php';
@@ -20,6 +22,7 @@ try {
     $acccout = isset($_POST['account']) ? $_POST['account'] : null;
     $password = $_POST['password'] ?? null;
     $res = 'FAILED';
+    $next_url = '';
 
 
 //todo 参数校验
@@ -28,17 +31,24 @@ try {
 
 //todo 验证账号密码
 
-    check($acccout,$password);
+    $uid = checkDBHas($acccout,$password);
     $res = 'SUCCESS';
 
 //todo 返回结果
-
+    $next_url = "./new_quiz.php?uid=$uid";
 
 }catch (Exception $e){
 //    echo 'INFO:'.$e->getMessage().'<br/>';
 
     $res = DEBUG_MODE ? 'FAILED:'.$e->getMessage(): ERROR_INFO;
 
+}
+
+
+function jump($res,int $second ,string $url){
+    if($res == 'SUCCESS'){
+        echo  '<meta http-equiv="refresh" content="'.$second.';url=\''.$url.'\'">';
+    }
 }
 
 ?>
@@ -48,6 +58,12 @@ try {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+
+    <?php
+    jump($res,3,$next_url);
+    ?>
+<!--    <meta http-equiv="refresh" content="3;url='helloworld.php'"> 3秒后跳转到页面-->
+
     <title>Title</title>
 
     <script type="text/javascript">
