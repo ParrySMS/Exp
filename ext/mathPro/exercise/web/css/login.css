@@ -10,7 +10,7 @@ html,body{height: 100%}     /*这里很关键*/
 }
 .login-panel{
     width: 400px;
-    height: 380px;
+    height: 390px;
     background-color: #a5bcc3;
     position: absolute;
     top: 50%;
@@ -28,8 +28,7 @@ html,body{height: 100%}     /*这里很关键*/
 
 
 .login-submit-input { /* 按钮美化 */
-    margin-top:10%;
-    margin-bottom:5%;
+    margin-top:8%;
     width: 304px; /* 宽度 */
     height: 44px; /* 高度 */
     border-width: 0px; /* 边框宽度 */
