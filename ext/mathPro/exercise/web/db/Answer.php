@@ -10,7 +10,7 @@ class Answer extends Db
 {
     protected $table = 'ma_answer';
 
-    /** 根据 qid 拿到单选题答案
+    /** 根据 qid 拿到单选题答案字符串
      * @param int $qid
      * @return mixed
      * @throws Exception
@@ -31,6 +31,29 @@ class Answer extends Db
         }
 
         return $datas[0];
+    }
+
+    /** 插入答案
+     * @param $ans_content
+     * @param $qid
+     * @return int|mixed|string
+     * @throws Exception
+     */
+    public function insert($ans_content,$qid)
+    {
+        $this->getDatabase()->insert($this->table,[
+            'content'=>$ans_content,
+            'qid'=>$qid,
+            'visible'=>ANSWER_VALID
+        ]);
+
+        $id = $this->getDatabase()->id();
+        if(!is_numeric($id) || $id <= 0){
+            throw new Exception(__FUNCTION__ . '():error');
+        }
+
+        return $id;
+
     }
 
 }

@@ -28,6 +28,13 @@ class Submit extends Db
         }
     }
 
+    /** 查看最新的两道题的提交结果（已经判断好正误）
+     * @param int $uid
+     * @param int $quiz_id
+     * @param int $limit
+     * @return array
+     * @throws Exception
+     */
     public function getLatestResult(int $uid, int $quiz_id, int $limit = QUIZ_EACH_TIMES_QUESTION): array
     {
         $datas = $this->getDatabase()->select($this->table, [
@@ -57,14 +64,14 @@ class Submit extends Db
      * @return bool
      * @throws Exception
      */
-    public function isEnoughSubmit($quiz_id):bool
+    public function isEnoughSubmit($quiz_id): bool
     {
         $num = $this->getDatabase()->count($this->table, [
             'quiz_id' => $quiz_id,
-            'visible[!]'=> SUBMIT_INVALID
+            'visible[!]' => SUBMIT_INVALID
         ]);
 
-        if($num<0 || $num > QUIZ_TIMES_LIMIT * QUIZ_EACH_TIMES_QUESTION){
+        if ($num < 0 || $num > QUIZ_TIMES_LIMIT * QUIZ_EACH_TIMES_QUESTION) {
             throw new Exception(__FUNCTION__ . ':submit num error');
         }
 
@@ -75,5 +82,33 @@ class Submit extends Db
 //            return false;
 //        }
         return ($num == QUIZ_TIMES_LIMIT * QUIZ_EACH_TIMES_QUESTION);
+    }
+
+
+    /** 取出 某个人 答题的全部结果（题只有qids）
+     * @param $uid
+     * @param $quiz_id
+     * @return array
+     * @throws Exception
+     */
+    public function getAllQidsInQuiz($uid, $quiz_id):array
+    {
+        $datas = $this->getDatabase()->select($this->table, [
+            'qid',
+            'time',
+            'submit_content',
+            'result'
+        ], [
+            'uid' => $uid,
+            'quiz_id' => $quiz_id,
+            'visible[!]' => SUBMIT_INVALID
+        ]);
+
+        if(!is_array($datas) || sizeof($datas) > QUIZ_TIMES_LIMIT* QUIZ_EACH_TIMES_QUESTION){
+            throw new Exception(__FUNCTION__ . ':QIDS num error');
+        }
+
+        return $datas;
+
     }
 }

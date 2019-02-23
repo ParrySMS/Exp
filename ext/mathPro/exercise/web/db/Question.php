@@ -10,6 +10,30 @@ class Question extends Db
 {
     protected $table = 'ma_question';
 
+
+    /** 插入题目 并且返回id
+     * @param array $que
+     * @return int
+     * @throws Exception
+     */
+    public function insert(array $que):int
+    {
+        $this->getDatabase()->insert($this->table,[
+            'type'=>$que['type'],
+            'diff'=>$que['diff'],
+            'content'=>$que['content'],
+            'refer_id'=>$que['refer_id'],
+            'visible'=>QUESTION_VALID
+        ]);
+
+        $id = $this->getDatabase()->id();
+        if(!is_numeric($id) || $id <= 0){
+            throw new Exception(__FUNCTION__ . '():error');
+        }
+
+        return $id;
+
+    }
     /** 拿N道题
      *  拿 option--qid 重新select 查2次
      * @param $type 指定类型
@@ -63,6 +87,12 @@ class Question extends Db
     }
 
 
+    /** 弃用： 某个类型 某个难度 出若干题 连表方法
+     * @param int $type
+     * @param int $diff
+     * @param int $question_num
+     * @return array
+     */
     public function getQtJoin(int $type, int $diff, int $question_num = QUIZ_EACH_TIMES_QUESTION): array
     {
         //连表拿option
@@ -110,6 +140,31 @@ class Question extends Db
     }
 
     //todo  拿option       2--qid  JOIN 连表
+
+
+    /** 根据qid 拿到1题的diff content  rid
+     * @param $qid
+     * @return array
+     * @throws Exception
+     */
+    public function getQContentDiffRid($qid):array
+    {
+        $datas = $this->getDatabase()->select($this->table,[
+            'diff',
+            'content',
+            'refer_id'
+            ],[
+                'qid'=>$qid,
+                'visible[!]'=>QUESTION_INVALID
+        ]);
+
+        if(!is_array($datas) || sizeof($datas) != 1){
+            throw new Exception(__FUNCTION__ . '():error');
+        }
+
+        return $datas[0];
+    }
+
 
 
 }

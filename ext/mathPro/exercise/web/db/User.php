@@ -52,7 +52,7 @@ class User extends Db
             $this->getDatabase()->insert($this->table, [
                 'account' => $account,
                 'password' => $pw,
-                'visible' => VALID_USER
+                'visible' => USER_VALID
             ]);
 
             $id = $this->getDatabase()->id();
@@ -80,10 +80,31 @@ class User extends Db
         $has = $this->getDatabase()->has($this->table, [
             'account' => $acc,
             'password' => $pw,
-            'visible' => VALID_USER
+            'visible' => USER_VALID
         ]);
 
         return $has;
+    }
+
+    /** 返回uid 如果没有就报错
+     * @param $acc
+     * @param $pw
+     * @return int
+     * @throws Exception
+     */
+    public function getUid($acc, $pw):int
+    {
+        $uid = $this->getDatabase()->get($this->table,'uid',[
+            'account'=>$acc,
+            'password'=>$pw,
+            'visible[!]'=>USER_INVALID
+        ]);
+
+        if(!is_numeric($uid) || $uid<=0){
+            throw new Exception(__CLASS__ . '->' . __FUNCTION__ . '():uid error');
+        }
+
+        return $uid;
     }
 
 
