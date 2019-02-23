@@ -10,7 +10,7 @@ html,body{height: 100%}     /*这里很关键*/
 }
 .login-panel{
     width: 400px;
-    height: 350px;
+    height: 380px;
     background-color: #a5bcc3;
     position: absolute;
     top: 50%;
@@ -20,6 +20,30 @@ html,body{height: 100%}     /*这里很关键*/
     border-radius: 20px;
     text-align:center
 }
+
+.login-form{
+    margin-top:5%;
+    margin-bottom:5%;
+}
+
+
+.login-submit-input { /* 按钮美化 */
+    margin-top:10%;
+    margin-bottom:5%;
+    width: 304px; /* 宽度 */
+    height: 44px; /* 高度 */
+    border-width: 0px; /* 边框宽度 */
+    background: #1d5682; /* 背景颜色 */
+    cursor: pointer; /* 鼠标移入按钮范围时出现手势 */
+    outline: none; /* 不显示轮廓线 */
+    font-family: Microsoft YaHei; /* 设置字体 */
+    color: white; /* 字体颜色 */
+    font-size: 20px; /* 字体大小 */
+}
+.login-submit-input:hover { /* 鼠标移入按钮范围时改变颜色 */
+    background: #1485e1;
+}
+
 body{
     margin: 0px;
     padding: 0px;
@@ -29,16 +53,17 @@ body{
 }
 
 input,button{
-    width: 320px;
+    width: 300px;
     height: 40px;
     margin: 0px 8px;
     border-radius: 10px; /*圆角矩形*/
     text-indent: 10px; /*里面隐形的字体首行缩进*/
     margin: 10px auto;
 }
+
 a{
     text-decoration:none;   /*去掉下划线*/
     color: #808080;
-    font-family: '微软雅黑';
-    font-size: 14px;
+    font-family: Microsoft YaHei;
+    font-size: 15px;
 }

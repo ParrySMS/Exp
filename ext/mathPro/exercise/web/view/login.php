@@ -69,12 +69,15 @@ function jump($res,int $second ,string $url){
 <div class="outer-wrap">
     <div class="login-panel">
 
-        <form action="./login.php" method="post">
+        <form class="login-form" action="./login.php" method="post">
             <h3>WELCOME TO MATH TEST </h3>
+            <hr/>
             <h2><?php echo $res ?></h2><br/>
-            <p>ACCOUNT <input type="text" name="account" value="admin" /></p>
-            <p>PASSWORD <input type="password" name="password" placeholder="please input password" /></p>
-            <input type="submit" value="LOGIN" />
+            <p>ACCOUNT</p>
+            <input type="text" name="account" value="admin" />
+            <p>PASSWORD</p>
+            <input type="password" name="password" placeholder="please input password" />
+            <input class="login-submit-input" type="submit" name="submit" value="LOGIN" />
         </form>
 
 
