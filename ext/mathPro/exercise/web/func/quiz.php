@@ -211,7 +211,7 @@ function isQuizOver($quiz_id): bool
 function endAQuiz($quiz_id)
 {
     $db_quiz = new Quiz();
-    $db_quiz->updateFinish($quiz_id);
+    $db_quiz->updateFinish($quiz_id,QUIZ_FINISHED);
 }
 
 
