@@ -7,6 +7,26 @@
  */
 
 
+require '../db/Db.php';
+require '../db/Answer.php';
+require '../db/Option.php';
+require '../db/Question.php';
+require '../db/Quiz.php';
+require '../db/Submit.php';
+require '../db/User.php';
+require '../db/Refer.php';
+
+require '../config/params.php';
+require '../config/db.php';
+require '../config/Medoo.php';
+
+for ($i=0;$i<50;$i++) {
+    insertNewQusetionOptionAnswer();
+}
+echo 'finished!';
+
+
+
 function varOpVar()
 {
 
@@ -14,7 +34,7 @@ function varOpVar()
     $b = rand(1, 100);
 
     $len = sizeof(SMALL_OP);
-    $key = rand(0, $len);
+    $key = rand(0, $len-1);
 
     $op = SMALL_OP[$key];
 
@@ -27,7 +47,8 @@ function varOpVar()
         'content' => $content,
         'type' => QUESTION_TYPE_SINGLE_CHOOSE,
         'diff' => QUESTION_DIFF_LEVEL_1,
-        'content' => $content
+        'content' => $content,
+
     ];
 
     return $small_q;
@@ -100,7 +121,15 @@ function getOptions2($answer)
         $arr[] = $rand;//放进去 开始下一个选项生成
     }
     shuffle($arr);
-    return $arr;
+
+    $key = 'A';
+    $new_arr = [];
+    foreach ($arr as $op){
+        $new_arr[$key]= $op;
+        $key++;
+    }
+
+    return $new_arr;
 }
 
 
@@ -129,12 +158,6 @@ function getAnswer(int $a, int $b, $op)
  */
 function getTotalQuestion()
 {
-
-//     func1
-//     func2
-//     func5
-//     func4
-
     $small_q = varOpVar();
     $content = $small_q['content'];
     $a = $small_q['a'];
@@ -153,8 +176,35 @@ function getTotalQuestion()
 
     return [
         'content' => $content,
-        'answer' => $answer,
-        'option' => $options,
+        'type'=>$type,
+        'diff'=>$diff,
+        'correct_num' => $answer,
+        'optionCharIndexAr' => $options,
+        'refer_id'=> 1
     ];
+}
+
+/** 插入题目到DB里
+ * @throws Exception
+ */
+function insertNewQusetionOptionAnswer(){
+
+    $total = getTotalQuestion();//1个新的随机题
+
+    $db_que = new Question();
+    $qid = $db_que->insert($total);//插入题目的得到qid
+
+    $db_option = new Option();
+    $key_num_optionAr = $total['optionCharIndexAr'];
+    foreach ( $key_num_optionAr as $key => $content){
+        $db_option->insert($key,$content,$qid);
+    }
+
+
+    $db_ans = new Answer();
+
+    $ans_content = array_search($total['correct_num'],$key_num_optionAr);
+    $db_ans->insert($ans_content,$qid);
+
 
 }

@@ -35,8 +35,13 @@ function check($acc, $pw)
 }
 
 
-
-function checkDBHas($acc, $pw){
+/** 判断有没有这个账户 没有就报错 有就返回uid
+ * @param $acc
+ * @param $pw
+ * @return int
+ */
+function checkDBHas($acc, $pw):int
+{
 
     $user = new User();
 
@@ -48,4 +53,7 @@ function checkDBHas($acc, $pw){
         throw new Exception('account or pw error');
     }
 
+    $uid = $user->getUid($acc,$pw);
+
+    return $uid;
 }

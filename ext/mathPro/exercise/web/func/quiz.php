@@ -116,10 +116,69 @@ function getRefer($res)
     // todo 资料表
 }
 
-function getRecord($uid)
-{
 
+/** 取出了 一个quiz 全部题目
+ * 参考推荐 $refer
+ * {
+ *  name
+ *  content
+ * }
+ *
+ * 多个题目$submit_res  ar{  ...
+ *  array{
+ *      题目内容 qid--q_content,
+ *      题目难度 q_diff
+ *      选项数组 optionAr
+ *      答案 standard_content 和 submit_content
+ *      正误 result
+ *      时间 time
+ *  }
+ * }
+ * @param int $uid
+ * @param int $quiz_id
+ * @return array
+ * @throws Exception
+ */
+function getQuizRecord(int $uid, int $quiz_id): array
+{
     //todo 展示最近一次测试的答题结果
+    // submit--> qids --> questions and answers
+    $db_sub = new Submit();
+    $submit_res = $db_sub->getAllQidsInQuiz($uid, $quiz_id);
+
+    $db_que = new Question();
+    $db_ans = new Answer();
+    $db_op = new Option();
+    $refer_ids = [];//保存题目对应的类型id  无重复
+    foreach ($submit_res as & $s) {//引用传递 要改值
+        $qid = $s['qid'];
+        $q_cdr = $db_que->getQContentDiffRid($qid);
+        $s['standard_content'] = $db_ans->getAnswerContent($qid);
+        $s['optionAr'] = $db_op->getOptionsByQid($qid);
+        $s['q_content'] = $q_cdr['content'];
+        $s['q_diff'] = $q_cdr['diff'];
+
+        $rid = $q_cdr['refer_id'];
+        if (!in_array($rid, $refer_ids)) {
+            $refer_ids[] = $rid;
+        }
+
+    }
+    //题目完整了
+
+    //题目对应的类型id数组 -- 拿refer内容
+    $db_refer = new Refer();
+    $refer_name_content_ar = [];//保存若干个rid对应的推荐
+
+    foreach ($refer_ids as $rid) {
+        $refer_name_content_ar[] = $db_refer->getNameContent($rid);
+    }
+
+
+    return [
+        'refer' => $refer_name_content_ar,
+        'submit_res' => $submit_res
+    ];
 
 }
 
@@ -153,4 +212,37 @@ function endAQuiz($quiz_id)
 {
     $db_quiz = new Quiz();
     $db_quiz->updateFinish($quiz_id);
+}
+
+
+/** 找对应的quiz 拿finaldiff 参数获取comment
+ * @param $quiz_id
+ * @return string
+ * @throws Exception
+ */
+function getQuizComment($quiz_id): string
+{
+    //final diff -- the diff of finished quiz-- 2 id
+
+    $db_quiz = new Quiz();
+    $final_diff = $db_quiz->getFinalDiff($quiz_id);
+
+    // diff --> comment
+
+    switch ($final_diff) {
+        case QUESTION_DIFF_LEVEL_1:
+            $comment = QUIZ_DIFF_COMMENT_LEVEL_1;
+            break;
+        case QUESTION_DIFF_LEVEL_2:
+            $comment = QUIZ_DIFF_COMMENT_LEVEL_2;
+            break;
+        case QUESTION_DIFF_LEVEL_3:
+            $comment = QUIZ_DIFF_COMMENT_LEVEL_3;
+            break;
+        case QUIZ_MAX_DIFF_LEVEL:
+            $comment = QUIZ_DIFF_COMMENT_LEVEL_4;
+            break;
+    }
+
+    return $comment;
 }
