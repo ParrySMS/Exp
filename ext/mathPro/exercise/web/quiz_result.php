@@ -85,12 +85,12 @@ function echoQuizRecord(array $quiz_records)
 
             }
 
-            echo 'Your Answer:' . $q['submit_content'] . '<br/>';
-            echo 'Standard Answer:' . $q['standard_content']['content'] . '<br/>';
+            echo 'Your Answer: ' . $q['submit_content'] . '<br/>';
+            echo 'Standard Answer: ' . $q['standard_content']['content'] . '<br/>';
             $res_string = $q['result'] == ANSWER_CORRECT ? 'Correct' : 'Wrong';
-            echo 'Your result:' . $res_string . '<br/>';
-            echo 'Question Diff:' . $q['q_diff'] . '<br/>';
-            echo 'Time:' . $q['time'] . '<br/>';
+            echo 'Your result: ' . $res_string . '<br/>';
+            echo 'Question Diff: ' . $q['q_diff'] . '<br/>';
+            echo 'Time: ' . $q['time'] . '<br/>';
             echo '</p>';
         }
 

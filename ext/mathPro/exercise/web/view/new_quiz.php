@@ -74,7 +74,7 @@ try {
         //结束quiz
         endAQuiz($quiz_id);
         //todo 跳
-        echo 'jump';
+//        echo 'jump';
         $is_end = true;
         $second = 3;
         $next_url = "./quiz_result.php?uid=$uid&quiz_id=$quiz_id";
@@ -127,7 +127,7 @@ function echoQuestionContent($questions)
                 $input_name = 'Q' . (string)$key . 'Answer';
                 $input_value = $o['key'];
                 $input_text = $o['key'] . '. ' . $o['content'];
-                
+
                 $checked = ($o['key'] == 'A')? 'checked':'';//默认选A
 
                 $label_tag =
