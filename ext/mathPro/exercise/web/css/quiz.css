@@ -1,0 +1,69 @@
+*{margin: 0;padding: 0}
+html,body{height: 100%}     /*这里很关键*/
+
+.outer-wrap{
+    /*只有同时为html和body设置height: 100%时，这里的height才生效，
+    并且随浏览器窗口变化始终保持和浏览器视窗等高*/
+    height: 100%;
+    position: relative;
+    background-color: rgba(0, 0, 0, .5);
+}
+.main-panel{
+    width: 500px;
+    height: 450px;
+    background-color: #a5bcc3;
+    position: absolute;
+    top: 40%;
+    left: 47%;
+    margin-top: -150px;
+    margin-left: -200px;
+    border-radius: 20px;
+    text-align:center
+}
+
+.main-form{
+    margin-top:2%;
+    margin-bottom:5%;
+}
+
+
+.main-submit-input { /* 按钮美化 */
+    margin-top:8%;
+    width: 304px; /* 宽度 */
+    height: 44px; /* 高度 */
+    border-width: 0px; /* 边框宽度 */
+    background: #1d5682; /* 背景颜色 */
+    cursor: pointer; /* 鼠标移入按钮范围时出现手势 */
+    outline: none; /* 不显示轮廓线 */
+    font-family: Microsoft YaHei; /* 设置字体 */
+    color: white; /* 字体颜色 */
+    font-size: 14px; /* 字体大小 */
+}
+
+.main-submit-input:hover { /* 鼠标移入按钮范围时改变颜色 */
+    background: #1485e1;
+}
+
+body{
+    margin: 0px;
+    padding: 0px;
+    /*height: 180px;*/
+    background-image: url(../img/space.jpg);   /*背景图片*/
+    background-size:100% 100%;   /*图片自由伸缩*/
+}
+
+input{
+    width: 50px;
+    height: 20px;
+    margin: 0px 8px;
+    border-radius: 10px; /*圆角矩形*/
+    text-indent: 10px; /*里面隐形的字体首行缩进*/
+    margin: 10px auto;
+}
+
+a{
+    text-decoration:none;   /*去掉下划线*/
+    color: #808080;
+    font-family: Microsoft YaHei;
+    font-size: 15px;
+}
