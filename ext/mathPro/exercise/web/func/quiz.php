@@ -90,7 +90,7 @@ function saveCurrentResult(int $uid, int $qid, $answer, int $quiz_id)
 
     //第二步 判断
     //
-    $res = ($answer == $std_answer) ? ANSWER_CORRECT : ANSWER_INCORRECT;
+    $res = ($answer == $std_answer['content']) ? ANSWER_CORRECT : ANSWER_INCORRECT;
     // 第三步 保存结果--insert
     $submit = [
         'uid' => $uid,
@@ -207,7 +207,10 @@ function isQuizOver($quiz_id): bool
     return $db_sub->isEnoughSubmit($quiz_id);
 }
 
-
+/**
+ * @param $quiz_id
+ * @throws Exception
+ */
 function endAQuiz($quiz_id)
 {
     $db_quiz = new Quiz();
