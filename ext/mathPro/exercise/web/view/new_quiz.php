@@ -6,21 +6,21 @@
  * Time: 15:15
  */
 
-require './func/pm.php';
-require './func/check.php';
-require './func/quiz.php';
+require '../func/pm.php';
+require '../func/check.php';
+require '../func/quiz.php';
 
-require './db/Db.php';
-require './db/Answer.php';
-require './db/Option.php';
-require './db/Question.php';
-require './db/Quiz.php';
-require './db/Submit.php';
-require './db/User.php';
+require '../db/Db.php';
+require '../db/Answer.php';
+require '../db/Option.php';
+require '../db/Question.php';
+require '../db/Quiz.php';
+require '../db/Submit.php';
+require '../db/User.php';
 
-require './config/params.php';
-require './config/db.php';
-require './config/Medoo.php';
+require '../config/params.php';
+require '../config/db.php';
+require '../config/Medoo.php';
 
 $is_end = false;
 $second = 3;
@@ -115,8 +115,8 @@ function echoQuestionContent($questions)
     } else {
         //输出html代码
         foreach ($questions as $key => $q) {
-
-            echo '<p>' . $q['content'] . '<br/></p>';//输出题目
+            echo '<br/>';
+            echo '<p class="main-form">' . $q['content'] . '<br/></p>';//输出题目
 
             $optionArr = $q['optionArray'];
             foreach ($optionArr as $o) { //循环输出某题的n个选项
@@ -127,16 +127,16 @@ function echoQuestionContent($questions)
                 $input_name = 'Q' . (string)$key . 'Answer';
                 $input_value = $o['key'];
                 $input_text = $o['key'] . '. ' . $o['content'];
-
+                
                 $checked = ($o['key'] == 'A')? 'checked':'';//默认选A
 
                 $label_tag =
                     '<label><input name="' . $input_name
                     . '" type="radio" value="' . $input_value . '" '.$checked.' />'
                     . $input_text . ' </label>';
-
                 echo $label_tag;
             }
+            echo '<br/>';
         }
     }
 }
@@ -145,33 +145,36 @@ function echoQuestionContent($questions)
 ?>
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-
     <?php
-        jump($is_end, $second, $next_url);
+    jump($is_end, $second, $next_url);
     ?>
     <title>答题页面</title>
-
+    <link rel="stylesheet" type="text/css" href="../css/quiz.css"/>
 </head>
 <body>
+<div class="outer-wrap">
+    <div class="main-panel">
 
-<form action=" <?php echo $url ?? null ?>" method="post">
+        <form class="main-form" action=" <?php echo $url ?? null ?>" method="post">
+            <h3>THE QUIZ</h3>
+            <hr/>
+            <?php
+            //            echo $url;
+            $q = $questions ?? null;
+            echoQuestionContent($q);
+            ?>
+            <br/>
+            <input class="main-submit-input" type="submit" value="Submit"/>
+        </form>
 
 
-    <?php
-    //            echo $url;
-    $q = $questions ?? null;
-    echoQuestionContent($q);
-    ?>
-    <br/>
-    <input type="submit" value="Submit"/>
-</form>
 
-
+    </div>
+</div>
 </body>
-
 </html>
-
