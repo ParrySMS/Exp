@@ -157,6 +157,12 @@ $app->group('/trans',function (){
 
 });
 
+//测试参数过滤
+//$app->post('/patest', function ($request, $response,array $args) {
+//    var_dump($request->getQueryParams());
+//    var_dump($args['params']);
+//    return $response->withStatus(200);
+//});
 
 $app->run();
 

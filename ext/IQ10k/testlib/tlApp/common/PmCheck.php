@@ -16,7 +16,7 @@ class PmCheck
 
     public function __construct($is_encode = false)
     {
-        //todo 参数检查的有效性 可能有bug
+        //todo 参数检查的有效性 有bug 待修复
         //如果是json格式
         $raw = file_get_contents('php://input');
         $raw = json_decode($raw,true);
