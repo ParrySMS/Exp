@@ -194,6 +194,7 @@ function insertNewQusetionOptionAnswer(){
     $db_que = new Question();
     $qid = $db_que->insert($total);//插入题目的得到qid
 
+
     $db_option = new Option();
     $key_num_optionAr = $total['optionCharIndexAr'];
     foreach ( $key_num_optionAr as $key => $content){
@@ -206,5 +207,22 @@ function insertNewQusetionOptionAnswer(){
     $ans_content = array_search($total['correct_num'],$key_num_optionAr);
     $db_ans->insert($ans_content,$qid);
 
+}
+
+function insertImageQusetionOptionAnswer(){
+    $db_que = new Question();
+
+    for($i=58;$i<65;$i++){
+        $imageQue = [
+            'content' => '/quesimg/q'.$i.'.png',
+            'type'=>1,
+            'diff'=>1,
+//            'correct_num' => $answer,
+//            'optionCharIndexAr' => $options,
+            'refer_id'=> 1
+        ];
+
+        $qid = $db_que->insert($imageQue);//插入题目的得到qid
+    }
 
 }
