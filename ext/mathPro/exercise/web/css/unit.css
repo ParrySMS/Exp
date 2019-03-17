@@ -1,0 +1,45 @@
+*{margin: 0;padding: 0}
+html,body{height: 100%}     /*这里很关键*/
+
+.outer-wrap{
+    /*只有同时为html和body设置height: 100%时，这里的height才生效，
+    并且随浏览器窗口变化始终保持和浏览器视窗等高*/
+    height: 100%;
+    position: relative;
+    background-color: rgba(0, 0, 0, .5);
+}
+
+.unit-panel{
+    width: 400px;
+    height: 260px;
+    background-color: #a5bcc3;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -150px;
+    margin-left: -200px;
+    border-radius: 20px;
+    text-align:center
+}
+
+a {
+    margin-top:5%;
+    margin-bottom:5%;
+    text-decoration: none;
+    color: #0e2f43;
+    font-family: Microsoft YaHei;
+    font-size: 25px;
+}
+
+a:hover { /* 鼠标移入按钮范围时改变颜色 */
+    background: #1485e1;
+}
+
+body{
+    margin: 0px;
+    padding: 0px;
+    /*height: 180px;*/
+    background-image: url(../img/space.jpg);   /*背景图片*/
+    background-size:100% 100%;   /*图片自由伸缩*/
+}
+

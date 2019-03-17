@@ -35,7 +35,8 @@ try {
     $res = 'SUCCESS';
 
 //todo 返回结果
-    $next_url = "./new_quiz.php?uid=$uid";
+//    $next_url = "./new_quiz.php?uid=$uid";
+    $next_url = "./unit.php?uid=$uid";
 
 }catch (Exception $e){
 //    echo 'INFO:'.$e->getMessage().'<br/>';
@@ -60,7 +61,7 @@ function jump($res,int $second ,string $url){
 <head>
     <meta charset="UTF-8">
     <?php
-    jump($res,3,$next_url);
+    jump($res,0,$next_url);
     ?>
     <title>登录页面</title>
     <link rel="stylesheet" type="text/css" href="../css/login.css"/>

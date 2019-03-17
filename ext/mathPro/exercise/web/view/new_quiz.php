@@ -22,8 +22,9 @@ require '../config/params.php';
 require '../config/db.php';
 require '../config/Medoo.php';
 
+//跳转相关参数
 $is_end = false;
-$second = 3;
+$second = 0;
 $next_url = '';
 
 try {
@@ -31,8 +32,10 @@ try {
     //todo 0 拿参数 参数校验
 
     $uid = $_GET['uid'];//拿到
+    $unit = $_GET['unit'];//拿到
 
-    $url = "./new_quiz.php?uid=$uid";
+//    $url = "./new_quiz.php?uid=$uid";
+    $url = "./new_quiz.php?uid=$uid&unit=$unit";
 
     $qids = $_GET['qids'] ?? null;// 用户拿过来的题目id数组
 
@@ -76,13 +79,14 @@ try {
         //todo 跳
 //        echo 'jump';
         $is_end = true;
-        $second = 3;
+        $second = 0;
         $next_url = "./quiz_result.php?uid=$uid&quiz_id=$quiz_id";
 
     }
 
     //todo 4 用diff出题
-    $questions = takeSCQuiz($diff);
+//    $questions = takeSCQuiz($diff);
+    $questions = takeSCQuizWithUnit($diff, $unit);
 
     //todo 5 题目数据保存好 下面放到 html 展示
 //    $url = "./new_quiz.php?uid=$uid";
@@ -116,7 +120,16 @@ function echoQuestionContent($questions)
         //输出html代码
         foreach ($questions as $key => $q) {
             echo '<br/>';
-            echo '<p class="main-form">' . $q['content'] . '<br/></p>';//输出题目
+
+            if (strpos(trim($q['content']), 'png') !== false) {
+                $ques_content_html = '<img src=' . ' "' . $q['content'] . '" ' . 'alt="" />';
+
+            }else{
+                $ques_content_html = $q['content'];
+            }
+
+
+            echo '<p class="main-form">' . $ques_content_html . '<br/></p>';//输出题目
 
             $optionArr = $q['optionArray'];
             foreach ($optionArr as $o) { //循环输出某题的n个选项
@@ -126,13 +139,19 @@ function echoQuestionContent($questions)
 
                 $input_name = 'Q' . (string)$key . 'Answer';
                 $input_value = $o['key'];
-                $input_text = $o['key'] . '. ' . $o['content'];
 
-                $checked = ($o['key'] == 'A')? 'checked':'';//默认选A
+                if (strpos(trim($o['content']), 'png') !== false) {
+                    //有 说明是个图片
+                    $input_text = '<img src=' . ' "' . $o['content'] . '" ' . 'alt="" />';
+//                            <img src="/i/eg_tulip.jpg"  alt="上海鲜花港 - 郁金香" />
+                } else {
+                    $input_text = $o['key'] . '. ' . $o['content'];
+                }
+                $checked = ($o['key'] == 'A') ? 'checked' : '';//默认选A
 
                 $label_tag =
                     '<label><input name="' . $input_name
-                    . '" type="radio" value="' . $input_value . '" '.$checked.' />'
+                    . '" type="radio" value="' . $input_value . '" ' . $checked . ' />'
                     . $input_text . ' </label>';
                 echo $label_tag;
             }
@@ -143,7 +162,6 @@ function echoQuestionContent($questions)
 
 
 ?>
-
 
 
 <!DOCTYPE html>
@@ -171,7 +189,6 @@ function echoQuestionContent($questions)
             <br/>
             <input class="main-submit-input" type="submit" value="Submit"/>
         </form>
-
 
 
     </div>
