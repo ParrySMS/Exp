@@ -16,7 +16,7 @@ class Quiz extends Db
             'final_diff[+]' => QUIZ_UPGRADE_NUM
         ], [
             'id' => $quiz_id,
-            'visible[!]' => QUIZ_VALID
+            'visible[!]' => QUIZ_INVALID
         ]);
 
         $row = $pdo->rowCount();
