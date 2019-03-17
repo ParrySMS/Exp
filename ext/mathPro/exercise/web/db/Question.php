@@ -38,11 +38,12 @@ class Question extends Db
      *  拿 option--qid 重新select 查2次
      * @param $type 指定类型
      * @param $diff 指定难度
+     * @param $unit 指定单元
      * @param $question_num 可选 每次的题目数量
      * @return array  value还是数组 有三个属性 'qid','content', 'diff'
      * @throws Exception
      */
-    public function getQt(int $type, int $diff, int $question_num = QUIZ_EACH_TIMES_QUESTION): array
+    public function getQt(int $type, int $diff, int $unit,int $question_num = QUIZ_EACH_TIMES_QUESTION): array
     {
         //todo  拿option
         $datas = $this->getDatabase()->select($this->table, [
@@ -53,6 +54,7 @@ class Question extends Db
             'AND' => [
                 'type' => $type,
                 'diff' => $diff,
+                'unit' => $unit,
                 'visible' => QUESTION_VALID,
             ],
             'LIMIT' => QUESTION_SELECT_LIMIT

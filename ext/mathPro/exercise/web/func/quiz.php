@@ -7,7 +7,7 @@
  */
 
 
-/** 出n道单选题
+/** 出n道单选题  弃用 加上了单元选择参数
  * @param $current_diff
  * @param int $type
  * @throws Exception
@@ -20,7 +20,21 @@ function takeSCQuiz($current_diff, int $type = QUESTION_TYPE_SINGLE_CHOOSE)
 
     $quet = new Question();
     // 拿题
-    $qusetions = $quet->getQt($type, $current_diff);
+    $qusetions = $quet->getQt($type, $current_diff,0);// 弃用 加上了单元unit参数
+    //准备交给上层 输出到 HTML 里
+    return $qusetions;
+}
+
+function takeSCQuizWithUnit($current_diff, int $unit,int $type = QUESTION_TYPE_SINGLE_CHOOSE)
+{
+    //  出题
+    // 确认type --> 单选
+    // 确认diff --> 取diff
+    // 指定单元
+
+    $quet = new Question();
+    // 拿题
+    $qusetions = $quet->getQt($type, $current_diff,$unit);
     //准备交给上层 输出到 HTML 里
     return $qusetions;
 }
