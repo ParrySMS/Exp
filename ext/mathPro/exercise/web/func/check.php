@@ -40,7 +40,7 @@ function check($acc, $pw)
  * @param $pw
  * @return int
  */
-function checkDBHas($acc, $pw):int
+function checkDBHas($acc, string $pw):int
 {
 
     $user = new User();
