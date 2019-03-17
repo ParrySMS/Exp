@@ -8,7 +8,7 @@
 
 class User extends Db
 {
-    protected $table = 'user_login';
+    protected $table = 'ma_user';
 
     public function getAccPwDatas()
     {
@@ -77,6 +77,8 @@ class User extends Db
 
     public function isPw($acc, $pw): bool
     {
+//        var_dump($pw);
+
         $has = $this->getDatabase()->has($this->table, [
             'account' => $acc,
             'password' => $pw,
