@@ -57,16 +57,16 @@ int main() {
 
 	switch(bigger) {
 		case 7:
-			cout<<"恭喜"<<name<<"中了"<<lot_seq<<"注一等奖"<<endl;
+			cout<<"恭喜"<<name<<"中了"<<lot_seq<<"注一等奖！"<<endl;
 			break;
 		case 6:
 		case 5:
-			cout<<"恭喜"<<name<<"中了"<<lot_seq<<"注二等奖"<<endl;
+			cout<<"恭喜"<<name<<"中了"<<lot_seq<<"注二等奖！"<<endl;
 			break;
 		case 4:
 		case 3:
 		case 2:
-			cout<<"恭喜"<<name<<"中了"<<lot_seq<<"注三等奖"<<endl;
+			cout<<"恭喜"<<name<<"中了"<<lot_seq<<"注三等奖！"<<endl;
 			break;
 		default:
 			cout<<"加油！继续！"<<endl;
