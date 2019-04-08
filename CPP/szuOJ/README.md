@@ -130,3 +130,48 @@ memset(pi,0,5*sizeof(int));
 int *pi = new int[5];
 memset(pi,0,5*sizeof(int));
 ```
+
+- 数组排序
+```C++
+#include <algorithm>
+
+int ar[5] = {1,5,85,7,8}
+//升序 从小到大
+sort(ar,ar+5);
+
+//标准库指定升序降序的方法
+#include <functional>
+
+sort(ar,ar+5,greater<int>()); //升序 从小到大 
+sort(ar,ar+5,less<int>()); //降序 从大到小 
+
+
+```
+
+- 结构体排序
+```C++
+#include <algorithm>
+
+typedef struct birth {
+	int year;
+	int month;
+	int day;
+} bir;
+
+
+bool cmp(bir x,bir y){
+	if(x.year!=y.year) 
+		return x.year<y.year; //1或true 第一个参数x排在前面 
+	if(x.month!=y.month) 
+		return x.month<y.month;
+	if(x.day!=y.day) 
+		return x.day<y.day;
+	
+}
+
+sort(bir_ar,bir_ar+t,cmp); //传递排序函数
+
+//日期小的会在前 bir_ar[0]
+
+
+```
