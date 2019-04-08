@@ -221,3 +221,30 @@ C::C( type a, type b, type c): X(a), Y(b), Z(c)
 析构函数有助于在跳出程序（比如关闭文件、释放内存等）前释放资源。
 
  ` ~Line();  // 这是析构函数声明 `
+ 
+ - 对象数组赋值
+ 
+ ```C++
+ 
+ class ACC {
+	public:
+		int card_no;
+		int phone;
+		int pw;
+		int balance;
+		ACC() {};
+		ACC(int card_no,int phone,int pw,int balance)
+			:card_no(card_no),phone(phone),pw(pw),balance(balance) {
+		};
+};
+
+ 	ACC * acc = new ACC[n];
+	for(i=0; i<n; i++) {
+		cin>>card_no>>phone>>pw>>balance;
+		acc[i] = *(new ACC(card_no, phone, pw, balance));
+	}
+	
+	
+```
+	
+	
