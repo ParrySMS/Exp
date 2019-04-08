@@ -175,3 +175,49 @@ sort(bir_ar,bir_ar+t,cmp); //传递排序函数
 
 
 ```
+
+- 构造函数 
+
+不会返回任何类型，也不会返回 void
+
+可以使用初始化列表来初始化字段
+```C++
+
+class Line
+{
+   public:
+      void setLength( double len );
+      double getLength( void );
+      Line(double len);  // 这是构造函数
+ 
+   private:
+      double length;
+};
+
+Line::Line( double len): length(len) //参数len 赋值到 成员length
+{
+   ....
+}
+
+//上面的构造等同于：
+Line::Line( double len)
+{
+    length = len;
+     ....
+}
+ 
+C::C( type a, type b, type c): X(a), Y(b), Z(c)
+//类名::类名构造函数( 类型 参数): 成员（参数)
+{
+  ....
+}
+
+
+```
+
+- 析构函数 
+
+它不会返回任何值，也不能带有任何参数。
+析构函数有助于在跳出程序（比如关闭文件、释放内存等）前释放资源。
+
+ ` ~Line();  // 这是析构函数声明 `
