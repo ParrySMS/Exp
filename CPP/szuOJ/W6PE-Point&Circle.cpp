@@ -8,20 +8,24 @@ class Point {
 		double x,y;
 		Point() {};
 		Point(double x,double y):x(x),y(y) {};
+		init(double x,double y){
+			this->x = x;
+			this->y = y;
+		} 
 
 };
 
 class Circle {
 	public:
-		Point center;
+		Point *center;
 		double radius;
 		Circle() {};
 		Circle(double x,double y,double r)
-			:center(*(new Point(x,y))),radius(r) {};
+			:center(new Point(x,y)),radius(r) {};
 
 		double getDis(Point p) {
-			double dx = p.x - center.x;
-			double dy = p.y - center.y;
+			double dx = p.x - center->x;
+			double dy = p.y - center->y;
 			return sqrt(pow(dx,2)+pow(dy,2));
 		}
 
@@ -36,9 +40,8 @@ int main() {
 	Point* p_arr = new Point[n];
 	for(i=0; i<n; i++) {
 		cin>>x>>y;
-		Point p(x,y);
-		p_arr[i] = *(new Point(x,y));
-		double dis = cir.getDis(p);
+		p_arr[i].init(x,y);
+		double dis = cir.getDis(p_arr[i]);
 
 		if(dis<=cir.radius) {
 			cout<<"inside";
@@ -51,8 +54,9 @@ int main() {
 
 	cin>>x>>y;
 	cout<<"after move the centre of circle:"<<endl;
-	Point pc(x,y);
-	cir.center = pc;
+	delete cir.center;
+	cir.center = new Point(x,y);
+	
 	for(i=0; i<n; i++) {
 		double dis = cir.getDis(p_arr[i]);
 

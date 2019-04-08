@@ -15,6 +15,13 @@ class ACC {
 		ACC(int card_no,int phone,int pw,int balance)
 			:card_no(card_no),phone(phone),pw(pw),balance(balance) {
 		};
+
+		void init(int card_no,int phone,int pw,int balance) {
+			this->card_no = card_no;
+			this->phone = phone;
+			this->pw = pw;
+			this->balance = balance;
+		}
 };
 
 
@@ -41,7 +48,7 @@ int main() {
 	ACC * acc = new ACC[n];
 	for(i=0; i<n; i++) {
 		cin>>card_no>>phone>>pw>>balance;
-		acc[i] = *(new ACC(card_no, phone, pw, balance));
+		acc[i].init(card_no, phone, pw, balance);
 	}
 
 	cin>>k;

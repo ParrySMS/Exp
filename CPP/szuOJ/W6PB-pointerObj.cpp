@@ -17,8 +17,13 @@ class Student {
 			:name(name),sex(sex),stuno(stuno),college(college),phone(phone) {
 		};
 
-
-
+		void init(string name,string sex,string stuno,string college,string phone) {
+			this->name = name;
+			this->sex = sex;
+			this->stuno = stuno;
+			this->college = college;
+			this->phone = phone;
+		}
 
 };
 
@@ -49,7 +54,7 @@ int main() {
 	Student* stu_arr = new Student[n];
 	for(i=0; i<n; i++) {
 		cin>>name>>sex>>stuno>>college>>phone;
-		stu_arr[i] = *(new Student(name,sex,stuno,college,phone));
+		stu_arr[i].init(name,sex,stuno,college,phone);
 	}
 
 	sort(stu_arr,stu_arr+n,cmp);
