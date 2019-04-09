@@ -52,10 +52,9 @@ int main() {
 	}
 
 
-	cin>>x>>y;
+	cin>>x>>y;	
+	cir.center->init(x,y);
 	cout<<"after move the centre of circle:"<<endl;
-	delete cir.center;
-	cir.center = new Point(x,y);
 	
 	for(i=0; i<n; i++) {
 		double dis = cir.getDis(p_arr[i]);
