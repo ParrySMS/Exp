@@ -222,7 +222,7 @@ C::C( type a, type b, type c): X(a), Y(b), Z(c)
 
  ` ~Line();  // 这是析构函数声明 `
  
- - 对象数组赋值
+ - 对象数组赋值 小心匿名类造成内存泄露 应该用public函数做成员赋值
  
  ```C++
  
@@ -241,10 +241,24 @@ C::C( type a, type b, type c): X(a), Y(b), Z(c)
  	ACC * acc = new ACC[n];
 	for(i=0; i<n; i++) {
 		cin>>card_no>>phone>>pw>>balance;
+		 
 		acc[i] = *(new ACC(card_no, phone, pw, balance));
-	}
-	
-	
+		
+		/** --- bad way ---
+		 *  this mean  tmp = new Obj ,then copy tmp to array. 
+		 * The tmp var result in Mem leak.
+		 */
+	}	
 ```
+
+- 静态引用以及指针函数参数
+
+`func(const CFraction &r) ` 对象静态引用 引用传递 可读 r是外面的对象 可以调用private和静态方法
+
+`func(CFraction* pr)` 指针参数 指针值传递 指针指向的空间可读可写 pr是外面传进来的地址值
+
+`func(const CFraction* pr_c) ` 指向一个常量对象的指针 必须是常量的地址 目的是每次操作都操作同一对象常量 可读
+
+
 	
 	
