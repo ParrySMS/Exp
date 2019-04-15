@@ -221,9 +221,9 @@ C::C( type a, type b, type c): X(a), Y(b), Z(c)
 析构函数有助于在跳出程序（比如关闭文件、释放内存等）前释放资源。
 
  ` ~Line();  // 这是析构函数声明 `
- 
+
  - 对象数组赋值 小心匿名类造成内存泄露 应该用public函数做成员赋值
- 
+
  ```C++
  
  class ACC {
@@ -249,7 +249,7 @@ C::C( type a, type b, type c): X(a), Y(b), Z(c)
 		 * The tmp var result in Mem leak.
 		 */
 	}	
-```
+ ```
 
 - 静态引用以及指针函数参数
 
@@ -260,5 +260,191 @@ C::C( type a, type b, type c): X(a), Y(b), Z(c)
 `func(const CFraction* pr_c) ` 指向一个常量对象的指针 必须是常量的地址 目的是每次操作都操作同一对象常量 可读
 
 
-	
-	
+
+- **string 类**  `#include <cstring>`
+
+  string 并不是 C++ 的基本数据类型，它是 C++ 标准模板库中的一个类。
+
+  
+
+  - 定义以及初始化 
+
+    ```c++
+    //赋值
+    string s1 = "hello"; 
+    string s2("world"); 
+    
+    //字符数组
+    char name[] = "Lady Gaga";
+    string s1 = name;  //char数组复制内容到string 不影响原数组
+    
+    char* p_char = new char[10];
+    string s2 = p_char; //char数组首地址
+    
+    
+    //重复单字符
+    string str(5,'a'); //"aaaaa";
+    
+    
+    //截取赋值
+    // 法1 :  string str(origin_str,start,len)  
+    // 法2 :  str.assign(origin_str,start,len)  
+    // 无len则后续全部[start....]
+    
+    string s1 = "hello"; 
+    	
+    string mid_part(s1,2,2); //"ll"  -- new 对象初始化
+    string end_part(s1,1); //"ello"
+    
+    mid_part.assign(s2,0,3); // "wor" 没有new新对象
+    end_part.assign(str); //相当于全复制
+    
+    ```
+
+    
+
+  - 读入
+
+    ```C++
+    cin>>str;
+    getline(cin,str);
+    ```
+
+  
+
+  - 遍历、迭代器、长度   `string::iterator`
+
+    ```C++
+    string str = "ParrySMS"
+     
+    //遍历1 用数字下标
+    int len = str.size(); // or int len = str.length();
+    for(int i=0;i<len;i++){
+        cout<<str[i]<<" "; //'P' 'a' .....'S'
+    }
+    
+    //遍历2 用迭代器
+    string::iterator it;
+    for(it=str.begin();it<s1.end();it++){
+        cout<<*it<<" "; //类似于单元空间的一个指针
+    }
+    
+    /** 位置指向说明
+     *            P ....  S   M    S      '\0'
+     *            0 ....          n-1    n = size() 
+     *            begin() .. -->          end()
+     *   rend()      <-- .....  rbegin()  
+     */
+     
+    ```
+
+  - 交换  `swap(str1,str2)`
+
+    ```C++
+    string s1 = "hello";
+    string s2 = "world";
+    swap(s1,s2);//以string为单位交换
+    //s1="world"  s2="hello"
+    ```
+
+    
+
+  - 插入  `insert(start,added_string)`
+
+    ```C++
+    string s1 = "hello";
+    s1.insert(0,"world "); //s1 = "world hello"
+    ```
+
+  - 删除  `erase(start_index,len)` , `erase(it_start,it_end)---[start,end)` 
+
+    ```C++
+    str = "ABCDEFG HIJK LMN";
+    str.erase(str.begin()+2,str.end()-7);
+    //ABIJK LMN
+    ```
+
+    
+
+  - 清空
+
+    ```C++
+    str.clear(); //变成空串
+    str.~string()；//销毁  释放 Mem
+    ```
+
+    
+
+  - 查找 ，替代
+
+    ```C++
+    string line = "this@ is@ a test string!";
+    line = line.replace(line.find("@"),1,"");
+    // 将line中 从find @ 位置 替换一个长度的字符为"" 
+    // this is@ a test string!
+    
+    //是否找到  没找到目标就返回 npos
+    if(s.find("jia") == string::npos) ...
+    
+    ```
+
+  - 字符数组 string 数字 的 三者转化
+
+    需要 `#include <bits/stdc++.h>` 或  `sstream`
+
+    详见 [https://blog.csdn.net/Sophia1224/article/details/53054698](<https://blog.csdn.net/Sophia1224/article/details/53054698>)
+
+    
+
+    ```C++
+    #include <cstring>
+    #include <bits/stdc++.h>
+    
+    string str = "65";
+    int x;
+    stringstream ss; //流对象
+    
+    ss<<str; 
+    ss>>x;
+    cout<<"x "<<x<<endl;
+    // x = 65
+    
+    
+    ss.clear(); //注意string 和 stream 重复使用需要清空
+    str.clear();
+    
+    int y = 101;
+    ss<<y;
+    ss>>str;
+    cout<<"str "<<str<<endl;
+    // str = "101"
+    
+    
+    
+    // char[] --> str  字符数组变string
+    char ch [] = "ABCDEFG";
+          string str(ch); 
+    //or  string str = ch; 
+    
+    
+    
+    // str --> char[] string变字符数组
+    string str = "ABCDEFG";
+    	
+    	//法1
+    	char buf[50]; //0-49位
+    	int end = str.copy(buf,49);// n-1位复制str str复制完了就补0
+        buf[end] = '\0'; //末尾 50补0
+    
+    	//法2
+         int len = str.size();
+    	char* pbuf = new char[len+1];
+        str.copy(pbuf,len);
+        pbuf[len] = '\0';
+    
+    ```
+
+    
+
+
+​	
