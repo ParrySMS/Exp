@@ -64,24 +64,24 @@ class CDate {
 void display(CDate & d, CTime & t){
 	cout<<d.getY()<<"-";
 
-	cout.fill('0');//è®¾ç½®å¡«å……å­—ç¬¦
-	cout.width(2);//è®¾ç½®ä½å®½
-	cout<<d.getM()<<"-"ï¼›
+	cout.fill('0');//ÉèÖÃÌî³ä×Ö·û
+	cout.width(2);//ÉèÖÃÎ»¿í
+	cout<<d.getM()<<"-";
 
-	cout.fill('0');//è®¾ç½®å¡«å……å­—ç¬¦
-	cout.width(2);//è®¾ç½®ä½å®½
+	cout.fill('0');//ÉèÖÃÌî³ä×Ö·û
+	cout.width(2);//ÉèÖÃÎ»¿í
 	cout<<d.getD()<<" ";
 
-	cout.fill('0');//è®¾ç½®å¡«å……å­—ç¬¦
-	cout.width(2);//è®¾ç½®ä½å®½
+	cout.fill('0');//ÉèÖÃÌî³ä×Ö·û
+	cout.width(2);//ÉèÖÃÎ»¿í
 	cout<<t.getH()<<":";
 
-	cout.fill('0');//è®¾ç½®å¡«å……å­—ç¬¦
-	cout.width(2);//è®¾ç½®ä½å®½
+	cout.fill('0');//ÉèÖÃÌî³ä×Ö·û
+	cout.width(2);//ÉèÖÃÎ»¿í
 	cout<<t.getM()<<":";
 
-	cout.fill('0');//è®¾ç½®å¡«å……å­—ç¬¦
-	cout.width(2);//è®¾ç½®ä½å®½
+	cout.fill('0');//ÉèÖÃÌî³ä×Ö·û
+	cout.width(2);//ÉèÖÃÎ»¿í
 	cout<<t.getS()<<endl;
 }
 
