@@ -62,7 +62,19 @@ class Problem extends BaseDao
             //clear
             unset($pro_data['option_ids']);
 
+            //clear char
             $pro_data['title'] = trim($pro_data['title']);
+            $pro_data['title'] = str_replace("\u3000", " ",$pro_data['hint']);
+            $pro_data['title'] = str_replace("\\&quot", '\"',$pro_data['hint']);
+
+            if(!empty($pro_data['hint'])){
+//                \\&quot;
+//                \u3000
+                $pro_data['hint'] = trim( $pro_data['hint']);
+                $pro_data['hint'] = str_replace("\u3000", " ",$pro_data['hint']);
+                $pro_data['hint'] = str_replace("\\&quot", '\"',$pro_data['hint']);
+            }
+
         }
 
         return $datas;
@@ -95,8 +107,10 @@ class Problem extends BaseDao
         unset($options);
         $options = [];
 
-        foreach ($datas as $d) {
-            $options[] = (object)$d;
+        foreach ($datas as &$d) {
+            $d['content'] = trim($d['content']);
+            $d['content'] = str_replace("\u3000", " ",$d['content']);
+            $d['content'] = str_replace('\\&quot', '\"',$d['content']);
         }
 
         return $options;
