@@ -90,7 +90,7 @@ try {
     fwrite($file_non_train_set, $json_non_train_set);
     fclose($file_non_train_set);
 
-    $file_test_set = fopen(FILENAME_TRAIN_SET.$file_suffix, "w") or die("Unable to open file:".FILENAME_TRAIN_SET);
+    $file_test_set = fopen(FILENAME_TEST_SET.$file_suffix, "w") or die("Unable to open file:".FILENAME_TRAIN_SET);
     fwrite($file_test_set, $json_test_set);
     fclose($file_test_set);
 
