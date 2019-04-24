@@ -52,8 +52,9 @@ try {
 //    $datas = [];
     //原始文档类别 拿到全部数据
     $pro = new Problem();
-    $pro_source =getPro_source($param_t);
+    $pro_source =$pro->getSource($param_t);
     $datas = $pro->getDatas($pro_source);
+
     $datas_size = sizeof($datas);
     shuffle($datas);
 
@@ -104,32 +105,3 @@ try {
     echo $e->getMessage();
 }
 
-
-/** 根据输入的命令行参数，决定选取的题目类型
- * @param $argv_param_t
- * @return array
- * @throws Exception
- */
-function getPro_source($argv_param_t):array
-{
-    switch ($argv_param_t){
-        case 'logic':
-        case 'LOGIC':
-            return ['logic-C','logic-E'];
-
-        case 'diagram':
-        case 'DIAGRAM':
-//            return ['diagram','logic-diagram'];
-            return ['diagram'];
-
-        case 'verbal':
-        case 'VERBAL':
-            return ['verbal-C','verbal-E'.'verbal-CE'];
-
-        case 'seq':
-        case 'SEQ':
-            return ['seq'];
-        default:
-            throw new Exception("argv_param_t <typename> $argv_param_t is invaild",400);
-    }
-}
