@@ -18,8 +18,18 @@ require './Problem.php';
 set_time_limit(0);
 
 try {
+
+    //todo: 使用命令行参数来输出哪一个类别的训练集数据集
+    //todo: 直接放出训练与非训练，测试则读取非训练 抽取固定的题目
+    // * 使用 $argc $argv 接受参数
+    echo "接收到{$argc}个参数";
+    print_r($argv);
+
     //原始文档类别 拿到全部数据
     $pro_source = ["logic-C","logic-E","logic-CE"];
+
+
+
     $pro = new Problem();
     $datas = $pro->getDatas($pro_source);
 
