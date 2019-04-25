@@ -150,11 +150,9 @@ int bitAnd(int x, int y) {
  *   Rating: 2
  */
 int getByte(int x, int n) {
-	int fliter = 0x11;
-	int clear_x = x&(fliter<<(n<<1));//get the 11 to needed bits
-	int mask = ~(((0x01 << 31) >> (n<<1)) << 1);//clear 11111....
-	return (( clear_x >> (n<<1) ) &  mask);
-
+	int res = x >> ((n) << 3); //1 mean move 8--1 byte
+    res = res & 0xFF; //get last 1 byte data
+    return res;
 }
 /* 
  * logicalShift - shift x to the right by n, using a logical shift
@@ -291,12 +289,14 @@ int isLessOrEqual(int x, int y) {
   
   int s_x = 1 & (x>>31);
   int s_y = 1 & (y>>31);
-  int s_x_y = 1 & (x_y>>31);
+  
 
   int is_np = (s_x^s_y);//0 same, 1 n p dif
   int s_should = is_np & s_x; //if diff ,should same as s_x
-  //int bool_np = 1 + ((x_y+(~0))>>31);//x-y>0--pos1,else neg0 : 1+ 0x000.. or 0xFFFFFF  
-   return (!(s_should^s_x_y) & s_x_y);
+  //int bool_np = 1 + ((x_y+(~0))>>31);
+  //x-y>0--pos1,else neg0 : 1+ 0x000.. or 0xFFFFFF  
+  x_y = x_y & (!(s_x ^ s_y));//np diff then x_y &0 else &1
+  return (s_should |x_y|(!(x^y))); //x=y then 0
 }
 /*
  * ilog2 - return floor(log base 2 of x), where x > 0
