@@ -40,21 +40,26 @@ try {
      * T: type
      * N: num
      **/
+
+    //有H 输出说明文字 函数在配置文件里 纯内容输出
     if(empty($cmd_param_arr) || array_key_exists('H',$cmd_param_arr)){
         cmdHelp();//in '../config/msg.php';
         return;
     }
 
+    //获取对应的命令行参数 根据参数来调后面的条件
     $param_t = $cmd_param_arr['T']??null;
     $param_n = $cmd_param_arr['N']??null;
 //    print_r($cmd_param_arr);
 
 //    $datas = [];
-    //原始文档类别 拿到全部数据
-    $pro = new Problem();
+    $pro = new Problem();  //功能封装到对象里了
+    //根据参数调整条件数组
     $pro_source =$pro->getSource($param_t);
+    //原始文档的类别 拿到该大类别下的全部数据
     $datas = $pro->getDatas($pro_source);
 
+    //拿出来之后打乱
     $datas_size = sizeof($datas);
     shuffle($datas);
 
@@ -96,7 +101,7 @@ try {
     fclose($file_test_set);
 
     //完成信息提示
-    echo "The datas about <$param_t>:".$datas_size.PHP_EOL;
+    echo "The datas about <$param_t>: ".$datas_size.PHP_EOL;
     echo "TranSet: $train_select_len".PHP_EOL;
     echo 'NonTranSet: '.($datas_size-$train_select_len).PHP_EOL;
     echo 'TestSet is '.TEST_SET_SELECT_NUM.PHP_EOL;

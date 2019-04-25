@@ -17,27 +17,30 @@ class Problem extends BaseDao
      * @return array
      * @throws Exception
      */
-    public function getSource($argv_param_t):array
+    public function getSource($argv_param_t): array
     {
-        switch ($argv_param_t){
+        switch ($argv_param_t) {
             case 'logic':
             case 'LOGIC':
-                return ['logic-C','logic-E'];
+                return ['logic-C', 'logic-E'];
 
             case 'diagram':
             case 'DIAGRAM':
-//            return ['diagram','logic-diagram'];
-                return ['diagram'];
+                return ['diagram', 'logic-diagram'];
 
             case 'verbal':
             case 'VERBAL':
-                return ['verbal-C','verbal-E'.'verbal-CE'];
+                return ['verbal-C', 'verbal-E' . 'verbal-CE'];
 
             case 'seq':
             case 'SEQ':
                 return ['seq'];
+            case 'rand':
+            case 'RAND':
+                return ['logic-C', 'logic-E', 'diagram', 'logic-diagram', 'verbal-C', 'verbal-E', 'verbal-CE', 'seq'];
+
             default:
-                throw new Exception("argv_param_t <typename> $argv_param_t is invaild",400);
+                throw new Exception("argv_param_t <typename> $argv_param_t is invaild", 400);
         }
     }
 
@@ -67,7 +70,7 @@ class Problem extends BaseDao
 //            'p.comment_num',
             'h.hint',
             'h.pid',
-            'h.visible'
+            'h.visible(hint_visible)'
         ], [
             'AND' => [
                 'p.pro_source' => $pro_source,
@@ -96,24 +99,27 @@ class Problem extends BaseDao
 
             //clear char
             $pro_data['title'] = trim($pro_data['title']);
-            $pro_data['title'] = str_replace("\u3000", " ",$pro_data['title']);
-            $pro_data['title'] = str_replace("\\&quot", '\"',$pro_data['title']);
+            $pro_data['title'] = str_replace("\u3000", " ", $pro_data['title']);
+            $pro_data['title'] = str_replace("\\&quot", '\"', $pro_data['title']);
             //中文检查
 //            $pattern = '/[\x{4e00}-\x{9fa5}]/u';
-            if(preg_match($this::CH_PATTERN,$pro_data['title'], $match)){
-               throw new Exception('$pro_data[\'title\'] '.$pro_data['title'].' has CH char,pid ='.$pro_data['pid'].
-                   ' line:' . __LINE__ . '---' . __CLASS__ . '->' . __FUNCTION__ . '(): error', 500);
-           }
+            if (preg_match($this::CH_PATTERN, $pro_data['title'], $match)) {
+                throw new Exception('$pro_data[\'title\'] ' . $pro_data['title'] . ' has CH char,pid =' . $pro_data['pid'] .
+                    ' line:' . __LINE__ . '---' . __CLASS__ . '->' . __FUNCTION__ . '(): error', 500);
+            }
 
-            if(!empty($pro_data['hint'] && $pro_data['visible']==VISIBLE_NORMAL)){
-//                \\&quot;
-//                \u3000
-                $pro_data['hint'] = trim( $pro_data['hint']);
-                $pro_data['hint'] = str_replace("\u3000", " ",$pro_data['hint']);
-                $pro_data['hint'] = str_replace("\\&quot", '\"',$pro_data['hint']);
+            //检查左连表建立的提示数据
+            if ($pro_data['hint_visible'] != VISIBLE_NORMAL) {
+                $pro_data['hint'] = null;
+            }
+            //过滤
+            if (!empty($pro_data['hint'])) {
+                $pro_data['hint'] = trim($pro_data['hint']);
+                $pro_data['hint'] = str_replace("\u3000", " ", $pro_data['hint']);
+                $pro_data['hint'] = str_replace("\\&quot", '\"', $pro_data['hint']);
                 //中文检查
-                if(preg_match($this::CH_PATTERN,$pro_data['hint'], $match)){
-                    throw new Exception('$pro_data[\'hint\'] '. $pro_data['hint'] .' has CH char. hid-->pid ='.$pro_data['pid'].' line:' . __LINE__ . '---' . __CLASS__ . '->' . __FUNCTION__ . '(): error', 500);
+                if (preg_match($this::CH_PATTERN, $pro_data['hint'], $match)) {
+                    throw new Exception('$pro_data[\'hint\'] ' . $pro_data['hint'] . ' has CH char. hid-->pid =' . $pro_data['pid'] . ' line:' . __LINE__ . '---' . __CLASS__ . '->' . __FUNCTION__ . '(): error', 500);
                 }
             }
 
@@ -151,11 +157,11 @@ class Problem extends BaseDao
 
         foreach ($datas as &$d) {
             $d['content'] = trim($d['content']);
-            $d['content'] = str_replace("\u3000", " ",$d['content']);
-            $d['content'] = str_replace('\\&quot', '\"',$d['content']);
+            $d['content'] = str_replace("\u3000", " ", $d['content']);
+            $d['content'] = str_replace('\\&quot', '\"', $d['content']);
             //中文检查
-            if(preg_match($this::CH_PATTERN,$d['content'], $match)){
-                throw new Exception('$d[\'content\'] '.$d['content'].' has CH char,oid = '.$d['id'].'. line:' . __LINE__ . '---' . __CLASS__ . '->' . __FUNCTION__ . '(): error', 500);
+            if (preg_match($this::CH_PATTERN, $d['content'], $match)) {
+                throw new Exception('$d[\'content\'] ' . $d['content'] . ' has CH char,oid = ' . $d['id'] . '. line:' . __LINE__ . '---' . __CLASS__ . '->' . __FUNCTION__ . '(): error', 500);
             }
         }
         return $options;
@@ -163,3 +169,25 @@ class Problem extends BaseDao
     }
 
 }
+//
+//
+// 查看seq内的中文hint
+//SELECT
+//*
+//FROM
+//	tl_hint_new_clear
+//WHERE
+//pid>=2286
+//and pid<4943
+//and (hint LIKE "%的%"
+//OR hint LIKE "%其%"
+//OR hint LIKE "%数%"
+//OR hint LIKE "%为%"
+//OR hint LIKE "%是%"
+//OR hint LIKE "%选%"
+//OR hint LIKE "%和%"
+//OR hint LIKE "%差%"
+//OR hint LIKE "%积%"
+//OR hint LIKE "%商%"
+//)
+//
