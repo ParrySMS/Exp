@@ -34,13 +34,15 @@ class Problem extends BaseDao
 
             case 'seq':
             case 'SEQ':
-                return ['seq'];
+//                return ['seq'];
+                return ['seq','new-train-seq'];
             case 'rand':
             case 'RAND':
                 return ['logic-C', 'logic-E', 'diagram', 'logic-diagram', 'verbal-C', 'verbal-E', 'verbal-CE', 'seq'];
 
             default:
-                throw new Exception("argv_param_t <typename> $argv_param_t is invaild", 400);
+                throw new Exception("argv_param_t <typename> $argv_param_t is invaild".PHP_EOL
+                    .'NOTES: the valid <typename> are <logic> <diagram> <verbal> <seq> <rand>');
         }
     }
 
@@ -55,7 +57,7 @@ class Problem extends BaseDao
         $datas = $this->database->select($this::$T_PROBLEM . '(p)', [
             "[>]" . $this::$T_HINT . "(h)" => ['p.id' => 'pid']
         ], [
-//            'p.id',
+            'p.id',
             'p.title',
             'p.title_pic',
             'p.option_ids',
@@ -69,7 +71,7 @@ class Problem extends BaseDao
 //        'p.total_edit',
 //            'p.comment_num',
             'h.hint',
-            'h.pid',
+//            'h.pid',
             'h.visible(hint_visible)'
         ], [
             'AND' => [
@@ -94,8 +96,7 @@ class Problem extends BaseDao
                 $pro_data['options'] = $this->getOptions($oids);
             }
 
-            //clear
-            unset($pro_data['option_ids']);
+
 
             //clear char
             $pro_data['title'] = trim($pro_data['title']);
@@ -104,7 +105,7 @@ class Problem extends BaseDao
             //中文检查
 //            $pattern = '/[\x{4e00}-\x{9fa5}]/u';
             if (preg_match($this::CH_PATTERN, $pro_data['title'], $match)) {
-                throw new Exception('$pro_data[\'title\'] ' . $pro_data['title'] . ' has CH char,pid =' . $pro_data['pid'] .
+                throw new Exception('$pro_data[\'title\'] ' . $pro_data['title'] . ' has CH char,pid =' . $pro_data['id'] .
                     ' line:' . __LINE__ . '---' . __CLASS__ . '->' . __FUNCTION__ . '(): error', 500);
             }
 
@@ -119,11 +120,14 @@ class Problem extends BaseDao
                 $pro_data['hint'] = str_replace("\\&quot", '\"', $pro_data['hint']);
                 //中文检查
                 if (preg_match($this::CH_PATTERN, $pro_data['hint'], $match)) {
-                    throw new Exception('$pro_data[\'hint\'] ' . $pro_data['hint'] . ' has CH char. hid-->pid =' . $pro_data['pid'] . ' line:' . __LINE__ . '---' . __CLASS__ . '->' . __FUNCTION__ . '(): error', 500);
+                    throw new Exception('$pro_data[\'hint\'] ' . $pro_data['hint'] . ' has CH char. hid-->pid =' . $pro_data['id'] . ' line:' . __LINE__ . '---' . __CLASS__ . '->' . __FUNCTION__ . '(): error', 500);
                 }
             }
+            //clear
+            unset($pro_data['option_ids']);
+            unset($pro_data['hint_visible']);
 
-        }
+        }//end foreach
 
         return $datas;
     }
@@ -152,19 +156,20 @@ class Problem extends BaseDao
             throw new Exception('line:' . __LINE__ . '---' . __CLASS__ . '->' . __FUNCTION__ . '(): error', 500);
         }
 
-        unset($options);
-        $options = [];
-
         foreach ($datas as &$d) {
+
             $d['content'] = trim($d['content']);
-            $d['content'] = str_replace("\u3000", " ", $d['content']);
+            $d['content'] = str_replace('\u3000', " ", $d['content']);
+            $d['content'] = str_replace('\\u3000', " ", $d['content']);
             $d['content'] = str_replace('\\&quot', '\"', $d['content']);
             //中文检查
             if (preg_match($this::CH_PATTERN, $d['content'], $match)) {
                 throw new Exception('$d[\'content\'] ' . $d['content'] . ' has CH char,oid = ' . $d['id'] . '. line:' . __LINE__ . '---' . __CLASS__ . '->' . __FUNCTION__ . '(): error', 500);
             }
+            //不要暴露id
+            unset($d['id']);
         }
-        return $options;
+        return $datas;
 
     }
 
@@ -189,5 +194,58 @@ class Problem extends BaseDao
 //OR hint LIKE "%差%"
 //OR hint LIKE "%积%"
 //OR hint LIKE "%商%"
+//OR hint LIKE "%加%"
+//OR hint LIKE "%减%"
+//OR hint LIKE "%乘%"
+//OR hint LIKE "%除%"
+//OR hint LIKE "%弦%"
+//OR hint LIKE "%切%"
+//OR hint LIKE "%交%"
+//OR hint LIKE "%内%"
+//OR hint LIKE "%外%"
+//OR hint LIKE "%尽%"
+//OR hint LIKE "%余%"
+//OR hint LIKE "%化%"
+//OR hint LIKE "%约%"
+//OR hint LIKE "%分%"
+//OR hint LIKE "%倍%"
+//OR hint LIKE "%方%"
+//OR hint LIKE "%根%"
+//OR hint LIKE "%项%"
+//OR hint LIKE "%从%"
+//OR hint LIKE "%变%"
+//OR hint LIKE "%形%"
+//OR hint LIKE "%那%"
+//OR hint LIKE "%则%"
+//OR hint LIKE "%因%"
+//OR hint LIKE "%得%"
+//OR hint LIKE "%知%"
+//OR hint LIKE "%即%"
+//OR hint LIKE "%又%"
+//OR hint LIKE "%看%"
+//OR hint LIKE "%可%"
+//OR hint LIKE "%所%"
+//OR hint LIKE "%以%"
+//OR hint LIKE "%因%"
+//OR hint LIKE "%规%"
+//OR hint LIKE "%律%"
+//OR hint LIKE "%对%"
+//OR hint LIKE "%错%"
+//OR hint LIKE "%选%"
+//OR hint LIKE "%称%"
+//OR hint LIKE "%轴%"
+//OR hint LIKE "%旋%"
+//OR hint LIKE "%转%"
+//OR hint LIKE "%角%"
+//OR hint LIKE "%一%"
+//OR hint LIKE "%二%"
+//OR hint LIKE "%首%"
+//OR hint LIKE "%次%"
+//OR hint LIKE "%应%"
+//OR hint LIKE "%该%"
+//OR hint LIKE "%大%"
+//OR hint LIKE "%概%"
+//OR hint LIKE "%猜%"
+//OR hint LIKE "%猜%"
 //)
 //
