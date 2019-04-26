@@ -88,15 +88,15 @@ try {
     //写入文件流
     $file_suffix = "-$param_t.json";
 
-    $file_train_set = fopen(FILENAME_TRAIN_SET.$file_suffix, "w") or die("Unable to open file:".FILENAME_TRAIN_SET);
+    $file_train_set = fopen(FILENAME_TRAIN_SET.$file_suffix, "w") or die("Unable to open file:".FILENAME_TRAIN_SET . $file_suffix);
     fwrite($file_train_set, $json_train_set);
     fclose($file_train_set);
 
-    $file_non_train_set = fopen(FILENAME_NON_TRAIN_SET.$file_suffix, "w") or die("Unable to open file:".FILENAME_TRAIN_SET);
+    $file_non_train_set = fopen(FILENAME_NON_TRAIN_SET.$file_suffix, "w") or die("Unable to open file:".FILENAME_TRAIN_SET . $file_suffix);
     fwrite($file_non_train_set, $json_non_train_set);
     fclose($file_non_train_set);
 
-    $file_test_set = fopen(FILENAME_TEST_SET.$file_suffix, "w") or die("Unable to open file:".FILENAME_TRAIN_SET);
+    $file_test_set = fopen(FILENAME_TEST_SET.$file_suffix, "w") or die("Unable to open file:".FILENAME_TRAIN_SET . $file_suffix);
     fwrite($file_test_set, $json_test_set);
     fclose($file_test_set);
 
