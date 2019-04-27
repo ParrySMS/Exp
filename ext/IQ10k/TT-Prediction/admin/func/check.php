@@ -12,6 +12,10 @@
  */
 function strCheck(& $str)
 {
+    if(!is_string($str)){
+        throw new Exception("invalid paramsplease contanct Administrator", 500);
+    }
+
     $str = trim($str);
     $str = strip_tags($str);
     //使用addslashes函数 添加反斜杠来处理
@@ -48,4 +52,9 @@ function hasInject($sql_str)
  */
 function allEngS($str){
     return (preg_match("/^[a-z\s]+$/",$str));
+}
+
+function isEmail($str){
+    $pattern = '/^[a-z0-9]+([._-][a-z0-9]+)*@([0-9a-z]+\.[a-z]{2,14}(\.[a-z]{2})?)$/i';
+    return preg_match($pattern,$str);
 }

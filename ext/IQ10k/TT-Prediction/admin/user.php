@@ -41,8 +41,8 @@ try {
         strCheck($account);
         strCheck($name);
         // 检查用户邮箱
-        if(!isEmail($name)){
-            //todo： 吃完饭回来补个子函数 然后FTP 更新showdoc
+        if(!isEmail($account)){
+            throw new Exception('账户邮箱格式错误', 500);
         }
 
         //名字全小写拼音
@@ -100,15 +100,15 @@ function action($uid = null, $error_code = null)
 <form action="user.php" method="get">
 
     appKey:<br>
-    <input type="text" name="appKey" value="">
+    <input type="text" name="appKey" value= "<?php echo $app ?>" >
     <br><br>
 
     codalab账户邮箱:<br>
-    <input type="text" name="account" value="">
+    <input type="text" name="account" value="<?php echo $account ?>">
     <br><br>
 
     姓名的小写拼音:<br>
-    <input type="text" name="name" value="">
+    <input type="text" name="name" value="<?php echo $name ?>">
     <br><br>
 
     <input type="submit" value=" 提交登记信息 ">

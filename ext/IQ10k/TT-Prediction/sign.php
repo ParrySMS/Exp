@@ -27,15 +27,15 @@ if (!empty($app) && !empty($account) && !empty($name)) {
 <form action="./sign.php" method="get">
 
     appKey:<br>
-    <input type="text" name="appKey" value="">
+    <input type="text" name="appKey" value="<?php echo $app ?>">
     <br><br>
 
     codalab账户邮箱:<br>
-    <input type="text" name="account" value="">
+    <input type="text" name="account" value="<?php echo $account ?>">
     <br><br>
 
     姓名的小写拼音:<br>
-    <input type="text" name="name" value="">
+    <input type="text" name="name" value="<?php echo $name ?>">
     <br><br>
 
     <input type="submit" value=" -----   Create sign   ----- ">
