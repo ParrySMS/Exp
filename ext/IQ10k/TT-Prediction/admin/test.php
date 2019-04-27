@@ -17,6 +17,7 @@ require '../config/Medoo.php';
 require './dao/BaseDao.php';
 require './dao/User.php';
 require './dao/Action.php';
+require './dao/Problem.php';
 
 require './func/check.php';
 
@@ -99,6 +100,8 @@ try {
 
         //查sign有效
         signValidCheck($account, $sign);
+
+        //todo: 查每天限制次数
 
         //读对应json 用ids 取打乱返回
         $file_suffix = "-$typename.json";
