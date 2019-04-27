@@ -40,10 +40,16 @@ try {
         }
         strCheck($account);
         strCheck($name);
+        // 检查用户邮箱
+        if(!isEmail($name)){
+            //todo： 吃完饭回来补个子函数 然后FTP 更新showdoc
+        }
+
         //名字全小写拼音
         if(!allEngS($name)){
             throw new Exception('姓名拼音需要全小写', 500);
         }
+
 
         //用户检查
         $user = new User();
@@ -97,7 +103,7 @@ function action($uid = null, $error_code = null)
     <input type="text" name="appKey" value="">
     <br><br>
 
-    codalab账户名:<br>
+    codalab账户邮箱:<br>
     <input type="text" name="account" value="">
     <br><br>
 

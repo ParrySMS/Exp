@@ -30,7 +30,7 @@ if (!empty($app) && !empty($account) && !empty($name)) {
     <input type="text" name="appKey" value="">
     <br><br>
 
-    codalab账户名:<br>
+    codalab账户邮箱:<br>
     <input type="text" name="account" value="">
     <br><br>
 
