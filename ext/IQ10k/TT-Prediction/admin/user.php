@@ -73,22 +73,6 @@ try {
     echo  '</h2>';
 }
 
-/** 行为记录 请求一次记录 报错一次记录
- * @param $uid = null
- * @param null $error_code
- */
-function action($uid = null, $error_code = null)
-{
-    $http = new Http();
-    $ip = $http->getIP();
-    $agent = $http->getAgent();
-    $uri = $_SERVER['REQUEST_URI'];
-    $method = $_SERVER['REQUEST_METHOD'];
-    // 实现dao类
-    $action = new Action();
-    $action->insert($uid, $ip, $agent, $uri, $method, $error_code);
-}
-
 
 ?>
 
