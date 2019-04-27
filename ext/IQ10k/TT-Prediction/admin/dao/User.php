@@ -71,6 +71,7 @@ class User extends BaseDao
 
     /** 获取用户名 内含黑名单用户检查
      * @param $account
+     * @return array|bool|mixed
      * @throws Exception
      */
     public function getName($account)
@@ -82,7 +83,7 @@ class User extends BaseDao
                 'visible' => VISIBLE_NORMAL,
             ]);
 
-        if (!is_string($name)) {
+        if (!is_string($name)||empty($name)) {
 
             if ($this->hasInvalidUser($name, $account)) {
                 throw new Exception(MSG_BLACK_USER . "account:$account", 403);
@@ -90,6 +91,8 @@ class User extends BaseDao
 
             throw new Exception('DB ' . __FUNCTION__ . '() ERROR', 500);
         }
+
+        return $name;
     }
 
     /** 检查用户是否过期
