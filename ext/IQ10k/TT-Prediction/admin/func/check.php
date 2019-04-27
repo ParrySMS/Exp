@@ -162,7 +162,7 @@ function signValidCheck($account, $sign)
     }
 
     //检查有效时间
-    if (!$user->hasValidTime($name, $account)) {
+    if (!$user->hasValidTime($username, $account)) {
         throw new Exception('user not in valid time', 403);
     }
 }
