@@ -21,9 +21,13 @@ require './dao/Action.php';
 require './func/check.php';
 
 const DATAS_NUM = 100;//一次请求拿到的题目数量
+const FILENAME_TEST_SET_IDS = 'TestSetIds';
+//const FILENAME_DEMO_OBJ ='demo.json';
+//无限时
+set_time_limit(0);
+
 
 $http = new Http();
-
 //记录
 action();
 $app = isset($_GET['appKey']) ? $_GET['appKey'] : null;
@@ -44,11 +48,14 @@ try {
     }
 
     //查accout
+    strCheck($account);
     if (!isEmail($account)) {
         throw new Exception('account params error', 400);
     }
 
+
     //查type
+    strCheck($type);
     if (!is_numeric($type)) {
         throw new Exception('type params error', 400);
     }
@@ -71,13 +78,34 @@ try {
     }
 
     //查sign
-    if ($sign === TEST_SIGN) {
-        //TODO:拿1个题重复100次组成返回--写func里
-    } else {//正式申请
-        //todo 查sign有效---用account用户visible和有效时间--写user里
-        //todo 读对应json 取前N题 打乱返回---写func里
-    }
+    if ($sign == TEST_SIGN) {
+        //拿1个题重复100次组成返回--写func里
+//        $file = './'.FILENAME_DEMO_OBJ;  文件流太慢了 超出响应时间
+//        getDemoDatas();//默认直接输出
+        //不用函数 可能是栈空间问题
 
+        //手动拼凑json 纯字符操作
+        $json = trim(DEMO_PRO_JSON);
+        $demo_obj = json_decode($json);
+        $json = json_encode($demo_obj); //消除换行符等无关字符
+        echo '[';
+        for ($i = 0; $i < DATAS_NUM - 1; $i++) {
+            echo $json . ',';
+        }
+        echo $json . ']';
+
+
+    } else {//正式申请
+
+        //查sign有效
+        signValidCheck($account, $sign);
+
+        //读对应json 用ids 取打乱返回
+        $file_suffix = "-$typename.json";
+        $ids_file = './' . FILENAME_TEST_SET_IDS . $file_suffix;
+        $ids = getIdsByFile($ids_file);
+        getTestDatas($ids, $typename);
+    }
 
 } catch (Exception $e) {
     action($account, $e->getCode());

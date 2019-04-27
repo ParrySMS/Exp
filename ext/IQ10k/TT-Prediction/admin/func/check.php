@@ -96,9 +96,10 @@ function getDemoDatas( $num = DATAS_NUM, $print = true)
 //    $demo_obj = json_decode(fread($file_steam, filesize($file)));
 //    fclose($file_steam);
     $demo_obj = json_decode(DEMO_PRO_JSON);
-    $datas = [];
-    for ($i = 0; $i < $num; $i++) {
-        $datas[] = $demo_obj;
+    $datas = [$demo_obj];
+
+    for($i=1;$i<DATAS_NUM;$i++){
+        $datas[$i] =  $datas[0];
     }
 
     if ($print) {
