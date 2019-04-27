@@ -15,6 +15,8 @@ require './dao/BaseDao.php';
 require './dao/User.php';
 require './dao/Action.php';
 
+require './func/check.php';
+
 $res = "无数据输入";
 
 try {
@@ -27,16 +29,21 @@ try {
 
     // 参数校验
     if (empty($app) || empty($account) || empty($name)) {
-        $res = "无数据输入";
+        $res = "有数据输入为空，请检查输入";
 
-    }else {
-        $res = "appKey参数错误 或其他输入内容不合法";
+    } else {
+
+        $res = "输入内容不合法";
         strCheck($app);
         if ($app !== TU_APPKEY) {
-            throw new Exception($res, 500);
+            throw new Exception('appKey参数错误', 500);
         }
-        strCheck($name);
         strCheck($account);
+        strCheck($name);
+        //名字全小写拼音
+        if(!allEngS($name)){
+            throw new Exception('姓名拼音需要全小写', 500);
+        }
 
         //用户检查
         $user = new User();
@@ -44,25 +51,28 @@ try {
         if ($user->hasValidUser($name, $account)) {
             $res = "信息已经登记，无需重复登记";
 
-        }elseif ($user->hasInvalidUser($name, $account)) {
+        } elseif ($user->hasInvalidUser($name, $account)) {
             $res = "信息已过期，无法登记";
 
-        }else {
+        } else {
             $uid = $user->insert($name, $account);
             $res = "信息登记成功";
         }
     }
 
-}catch (Exception $e){
-    action(null,$e->getCode());
-    echo $e->getMessage();
+} catch (Exception $e) {
+    action(null, $e->getCode());
+    echo '<h2 style="color:#be0000;">';
+    echo '错误提示：'.$e->getMessage();
+    echo  '</h2>';
 }
 
 /** 行为记录 请求一次记录 报错一次记录
  * @param $uid = null
  * @param null $error_code
  */
-function action($uid=null,$error_code = null){
+function action($uid = null, $error_code = null)
+{
     $http = new Http();
     $ip = $http->getIP();
     $agent = $http->getAgent();
@@ -70,52 +80,17 @@ function action($uid=null,$error_code = null){
     $method = $_SERVER['REQUEST_METHOD'];
     // 实现dao类
     $action = new Action();
-    $action->insert($uid, $ip, $agent, $uri,$method, $error_code);
+    $action->insert($uid, $ip, $agent, $uri, $method, $error_code);
 }
 
-/** 字符串过滤
- * @param $str
- * @throws Exception
- */
-function strCheck(& $str)
-{
-    $str = trim($str);
-    $str = strip_tags($str);
-    //使用addslashes函数 添加反斜杠来处理
-    $str = addslashes($str);
-    $str = preg_replace("/\r\n/", " ", $str);
-    //过滤成全角
-//    $str = str_replace("<", '〈', $str);
-//    $str = str_replace(">", '〉', $str);
-//    $str = str_replace("_", "＿", $str);
-//    $str = str_replace("%", '％', $str);
-    //html标签处理
-    $str = htmlspecialchars($str);
 
-    if(hasInject($str)){
-        throw new Exception("invalid params: $str,please contanct Administrator",500);
-    }
-//        var_dump($str);
-//    return $str;
-}
-
-/** 是否有可疑注入字符
- * @param $sql_str
- * @return bool
- */
-function hasInject($sql_str)
-    {
-        $num = preg_match('/select|insert|update|delete|\'|\/\*|\*|\.\.\/|\.\/|UNION|into|load_file|outfile/', $sql_str);
-        return ($num == 0) ? false : true;
-    }
 ?>
 
 <!DOCTYPE html>
 <html>
 <body>
+<h2 style="color:#be0000;">当前状态：<?php echo $res ?></h2><br>
 <h2>内测账户白名单登记</h2>
-<h2 style="color:#be0000;">当前状态：  <?php echo $res ?></h2><br>
-
 <form action="user.php" method="get">
 
     appKey:<br>
