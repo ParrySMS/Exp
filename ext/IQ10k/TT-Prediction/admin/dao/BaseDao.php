@@ -10,7 +10,6 @@ class BaseDao
 {
     protected $database;
 
-    static $T_ACTION = DB_PREFIX . '_action';
     static $T_USER = DB_PREFIX . '_competition_user';
 
     /**
