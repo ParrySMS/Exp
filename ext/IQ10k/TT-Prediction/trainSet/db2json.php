@@ -25,6 +25,7 @@ const TEST_SET_SELECT_NUM = 100;
 const FILENAME_TRAIN_SET ='TranSet';
 const FILENAME_NON_TRAIN_SET ='NonTranSet';
 const FILENAME_TEST_SET ='TestSet';
+const FILENAME_TEST_SET_IDS ='TestSetIds';
 
 set_time_limit(0);
 
@@ -81,9 +82,17 @@ try {
     shuffle($non_train_set);
     $test_set = array_slice($non_train_set,0,$test_select_len);
 
+    $test_ids = [];
+    foreach ($test_set as & $pro){
+        $test_ids[] = $pro['id'];
+    }
+
+
     $json_train_set = json_encode($train_set);
     $json_non_train_set = json_encode($non_train_set);
     $json_test_set = json_encode($test_set);
+    $json_test_ids = json_encode($test_ids);
+
 
     //写入文件流
     $file_suffix = "-$param_t.json";
@@ -92,13 +101,17 @@ try {
     fwrite($file_train_set, $json_train_set);
     fclose($file_train_set);
 
-    $file_non_train_set = fopen(FILENAME_NON_TRAIN_SET.$file_suffix, "w") or die("Unable to open file:".FILENAME_TRAIN_SET . $file_suffix);
+    $file_non_train_set = fopen(FILENAME_NON_TRAIN_SET.$file_suffix, "w") or die("Unable to open file:".FILENAME_NON_TRAIN_SET . $file_suffix);
     fwrite($file_non_train_set, $json_non_train_set);
     fclose($file_non_train_set);
 
-    $file_test_set = fopen(FILENAME_TEST_SET.$file_suffix, "w") or die("Unable to open file:".FILENAME_TRAIN_SET . $file_suffix);
+    $file_test_set = fopen(FILENAME_TEST_SET.$file_suffix, "w") or die("Unable to open file:".FILENAME_TEST_SET . $file_suffix);
     fwrite($file_test_set, $json_test_set);
     fclose($file_test_set);
+
+    $file_test_ids = fopen(FILENAME_TEST_SET_IDS.$file_suffix, "w") or die("Unable to open file:".FILENAME_TEST_SET_IDS . $file_suffix);
+    fwrite($file_test_ids, $json_test_ids);
+    fclose($file_test_ids);
 
     //完成信息提示
     echo "The datas about <$param_t>: ".$datas_size.PHP_EOL;
