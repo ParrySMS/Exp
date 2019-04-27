@@ -10,7 +10,6 @@ class User extends BaseDao
 {
     protected $table;
 
-    static $T_USER = DB_PREFIX . '_competition_user';
 
     public function __construct()
     {
@@ -25,13 +24,13 @@ class User extends BaseDao
      * @return int|mixed|string
      * @throws Exception
      */
-    public function insert($name,$account)
+    public function insert($name, $account)
     {
-        $pdo = $this->getDatabase()->insert($this->table,[
+        $pdo = $this->getDatabase()->insert($this->table, [
             'name' => $name,
             'account' => $account,
             'reg_time' => date(DB_TIME_FORMAT),
-            'valid_time' => date(DB_TIME_FORMAT,time()+USER_VALID_TIME_INTERVAL),
+            'valid_time' => date(DB_TIME_FORMAT, time() + USER_VALID_TIME_INTERVAL),
             'visible' => VISIBLE_NORMAL
         ]);
         //插入成功后通过id检查是否异常
@@ -48,9 +47,9 @@ class User extends BaseDao
      * @param $account
      * @return bool
      */
-    public function hasValidUser($name,$account)
+    public function hasValidUser($name, $account)
     {
-        $has = $this->getDatabase()->has($this->table,[
+        $has = $this->getDatabase()->has($this->table, [
             'name' => $name,
             'account' => $account,
             'visible' => VISIBLE_NORMAL,
@@ -60,14 +59,59 @@ class User extends BaseDao
 
     }
 
-    public function hasInvalidUser($name,$account){
-        $has = $this->getDatabase()->has($this->table,[
+    public function hasInvalidUser($name, $account)
+    {
+        $has = $this->getDatabase()->has($this->table, [
             'name' => $name,
             'account' => $account,
             'visible[!]' => VISIBLE_NORMAL,
         ]);
+        return $has;
     }
 
+    /** 获取用户名 内含黑名单用户检查
+     * @param $account
+     * @throws Exception
+     */
+    public function getName($account)
+    {
+        $name = $this->getDatabase()->get($this->table,
+            'name',
+            [
+                'account' => $account,
+                'visible' => VISIBLE_NORMAL,
+            ]);
+
+        if (!is_string($name)) {
+
+            if ($this->hasInvalidUser($name, $account)) {
+                throw new Exception(MSG_BLACK_USER . "account:$account", 403);
+            }
+
+            throw new Exception('DB ' . __FUNCTION__ . '() ERROR', 500);
+        }
+    }
+
+    /** 检查用户是否过期
+     * @param $name
+     * @param $account
+     * @return bool
+     */
+    public function hasValidTime($name, $account)
+    {
+        $has = $this->getDatabase()->has($this->table,
+            [
+                'name' => $name,
+                'account' => $account,
+                'visible' => VISIBLE_NORMAL,
+                'valid_time[><]'=>[ // NOT BETWEEN
+                    date(DB_TIME_FORMAT,time()-USER_VALID_TIME_INTERVAL),
+                    date(DB_TIME_FORMAT)
+                ]
+            ]);
+
+        return $has;
+    }
 
 
 }

@@ -11,7 +11,6 @@
 
 class Action extends BaseDao
 {
-    static $T_ACTION = DB_PREFIX . '_action';
 
     protected $table;
 
