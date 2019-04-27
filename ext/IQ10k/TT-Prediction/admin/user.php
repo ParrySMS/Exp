@@ -35,7 +35,7 @@ try {
 
         $res = "输入内容不合法";
         strCheck($app);
-        if ($app !== TU_APPKEY) {
+        if ($app !== APPKEY_TU) {
             throw new Exception('appKey参数错误', 500);
         }
         strCheck($account);
