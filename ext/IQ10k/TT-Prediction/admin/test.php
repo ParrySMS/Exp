@@ -23,7 +23,6 @@ require './func/check.php';
 
 const DATAS_NUM = 100;//一次请求拿到的题目数量
 const FILENAME_TEST_SET_IDS = 'TestSetIds';
-//const FILENAME_DEMO_OBJ ='demo.json';
 //无限时
 set_time_limit(0);
 
@@ -110,6 +109,7 @@ try {
         //读对应json 用ids 取打乱返回
         $file_suffix = "-$typename.json";
         $ids_file = './' . FILENAME_TEST_SET_IDS . $file_suffix;
+        //todo: 文件流读ids 再去数据库取太慢了 要考虑一个保密性好的又快的方案（新建临时表? 还没想好）
         $ids = getIdsByFile($ids_file);
         getTestDatas($ids, $typename);
     }
