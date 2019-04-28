@@ -6,7 +6,7 @@
  * Time: 21:14
  */
 
-//todo: 根据类型生成对应的100题
+// 根据类型生成对应的100题
 
 require '../Http.php';
 require '../config/database_info.php';
@@ -28,13 +28,14 @@ const FILENAME_TEST_SET_IDS = 'TestSetIds';
 set_time_limit(0);
 
 
-$http = new Http();
 //记录
-action();
 $app = isset($_GET['appKey']) ? $_GET['appKey'] : null;
 $account = isset($_GET['account']) ? $_GET['account'] : null;
 $sign = isset($_GET['sign']) ? $_GET['sign'] : null;
 $type = isset($_GET['type']) ? $_GET['type'] : null;
+
+action($account);
+$http = new Http();
 
 try {
 
@@ -101,7 +102,10 @@ try {
         //查sign有效
         signValidCheck($account, $sign);
 
-        //todo: 查每天限制次数
+        //查每天限制次数 对应urilog 进入次数 非错误情况
+        if(isLimited($account)){
+            throw new Exception('Access has been restricted', 403);
+        }
 
         //读对应json 用ids 取打乱返回
         $file_suffix = "-$typename.json";
@@ -111,7 +115,7 @@ try {
     }
 
 } catch (Exception $e) {
-    action($account, $e->getCode());
+    action($account, $e->getCode(),$e->getMessage());
     $http->status($e->getCode());
     echo $e->getMessage();
 }

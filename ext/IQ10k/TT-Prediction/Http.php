@@ -39,8 +39,8 @@ class Http
         /* 设置返回结果为流 */
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         /* 设置超时时间*/
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 20);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 20);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 35);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 35);
         /* 设置通信方式 */
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         if (!empty($data)) {

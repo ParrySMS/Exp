@@ -253,7 +253,7 @@ class Seq
      * @param $limit
      * @return bool
      */
-    public function isLimited($uid, $limit = ACCESS_LIMITED_NUM)
+    public function isLimited($uid, $limit = ACCESS_LIMITED_NUM_SZU)
     {
         if ($uid == SEQ200_TESTUID) {
             return false;
