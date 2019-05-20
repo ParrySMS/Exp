@@ -89,6 +89,10 @@ cout<<res<<endl; //首地址即可输出全部
     cout<<setiosflags(ios::left|ios::scientific);    //设置左对齐，以科学技术法显示 
     cout.precision(3);   //设置保留三位小数
     cout<<123.45678<<endl;
+
+
+// setiosflags(ios::fixed)
+// setprecision(1)
 ```
 
 ```
@@ -161,7 +165,7 @@ sort(ar,ar+5);
 
 //标准库指定升序降序的方法
 #include <functional>
-
+`
 sort(ar,ar+5,greater<int>()); //升序 从小到大 
 sort(ar,ar+5,less<int>()); //降序 从大到小 
 
@@ -278,6 +282,79 @@ C::C( type a, type b, type c): X(a), Y(b), Z(c)
 `func(CFraction* pr)` 指针参数 指针值传递 指针指向的空间可读可写 pr是外面传进来的地址值
 
 `func(const CFraction* pr_c) ` 指向一个常量对象的指针 必须是常量的地址 目的是每次操作都操作同一对象常量 可读
+
+
+ - 静态 --- 本质：为了解决数据共享问题 
+```C++
+class StaticTest{
+public:
+    	StaticTest(int a, int b, int c);
+    	void GetNumber();
+     	void GetSum();
+ 		static void f1(StaticTest &s);// 静态方法
+private:
+    	int A, B, C;
+    	static int sum; //静态成员
+};
+    
+//静态要自己预先初始化，然后就会常驻内存，直到结束
+    
+int StaticTest::sum = 0;
+//数据类型 类::变量 = 值
+    
+void StaticTest::f1(StaticTest &s){
+	cout << s.A << endl;//静态方法属于类，不属于对象，不能直接调用对象的一般成员
+	cout << sum <<endl;//但是可以调用同属于静态的东西
+
+}
+    
+int main(){
+    
+	return 0;
+}
+    
+```
+
+- 友元 --- 允许外部有权访问 `private` 和 `protected`
+
+```C++
+class Box
+{
+
+private:
+   double width;
+   
+public:
+   double length; 
+   void setWidth( double wid );
+   
+//声明有这个friend可以进来，但它不属于这个类，放哪里都行
+friend void printWidth(Box box);
+friend class SuperPaper;//类的方法都能进来
+
+};
+```
+
+- 多继承
+
+```C++
+//派生类：继承类型 父类名
+class Rectangle: public Shape{...}
+
+/** 继承类型
+ * public: 默认继承 无private
+ * protected：归入protected
+ * private：归入private
+**/
+
+class Rectangle: public Shape, protected PaintCost{...}
+
+//环装继承 -- 虚基类
+
+
+```
+
+
 
 
 
@@ -424,7 +501,7 @@ C::C( type a, type b, type c): X(a), Y(b), Z(c)
     int x;
     stringstream ss; //流对象
     
-    ss<<str; 
+    ss<<str;
     ss>>x;
     cout<<"x "<<x<<endl;
     // x = 65
@@ -464,7 +541,7 @@ C::C( type a, type b, type c): X(a), Y(b), Z(c)
     
     ```
 
-    
+---------------------
 
 
 ​	
