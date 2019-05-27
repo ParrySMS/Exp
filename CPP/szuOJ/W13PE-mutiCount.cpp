@@ -31,7 +31,13 @@ class GroupB: public Group {
 		}
 
 		int sub(int x, int y) {
-			int base,res = 0;
+			
+			int tmp,base,res = 0;
+			if(x<=y){
+				tmp=x;
+				x=y;
+				y=tmp;
+			}
 
 			if((x%10) < (y%10)) {
 				res = (x%10) + 10 - (y%10);
@@ -57,7 +63,13 @@ class GroupB: public Group {
 class GroupC: public Group {
 
 		int add(int x, int y) {
-			int base,res = 0;
+			
+			int tmp,base,res = 0;
+			if(x<=y){
+				tmp=x;
+				x=y;
+				y=tmp;
+			}
 
 			if((x%10) + (y%10)>=10) {
 				res = (x%10) + (y%10) -10;
