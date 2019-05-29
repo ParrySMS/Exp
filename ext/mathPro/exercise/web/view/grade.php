@@ -25,9 +25,7 @@ require '../config/Medoo.php';
 try {
     //todo 获取参数
     $uid = $_GET['uid'];//拿到
-    $grade = $_GET['grade'];
-    $url = './classification.php?'.$_SERVER['QUERY_STRING'];
-
+    $next_url = './unit.php?'.$_SERVER['QUERY_STRING'];
 
     //todo 选unit   传递参数进入下一个页面
 
@@ -38,13 +36,13 @@ try {
 
 
 
-function unitText($base_url, int $unit_num = 5, array $unit_name = UNIT_NAME_ARRAY)
+function gradeText($base_url, int $grade_num = 2)
 {
-
-    for ($i = 0; $i < $unit_num; $i++) {
-        $unit_params = $i + 1;//为了从1开始
+    $base_grade = 6;
+    for ($i = 0; $i < $grade_num; $i++) {
+        $grade_params = $base_grade+$i;
         print<<<ATAG
- <a href="{$base_url}&unit={$unit_params}"> U{$unit_params}: {$unit_name[$i]}</a><br/>
+ <a href="{$base_url}&grade={$grade_params}"> Grade {$grade_params}</a><br/>
 ATAG;
     }
 
@@ -60,14 +58,14 @@ ATAG;
 <head>
     <meta charset="UTF-8">
 
-    <title>选择单元</title>
+    <title>选择年级</title>
     <link rel="stylesheet" type="text/css" href="../css/unit.css"/>
 </head>
 <body>
 <div class="outer-wrap">
 <div class="unit-panel">
 <?php
-unitText($url);
+gradeText($next_url);
 ?>
 <!--<a href="./new_quiz.php?uid=4&unit=1" > Unit 1: Alge</a>-->
 </div>

@@ -36,7 +36,7 @@ try {
 
 //todo 返回结果
 //    $next_url = "./new_quiz.php?uid=$uid";
-    $next_url = "./unit.php?uid=$uid";
+    $next_url = "./grade.php?uid=$uid";
 
 }catch (Exception $e){
 //    echo 'INFO:'.$e->getMessage().'<br/>';
