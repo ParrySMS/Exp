@@ -335,11 +335,54 @@ friend class SuperPaper;//类的方法都能进来
 };
 ```
 
+- 父子类的构造方法
+
+构造方法不能被继承，创建子类的时候，本质上是先创建了父类，然后再进行拓展的。
+所以，子类创建时，先执行父类的构造方法，然后再执行自己对应的构造方法。
+
+如果子类显式调用了父类构造，则执行对应的父类构造，否则默认执行父类空参数构造。
+
+当父类只写了有参构造时，子类必须显式调用，否则无法父类默认空构造，出现报错。
+
+```C++
+#include <iostream>
+using namespace std;
+class Animal{
+	public:
+		int weight,price;
+		Animal(){};
+		Animal(int w,int p)
+			:weight(w),price(p){
+				cout<<"animal--weight:"<<weight<<endl;
+				cout<<"animal--price:"<<price<<endl;
+		}
+};
+
+class Fish: public Animal{
+	public:
+	string name;
+	Fish(int weight,int price,string _name) : name(_name), Animal(weight,price) {
+		//初始化参数的方式显示调用 参数表顺序无关
+		cout<<"fish name:"<<name<<endl;
+		
+	} 
+};
+
+int main() {
+	Fish(50,6,"hwer");
+	return 0;
+}
+```
+
+- 父子类的析构方法
+
+
+
 - 多继承
 
 ```C++
 //派生类：继承类型 父类名
-class Rectangle: public Shape{...}
+class Rectangle: public Shape{...} //继承一个
 
 /** 继承类型
  * public: 默认继承 无private
@@ -347,9 +390,10 @@ class Rectangle: public Shape{...}
  * private：归入private
 **/
 
-class Rectangle: public Shape, protected PaintCost{...}
+class Rectangle: public Shape, protected PaintCost{...}//继承多个
 
 //环装继承 -- 虚基类
+
 
 
 ```
