@@ -32,10 +32,12 @@ try {
     //todo 0 拿参数 参数校验
 
     $uid = $_GET['uid'];//拿到
-    $unit = $_GET['unit'];//拿到
+    $unit = $_GET['unit'];
+    $grade = $_GET['grade'];
+    $classification = $_GET['classification'];
 
-//    $url = "./new_quiz.php?uid=$uid";
-    $url = "./new_quiz.php?uid=$uid&unit=$unit";
+    $url = "./new_quiz.php?uid=$uid&grade=$grade&unit=$unit&classification=$classification";
+//    有qid重复问题 $url = './new_quiz.php?'.$_SERVER['QUERY_STRING'];
 
     $qids = $_GET['qids'] ?? null;// 用户拿过来的题目id数组
 
@@ -54,7 +56,7 @@ try {
     $quiz_id = getQuizid($uid);
 
     //todo 2 if 有答案 --> 保存答案（里面会记录 判断对错 更新diff）-- 拿到了diff
-    //todo 有如果有答案
+    //如果有答案
     if (!empty($answers)) {
         //遍历数组里的每一个值 拿进来用
         for ($i = 0; $i < QUIZ_EACH_TIMES_QUESTION; $i++) {
@@ -122,7 +124,7 @@ function echoQuestionContent($questions)
             echo '<br/>';
 
             if (strpos(trim($q['content']), 'png') !== false) {
-                $ques_content_html = '<img src=' . ' "' . $q['content'] . '" ' . 'alt="" />';
+                $ques_content_html = '<img height="70" src=' . ' "' . $q['content'] . '" ' . 'alt="" />';
 
             }else{
                 $ques_content_html = $q['content'];
@@ -142,7 +144,7 @@ function echoQuestionContent($questions)
 
                 if (strpos(trim($o['content']), 'png') !== false) {
                     //有 说明是个图片
-                    $input_text = '<img src=' . ' "' . $o['content'] . '" ' . 'alt="" />';
+                    $input_text = '<img height="50" src=' . ' "' . $o['content'] . '" ' . 'alt="" />';
 //                            <img src="/i/eg_tulip.jpg"  alt="上海鲜花港 - 郁金香" />
                 } else {
                     $input_text = $o['key'] . '. ' . $o['content'];

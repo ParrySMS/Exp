@@ -88,15 +88,33 @@ DIV;
 
             echo '<div class="member-info">';
 
-            echo '<h3>' . $q['q_content'] . '</h3>';
+
+            if (strpos(trim($q['q_content']), 'png') !== false) {
+                $ques_content_html = '<img height="50" src=' . ' "' . $q['q_content'] . '" ' . 'alt="" />';
+
+            }else{
+                $ques_content_html = $q['q_content'];
+            }
+            echo '<h3>' . $ques_content_html . '</h3>';
+
+
             echo '<h6>Question Diff: ' . $q['q_diff'] . '<br/>';
             $res_string = trim($q['result'])== ANSWER_CORRECT ? 'Correct' : 'Wrong';
             echo '<h6>Your result: ' . $res_string . '</h6><br/>';
 
             echo '<p>';
             $option_ar = $q['optionAr'];
+
             foreach ($option_ar as $op) {
-                echo $op['key'] . '. ' . $op['content'] . '&nbsp;&nbsp;';
+                if (strpos(trim($op['content']), 'png') !== false) {
+                    //有 说明是个图片
+                    $input_text = $op['key'] . '. ' .'<img height="25" src=' . ' "' . $op['content'] . '" ' . 'alt="" />';
+//                            <img src="/i/eg_tulip.jpg"  alt="上海鲜花港 - 郁金香" />
+                } else {
+                    $input_text = $op['key'] . '. ' . $op['content'];
+                }
+
+                echo $input_text . '&nbsp;&nbsp;';
             }
             echo '<br/>';
 

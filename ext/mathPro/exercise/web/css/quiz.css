@@ -11,7 +11,8 @@ html,body{height: 100%}     /*这里很关键*/
 .main-panel{
     width: 500px;
     height: 450px;
-    background-color: #a5bcc3;
+    /*background-color: #a5bcc3;*/
+    background-color: white;
     position: absolute;
     top: 40%;
     left: 47%;
