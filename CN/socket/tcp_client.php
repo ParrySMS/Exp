@@ -34,6 +34,6 @@ try {
     socket_close($socket);//工作完毕，关闭套接流
 
 } catch (Exception $e) {
-    var_dump($e);
+    echo $e->getMessage();
     socket_close($socket);//工作完毕，关闭套接流
 }

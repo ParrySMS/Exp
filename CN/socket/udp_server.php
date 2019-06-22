@@ -52,7 +52,7 @@ try {
     socket_close($socket);//工作完毕，关闭套接流
 
 } catch (Exception $e) {
-    var_dump($e);
+    echo $e->getMessage();
     fclose($cmd);//关闭命令行的输入流
     socket_close($socket);//工作完毕，关闭套接流
 }
