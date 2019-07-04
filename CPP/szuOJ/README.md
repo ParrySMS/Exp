@@ -430,7 +430,17 @@ class CStudentOnJob : public CStudent,public CTeacher
 
 - 虚函数 动态联编
 
-  **运行时多态**：通过继承结合动态绑定获得。必须先设计一个类层次（继承/派生），然后在某些类中使用**虚函数**。
+  虚函数底层是用this来实现的。
+
+  `普通成员函数`或`析构函数`可以声明成虚函数。
+
+  `静态、内联、构造、友元、全局函数` 不能作虚函数。
+
+  注意：**不要在构造函数和析构函数中调用虚函数**
+  因为在构造函数中，对象还不完整，所以虚表指针可能还没初始化好，那么调用虚函数，就会发生未定义行为；
+  因为在析构函数中，会将对象某些成员清理，那么对象也不完整，同理，会发生未定义行为。
+
+  运行时多态：通过继承结合动态绑定获得。必须先设计一个类层次（继承/派生），然后在某些类中使用**虚函数**。
 
   ```C++
   
@@ -472,7 +482,7 @@ class CStudentOnJob : public CStudent,public CTeacher
   	Dog dog;
   	Cat cat;
   	animal=dog;//基类可以被子类赋值，
-  	animal.cry();//虚函数多态，执行时确定调用，可以调用到子类的函数。没有虚函数会调用基类自己
+  	animal.cry();//虚函数多态，执行时确定调用，可以调用到子类的函数。否则没有虚函数会调用基类自己
   	animal=cat;
   	animal.cry();
    
@@ -486,8 +496,128 @@ class CStudentOnJob : public CStudent,public CTeacher
   
   ```
 
-  
+- 多态
 
+  - 编程多态：函数重载 overload，子类重写虚函数 override，运算符重载
+  - 运行时多态：等到运行才能确定，继承+动态绑定实现。
+  
+- 纯虚函数：在基类中没有具体实现的虚函数，任何继承的子类都要自己定义该函数
+
+- 抽象类：包含纯虚函数的类，不能实例化，专门被继承，可以定义指针或引用。
+
+  ```C++
+  class Animal         //抽象类
+  {public:
+    void virtual cry()=0;   //纯虚函数
+  };
+  
+  ```
+  
+- 运算符重载： 通过函数实现
+  
+  只能重载已经存在的运算符，不改变原符的操作数个数、优先级、结合性。
+
+	赋值运算符`=`不可继承，其他可以由子类继承
+	
+	下列运算符不能重载：
+	
+	- 作用域运算符`::`
+	- 成员对象选择运算符`.*`
+	- 类对象选择运算符`.`
+	- 条件运算符`? :`
+
+**实现运算符重载：类成员函数 or 友元函数**
+
+```C++
+class CComplex{
+...
+//类成员函数实现
+    
+//返回一个引用 重载+= 
+ CComplex& operator+= (const CComplex &r_c){ 
+    // 对象(左操作数) 重载符 参数(右操作数)
+   real+=r_c.real;
+   image+=r_c.image;
+   return *this;  //成员函数有this指针 可以返回自己对象值
+  }
+
+
+  //友元函数实现
+friend  CComplex& operator+= (CComplex &r_a,const CComplex &r_b){ 
+    // 重载符 参数(左操作数，右操作数)
+   r_a.real += r_b.real;
+   r_a.image += r_b.image;
+   return r_a;  //返回参数表的引用
+  }
+    
+};
+
+//使用方法： 
+CComplex c1(1,2),c2(3,4),c3;
+c3 = c1+=c2; 
+c3+=c1;
+
+```
+
+
+- **一元运算符重载** ：这个分为前缀和后缀.
+
+  `<op><params>` 称为前缀 ，`<params><op>` 称为后缀。
+
+  ```c++
+#include <iostream>
+  using namespace std;
+//成员函数实现
+  class Base {
+  	private:
+  		double num;
+  	public:
+  		double getNum() {
+  			return num;
+  		}
+  		Base() { }
+  		Base(Base &obj) { //拷贝构造
+  			num = obj.getNum();
+  		}
+  
+  		Base(double n) {
+  			num = n;
+  		}
+      
+  		//返回自己的引用
+  		Base& operator++() { //前增量 参数表空
+  			//函数目的是 先改值 后返回
+  			num+=0.1;
+  			return *this;
+  		}
+  
+  		//返回一个对象值
+  		Base operator++(int) { //后增量 参数表int
+  			//函数目的是 先返回原值 然后再改值
+  			Base obj(*this);
+  			num+=0.1;
+  			return obj;
+  		}
+  
+};
+  
+int main() {
+  	Base b1(3.14),b2(6.66);
+	cout<<(++b1).getNum()<<endl;//返回增加后的引用
+  
+  	Base b3((b2++).getNum());//先返回原值 给b3初始化 然后b2自己增加
+  	cout<<b3.getNum()<<endl;
+  	cout<<b2.getNum()<<endl;
+//output:
+  //3.24
+//6.66
+  //6.76
+	return 0;
+  }
+  ```
+  
+  
+  
 - **string 类**  `#include <cstring>`
 
   string 并不是 C++ 的基本数据类型，它是 C++ 标准模板库中的一个类。
