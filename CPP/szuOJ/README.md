@@ -165,7 +165,7 @@ sort(ar,ar+5);
 
 //标准库指定升序降序的方法
 #include <functional>
-`
+
 sort(ar,ar+5,greater<int>()); //升序 从小到大 
 sort(ar,ar+5,less<int>()); //降序 从大到小 
 
@@ -376,7 +376,7 @@ int main() {
 
 - 父子类的析构方法
 
-
+  先析构子类，再析构父类。
 
 - 多继承
 
@@ -392,15 +392,101 @@ class Rectangle: public Shape{...} //继承一个
 
 class Rectangle: public Shape, protected PaintCost{...}//继承多个
 
-//环装继承 -- 虚基类
+//继承的二义性解决
 
+//法1: 写明调用的类
+int main()
+{    C c;//class C: public B, public A
+     c.A::fun();	//子类.具体父类::父类方法
+     c.B::fun(); 	
+}
+
+//法2：自己新定义 直接调用自己的
+int main()
+{    C c;//class C: public B, public A
+     c.fun();	//子类的方法
+}
+
+
+//法3：虚继承 具体执行会去找（多态）只产生一个拷贝
+
+class Cperson
+{   string name;  };
+class CStudent : virtual public CPerson
+{   int stuNo;  };
+class CTeacher : virtual public CPerson
+{    string title;  };
+
+class CStudentOnJob : public CStudent,public CTeacher
+//继承的两个类都是虚继承 Cperson ，只会产生一个拷贝，无冲突
+{   string research;};
 
 
 ```
 
+![1562097445632](D:\Dev\Exp\CPP\szuOJ\assets\zhitu-des\1562097445632.png)
 
 
 
+- 虚函数 动态联编
+
+  **运行时多态**：通过继承结合动态绑定获得。必须先设计一个类层次（继承/派生），然后在某些类中使用**虚函数**。
+
+  ```C++
+  
+  class Base{
+      public:
+    		virtual int add(int x){
+        //virtual  <函数返回类型> <函数名>(<参数表>)
+        	return x+5;
+    		}  
+  };
+  
+  class Counter: public Base{
+    int add(int x){
+        //这就就是虚函数，不加vitual也是，重新实现了也是
+        //可根据具体的调用者的值，来确定执行哪个函数。
+    }  
+  };
+  
+  ```
+
+  ```C++
+  class Animal
+  { public:
+      void virtual cry(){cout<<"I am animal"<<endl;}
+  };
+  
+  class Dog:public Animal
+  { public:
+        void cry(){cout<<"I am a dog" <<endl;}
+  };
+  
+  class Cat:public Animal
+  { public:
+     void cry(){cout<<"I am a cat" <<endl;}
+  };
+  
+  int main()
+  {   Animal animal;
+  	Dog dog;
+  	Cat cat;
+  	animal=dog;//基类可以被子类赋值，
+  	animal.cry();//虚函数多态，执行时确定调用，可以调用到子类的函数。没有虚函数会调用基类自己
+  	animal=cat;
+  	animal.cry();
+   
+  	Animal *p_animal; //指针同理
+  	p_animal=&dog;
+  	p_animal->cry();
+  	p_animal=&cat;
+  	p_animal->cry();   
+   }
+  
+  
+  ```
+
+  
 
 - **string 类**  `#include <cstring>`
 
