@@ -35,7 +35,7 @@ class Base {
 		//返回自己的引用
 		friend Base& operator--(Base& a) { //前增量 参数表为一个对象引用
 			//函数目的是 先改值 后返回
-			a.num-=0.1;
+			a.num-=0.1; //引用就是自己本身 可以调private 
 			return a;
 		}
 
