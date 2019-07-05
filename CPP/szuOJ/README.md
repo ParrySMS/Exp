@@ -430,7 +430,7 @@ class CStudentOnJob : public CStudent,public CTeacher
 
 - 虚函数 动态联编
 
-  虚函数底层是用this来实现的。
+  **虚函数底层是用this来实现的。**
 
   `普通成员函数`或`析构函数`可以声明成虚函数。
 
@@ -636,13 +636,40 @@ c3+=c1;
   }
   ```
   
-
+- 隐式类型转化
+  对象类型的参数，其他类型会**尝试调用构造函数**进行自动的对象生成来进行类型转化
+  
+- 显式类型转换-**类型运算符重载**
+  自定义重载的类型，进行特殊的转化。注意空参数，返回一个指定类型数据。
+  
+  `operator 类型名(){ return 类型数据 }` 
+  
+  ```C++
+  class RMB
+  {      int yuan,jiao,fen;
+   public:  
+         RMB(）{}
+         RMB(int y=0,int j=0,int f=0):yuan(y),jiao(j),fen(f){}
+         operator double(){ //类型运算符重载 自定义
+             return yuan+0.1*jiao+0.01*fen;
+         }
+         operator int();{ //类型运算符重载 自定义
+             return yuan;
+         }
+         operator USD(); //类型运算符 还能转对象
+             //转美元对象 这个函数要放在类外实现 放在USD定义之后
+  };
+             
+  class USD
+  { 
+      
+  };
+  
+  ```
   
 - **string 类**  `#include <cstring>`
 
-  string 并不是 C++ 的基本数据类型，它是 C++ 标准模板库中的一个类。
-
-  
+  string 并不是 C++ 的基本数据类型，它是 C++ 标准模板库中的一个类。  
 
   - 定义以及初始化 
 
