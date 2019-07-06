@@ -645,6 +645,9 @@ c3+=c1;
   `operator 类型名(){ return 类型数据 }` 
   
   ```C++
+  #include<iostream>
+  using namespace std;
+  class USD;//先声明一下
   class RMB
   {      int yuan,jiao,fen;
    public:  
@@ -660,19 +663,203 @@ c3+=c1;
              //转美元对象 这个函数要放在类外实现 放在USD定义之后
   };
              
-  class USD
-  { 
-      
+  class USD {//实现一个美元类
+  		int dollar,cent;
+  	public:
+  		USD(){}
+  		USD(int d,int c):dollar(d),cent(c){	}
+      	echo(){
+  			cout<<"UDS:"<<dollar<<"."<<cent<<endl;
+  		} 
   };
+             
+  const double R2U = 0.1527;           
+  RMB::operator USD(){//定义类的重载
+      double usd = (yuan+0.1*jiao+0.01*fen)*R2U;
+      int dollar = (int)usd;
+      int cent = 100* (uds - dollar);
+      return USD(dollar,cent);
+  }       
   
+  //实际使用  
+  int main() {
+  	RMB r(13,22,13);//一个对象
+  	double d=r;
+  	cout<<"double:"<<d<<endl;
+  	int t=r;
+  	cout<<"int"<<t<<endl;
+  	USD u = r1;//直接用对象赋值
+  	u.echo();
+  	return 0;
+  }
   ```
+
+- I/O运算符重载
+
+自己定义 一个 ostream 的对象的引用，则也可以直接使用运算符 `<<`
+
+定义 一个 istream 的对象的引用，也可以直接使用运算符 `>>`
+
+** 只能使用友元重载，因为左操作数是**流引用**，右操作数是**类引用**，应该**返回一个流引用**
+
+  ```C++
+//  << 输出 引用传递一个类 加const可保持不被改
+friend ostream & operator << (ostream & stream, const  类名 &obj )
+{        // 函数体 
+    return stream;
+}
+
+// >> 输入 赋值到类里
+friend istream & operator >> ( istream &stream, 类名  &obj )
+{          // 函数体
+	return stream;
+}
+  ```
+```C++
+  //Date类示例
+#include<iostream>
+using namespace std;
+
+class Date {
+	private:
+		int y, m ,d;
+	public:
+		Date(int y,int m,int d):y(y),m(m),d(d) {}
+		friend ostream& operator<<(ostream &stream,Date &date);
+		friend istream& operator>>(istream &stream,Date &date);
+};
+//友元函数实现 
+ostream& operator<<(ostream &stream,Date &date) {
+	stream<<date.y<<"/"<<date.m<<"/"<<date.d<<endl;
+    //不是用cout 是用传进来的流进行io操作
+	return stream;
+}
+
+istream& operator>>(istream &stream,Date &date) {
+	stream>>date.y>>date.m>>date.d;//类引用 直接赋值进private
+	return stream;
+}
+
+int main( ) {
+	Date Cdate(2004,1,1);
+    //外部调用就用 cout cin 流，直接 <<类 或者 >>类
+	cout<<"Current date:"<<Cdate<<endl;
+	cout<<"Enter new date:";
+	cin>>Cdate;
+	cout<<"New date:"<<Cdate<<endl;
+}
+```
+
+- 赋值运算符 `=` 重载
   
+  采用浅复制方式，直接修改当前对象并把当前对象当作返回结果
+  
+  声明对象初始化，会调用拷贝构造函数
+  
+```c++
+//类成员重载
+Complex operator =(const Complex& c)
+{   
+	real=c.real;             
+	image=c.image;  
+	return *this;        
+} 
+```
+
+- 下标运算符 `[ ]` 重载
+
+```c++
+//类成员函数实现
+int& operator[ ](int index){
+//为了能被赋值 所以返回int引用 作为一个地址空间
+  if((index<0)||(index>SIZE-1)){
+     cout<<"Index out of bounds\n";
+     exit(0);
+  }
+  return ar[index]；
+}
+
+```
+
+- 函数调用 `()` 重载
+
+```C++
+#include<iostream>
+using namespace std;
+class F{  
+public:
+//类成员函数实现
+   double operator ()(double x, double y) const
+   {   return   2*x+y;   }
+}；
+
+int main()
+{   F f;
+  cout<<f(1.5, 2.2)<<endl;
+  return 0;
+}
+
+```
+
+- new和delete的重载
+希望使用某种特殊的动态内存分配方法
+// todo:
+
+- 类函数模板
+```C++
+template<class TYPE> //把可变的部分变为一个指定的 <class T>
+// 也可以使用多个函数模板 template <class T,class D>
+//具体实现
+void print( const TYPE ar[], int size){
+   int i;
+   for(i =0; i<size-1; i++){
+    cout<<ar[i]<<", ";
+   }
+   cout<<ar[i]<<endl;
+}
+
+//函数模板里不知道隐式转化 所以char和int是两种类型 只会根据类型来匹配
+template<class TYPE1,class TYPE2>
+TYPE1 max(TYPE1 a, TYPE2 b){
+	return (a>b)? a:b;
+}
+
+//调用 
+max(76,'A')；
+// int char ---> return int , char自己运算中强转int
+```
+- 类模板
+一样的，在类里面用自定义的 TYPE,实例化的时候加多一个<类型列表>
+
+```C++
+template<class  TYPE>  //可以多个TYPE <class T1,class T2>
+//类模板的实现
+class List{ 
+    TYPE* vector;
+     int size;
+public:
+         List (int length) {                            //构造函数
+          vector=new TYPE[length];
+          size=length;
+      }
+      ~List( ) { delete [ ] vector;  }              //析构函数
+　 TYPE& operator[ ](int index) {
+          return vector[index];  
+      }
+};
+
+//实例化的声明
+List<int> ar(10); // 声明一个int类的List对象 ar，调用构造函数
+List<double> ar_double;
+
+```
+
 - **string 类**  `#include <cstring>`
 
-  string 并不是 C++ 的基本数据类型，它是 C++ 标准模板库中的一个类。  
-
+  string 并不是 C++ 的基本数据类型，它是 C++ 标准模板库中的一个类。 
+  
   - 定义以及初始化 
-
+  
     ```c++
     //赋值
     string s1 = "hello"; 
@@ -702,10 +889,8 @@ c3+=c1;
     
     mid_part.assign(s2,0,3); // "wor" 没有new新对象
     end_part.assign(str); //相当于全复制
-    
+  
     ```
-
-    
 
   - 读入
 
