@@ -1,6 +1,7 @@
 #include<iostream>
 using namespace std;
 class Point3D;
+class USD;
 class RMB {
 		int yuan,jiao,fen;
 	public:
@@ -9,6 +10,7 @@ class RMB {
 		operator int();
 		operator Point3D();
 		void print();
+		operator USD();
 };
 class Point3D {
 		double x,y,z;
@@ -17,6 +19,25 @@ class Point3D {
 		void print();
 		operator RMB();
 };
+
+class USD {
+		int dollar,cent;
+	public:
+//		USD() {}
+		USD(int d,int c):dollar(d),cent(c) {	}
+		echo(){
+			cout<<"d:"<<dollar<<endl;
+			cout<<"c:"<<cent<<endl;
+		} 
+};
+
+const double R2U = 0.1455;
+RMB::operator USD() {
+	double usd = (yuan+0.1*jiao+0.01*fen)*R2U;
+	int dollar = (int)usd;
+	int cent = 100* (usd - dollar);
+	return USD(dollar,cent);
+}
 RMB::RMB(int y,int j,int f):yuan(y),jiao(j),fen(f) {}
 RMB::operator double() {
 	return yuan+jiao/10.0+fen/100.0;
@@ -51,9 +72,12 @@ int main() {
 	Point3D p=r;
 	p.print();
 
-	Point3D p1(2,3,4);
+	Point3D p1(23,3,4);
 	RMB r1=p1;
 	r1.print();
+	
+	USD u = r1;
+	u.echo();
 	return 1;
 }
 
