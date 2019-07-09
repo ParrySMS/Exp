@@ -424,7 +424,9 @@ class CStudentOnJob : public CStudent,public CTeacher
 
 ```
 
-![1562097445632](D:\Dev\Exp\CPP\szuOJ\assets\zhitu-des\1562097445632.png)
+
+
+<img src="D:\Dev\Exp\CPP\szuOJ\assets\zhitu-des\1562097445632.png" width="400" align=center />
 
 
 
@@ -481,16 +483,20 @@ class CStudentOnJob : public CStudent,public CTeacher
   {   Animal animal;
   	Dog dog;
   	Cat cat;
-  	animal=dog;//基类可以被子类赋值，
+   
+     //基类可以被子类赋值，
+  	animal=dog;
   	animal.cry();//虚函数多态，执行时确定调用，可以调用到子类的函数。否则没有虚函数会调用基类自己
   	animal=cat;
   	animal.cry();
    
+     //基类对象指针 可以通过虚函数实现多态的调用
   	Animal *p_animal; //指针同理
-  	p_animal=&dog;
+  	p_animal=&dog;//创建了对象之后 再赋值给指针
   	p_animal->cry();
   	p_animal=&cat;
-  	p_animal->cry();   
+  	p_animal->cry();  
+  
    }
   
   
