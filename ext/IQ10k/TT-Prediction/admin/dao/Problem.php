@@ -30,7 +30,7 @@ class Problem extends BaseDao
 
             case 'verbal':
             case 'VERBAL':
-                return ['verbal-C', 'verbal-E' . 'verbal-CE'];
+                return ['verbal-C', 'verbal-E' ,'verbal-CE'];
 
             case 'seq':
             case 'SEQ':
