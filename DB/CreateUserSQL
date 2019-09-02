@@ -1,0 +1,15 @@
+<?php
+define('PASS_PREFIX','123');
+define('GRANT_OPTION','CREATE,SELECT,INSERT,UPDATE,DELETE');
+$users = [
+	'user1',
+	'user2'
+];
+
+$sql = '';
+foreach($users as $u){
+	$sql .= "CREATE User '$u'@'%' IDENTIFIED BY '".PASS_PREFIX.$u."';".PHP_EOL;
+	$sql .=	'GRANT '.GRANT_OPTION." ON *.* TO '$u'@'%';".PHP_EOL;
+}
+
+echo $sql;
