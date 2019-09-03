@@ -1,6 +1,6 @@
 <?php
 define('PASS_PREFIX','123');
-define('GRANT_OPTION','CREATE,SELECT,INSERT,UPDATE,DELETE');
+define('GRANT_OPTION','CREATE,ALTER,SELECT,INSERT,UPDATE,DELETE');
 $users = [
 	'user1',
 	'user2'
