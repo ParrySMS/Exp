@@ -14,11 +14,11 @@ $users = [
 ];
 
 $sql = '';
-$sql .= 'flush privileges'; 
+$sql .= 'flush privileges;'.PHP_EOL;  
 foreach($users as $u){
 	$sql .= "CREATE User '$u'@'%' IDENTIFIED BY '".PASS_PREFIX.$u."';".PHP_EOL;
 	$sql .=	'GRANT '.GRANT_OPTION." ON *.* TO '$u'@'%';".PHP_EOL;
 //  $sql .= "Delete FROM mysql.user Where User = '$u' and Host= '%';".PHP_EOL;
 }
-$sql .= 'flush privileges'; 
+$sql .= 'flush privileges;'.PHP_EOL; 
 echo $sql;
