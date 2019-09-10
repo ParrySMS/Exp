@@ -3,11 +3,11 @@ define('PASS_PREFIX','123');
 define('GRANT_OPTION',
 'DROP,CREATE,ALTER,SELECT,INSERT,UPDATE,DELETE,INDEX,EXECUTE,EVENT,REFERENCES,RELOAD,SHOW VIEW,SHOW DATABASES,LOCK TABLES'
 );
+
 /**
  * OPTION LIST: https://dev.mysql.com/doc/refman/5.7/en/grant.html
  */
  
-$user
 $users = [
 	'user1',
 	'user2'
