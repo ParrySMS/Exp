@@ -21,9 +21,8 @@ define('REPOSITORIES_LOCAL_PATH', 'D:/Dev');
  *   It means that you want to keep your REPOSITORIES_WITH_LOCAL_BRANCH following the REPOSITORIES_WITH_ORIGIN_BRANCH.
  *
  * eg.
- *   [ develop_A --> remotes/origin/develop_A ] ===> keep following [remotes/origin/develop-QA]
+ *   [ develop_A --> remotes/origin/develop_A ] ===> keep being up to date with [remotes/origin/develop-QA]
  *
- *   Branch 'develop_A' should to be up to date with 'origin/develop-QA', because others may pull into develop-QA.
  *   So the definition should be:
  *
  *   define('REPOSITORIES_WITH_LOCAL_BRANCH',  ['repos_name' => 'develop_A'];
@@ -78,6 +77,8 @@ foreach (REPOSITORIES_WITH_LOCAL_BRANCH as $repos => $local_branch){
 
     $cmd .= 'cd ../'.PHP_EOL;
 }
+
+$cmd .= 'pause';
 
 fwrite($bat_file, $cmd);
 fclose($bat_file);
